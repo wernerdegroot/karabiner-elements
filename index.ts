@@ -256,4 +256,4 @@ const upperLayer: KarabinerMapping[] = [
   simple({ key: "slash", toModifiers: ["left_shift"] }),
 ].map(ifLayer("upper-layer"));
 
-console.log(`Hello Node.js v${process.versions.node}!`);
+console.log(JSON.stringify([...baseLayer, ...upperLayer], null, 2));

@@ -2,7 +2,7 @@
   "name": "node-starter",
   "version": "0.0.0",
   "scripts": {
-    "start": "ts-node .",
+    "start": "ts-node index.ts",
     "start:watch": "ts-node-dev .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
