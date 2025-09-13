@@ -28,7 +28,12 @@ type KarabinerMapping = {
   conditions?: KarabinerCondition[];
   from: KarabinerKey;
   to: KarabinerTo[];
+  to_if_held_down?: KarabinerTo[];
   to_after_key_up?: KarabinerSetVariable[];
+  parameters?: {
+    "basic.to_delayed_action_delay_milliseconds": 500;
+    "basic.to_if_held_down_threshold_milliseconds": 500;
+  };
 };
 
 type Mapping = {
@@ -60,7 +65,11 @@ function mapping(args: Mapping): KarabinerMapping {
   };
 }
 
-type LayerName = "upper-layer";
+type LayerName =
+  | "upper-layer"
+  | "symbol-layer"
+  | "navigation-layer"
+  | "modifier-layer";
 
 type Layer = {
   from: string;
@@ -110,6 +119,52 @@ function simple(args: SimplifiedMapping): KarabinerMapping {
   });
 }
 
+type DuoMapping = Mapping & {
+  layer: LayerName;
+};
+
+function duo(args: DuoMapping): KarabinerMapping {
+  const fromModifiers: Pick<KarabinerKey, "modifiers"> =
+    args.fromModifiers == undefined ? {} : { modifiers: args.fromModifiers };
+
+  const toModifiers: Pick<KarabinerKey, "modifiers"> =
+    args.toModifiers == undefined ? {} : { modifiers: args.toModifiers };
+
+  return {
+    type: "basic",
+    from: {
+      key_code: args.from,
+      ...fromModifiers,
+    },
+    to: [
+      {
+        key_code: args.to,
+        ...toModifiers,
+      },
+    ],
+    to_if_held_down: [
+      {
+        set_variable: {
+          name: args.layer,
+          value: TRUE,
+        },
+      },
+    ],
+    parameters: {
+      "basic.to_delayed_action_delay_milliseconds": 500,
+      "basic.to_if_held_down_threshold_milliseconds": 500,
+    },
+    to_after_key_up: [
+      {
+        set_variable: {
+          name: args.layer,
+          value: FALSE,
+        },
+      },
+    ],
+  };
+}
+
 function layerCondition(name: LayerName): Pick<KarabinerMapping, "conditions"> {
   return {
     conditions: [
@@ -122,11 +177,14 @@ function layerCondition(name: LayerName): Pick<KarabinerMapping, "conditions"> {
   };
 }
 
-const ifLayer = (name: LayerName) => (mapping: KarabinerMapping): KarabinerMapping {
-  return { ...mapping, ...layerCondition(name) };
-}
+const ifLayer =
+  (name: LayerName) =>
+  (mapping: KarabinerMapping): KarabinerMapping => {
+    return { ...mapping, ...layerCondition(name) };
+  };
 
 const baseLayer: KarabinerMapping[] = [
+  duo({ from: "tab", to: "tab", layer: "symbol-layer" }),
   simple({ key: "q" }),
   simple({ key: "w" }),
   simple({ key: "e" }),
@@ -137,6 +195,12 @@ const baseLayer: KarabinerMapping[] = [
   simple({ key: "i" }),
   simple({ key: "o" }),
   simple({ key: "p" }),
+  duo({
+    from: "open_bracket",
+    to: "delete_or_backspace",
+    layer: "symbol-layer",
+  }),
+  layer({ from: "caps_lock", name: "navigation-layer" }),
   simple({ key: "a" }),
   simple({ key: "s" }),
   simple({ key: "d" }),
@@ -146,8 +210,8 @@ const baseLayer: KarabinerMapping[] = [
   simple({ key: "j" }),
   simple({ key: "k" }),
   simple({ key: "l" }),
-  simple({ key: "semicolon" }),
-  layer({ from: "z", name: "upper-layer" }),
+  duo({ from: "semicolon", to: "return", layer: "modifier-layer" }),
+  simple({ key: "z" }),
   simple({ key: "x" }),
   simple({ key: "c" }),
   simple({ key: "v" }),
@@ -156,7 +220,7 @@ const baseLayer: KarabinerMapping[] = [
   simple({ key: "m" }),
   simple({ key: "comma" }),
   simple({ key: "period" }),
-  layer({ from: "slash", name: "upper-layer" }),
+  duo({ from: "slash", to: "escape", layer: "upper-layer" }),
 ];
 
 const upperLayer: KarabinerMapping[] = [
@@ -190,6 +254,6 @@ const upperLayer: KarabinerMapping[] = [
   simple({ key: "comma", toModifiers: ["left_shift"] }),
   simple({ key: "period", toModifiers: ["left_shift"] }),
   simple({ key: "slash", toModifiers: ["left_shift"] }),
-].map(ifLayer('upper-layer'));
+].map(ifLayer("upper-layer"));
 
 console.log(`Hello Node.js v${process.versions.node}!`);
