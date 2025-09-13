@@ -17,8 +17,15 @@ type KarabinerSetVariable = {
 
 type KarabinerTo = KarabinerKey | KarabinerSetVariable;
 
+type KarabinerCondition = {
+  name: string;
+  type: "variable_if";
+  value: typeof TRUE | typeof FALSE;
+};
+
 type KarabinerMapping = {
   type: "basic";
+  conditions?: KarabinerCondition[];
   from: KarabinerKey;
   to: KarabinerTo[];
   to_after_key_up?: KarabinerSetVariable[];
@@ -103,6 +110,22 @@ function simple(args: SimplifiedMapping): KarabinerMapping {
   });
 }
 
+function layerCondition(name: LayerName): Pick<KarabinerMapping, "conditions"> {
+  return {
+    conditions: [
+      {
+        name,
+        type: "variable_if",
+        value: TRUE,
+      },
+    ],
+  };
+}
+
+const ifLayer = (name: LayerName) => (mapping: KarabinerMapping): KarabinerMapping {
+  return { ...mapping, ...layerCondition(name) };
+}
+
 const baseLayer: KarabinerMapping[] = [
   simple({ key: "q" }),
   simple({ key: "w" }),
@@ -136,38 +159,37 @@ const baseLayer: KarabinerMapping[] = [
   layer({ from: "slash", name: "upper-layer" }),
 ];
 
-const uppperLayer: KarabinerMapping[] = [
+const upperLayer: KarabinerMapping[] = [
   simple({ key: "q", toModifiers: ["right_shift"] }),
   simple({ key: "w", toModifiers: ["right_shift"] }),
   simple({ key: "e", toModifiers: ["right_shift"] }),
   simple({ key: "r", toModifiers: ["right_shift"] }),
   simple({ key: "t", toModifiers: ["right_shift"] }),
-  simple({ key: "y", toModifiers: ["right_shift"] }),
-  simple({ key: "u", toModifiers: ["right_shift"] }),
-  simple({ key: "i", toModifiers: ["right_shift"] }),
-  simple({ key: "o", toModifiers: ["right_shift"] }),
-  simple({ key: "p", toModifiers: ["right_shift"] }),
+  simple({ key: "y", toModifiers: ["left_shift"] }),
+  simple({ key: "u", toModifiers: ["left_shift"] }),
+  simple({ key: "i", toModifiers: ["left_shift"] }),
+  simple({ key: "o", toModifiers: ["left_shift"] }),
+  simple({ key: "p", toModifiers: ["left_shift"] }),
   simple({ key: "a", toModifiers: ["right_shift"] }),
   simple({ key: "s", toModifiers: ["right_shift"] }),
   simple({ key: "d", toModifiers: ["right_shift"] }),
   simple({ key: "f", toModifiers: ["right_shift"] }),
   simple({ key: "g", toModifiers: ["right_shift"] }),
-  simple({ key: "h", toModifiers: ["right_shift"] }),
-  simple({ key: "j", toModifiers: ["right_shift"] }),
-  simple({ key: "k", toModifiers: ["right_shift"] }),
-  simple({ key: "l", toModifiers: ["right_shift"] }),
-  simple({ key: "semicolon", toModifiers: ["right_shift"] }),
+  simple({ key: "h", toModifiers: ["left_shift"] }),
+  simple({ key: "j", toModifiers: ["left_shift"] }),
+  simple({ key: "k", toModifiers: ["left_shift"] }),
+  simple({ key: "l", toModifiers: ["left_shift"] }),
+  simple({ key: "semicolon", toModifiers: ["left_shift"] }),
   simple({ key: "z", toModifiers: ["right_shift"] }),
   simple({ key: "x", toModifiers: ["right_shift"] }),
   simple({ key: "c", toModifiers: ["right_shift"] }),
   simple({ key: "v", toModifiers: ["right_shift"] }),
   simple({ key: "b", toModifiers: ["right_shift"] }),
-  simple({ key: "n", toModifiers: ["right_shift"] }),
-  simple({ key: "m", toModifiers: ["right_shift"] }),
-  simple({ key: "comma", toModifiers: ["right_shift"] }),
-  simple({ key: "period", toModifiers: ["right_shift"] }),
-  simple({ key: "slash", toModifiers: ["right_shift"] }),
-];
-// run `node index.js` in the terminal
+  simple({ key: "n", toModifiers: ["left_shift"] }),
+  simple({ key: "m", toModifiers: ["left_shift"] }),
+  simple({ key: "comma", toModifiers: ["left_shift"] }),
+  simple({ key: "period", toModifiers: ["left_shift"] }),
+  simple({ key: "slash", toModifiers: ["left_shift"] }),
+].map(ifLayer('upper-layer'));
 
 console.log(`Hello Node.js v${process.versions.node}!`);
