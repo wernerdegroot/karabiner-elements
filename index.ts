@@ -1,6 +1,21 @@
-type KarabinerModifier = "left_shift" | "right_shift";
+type KarabinerModifier =
+  | "left_shift"
+  | "right_shift"
+  | "left_control"
+  | "right_control"
+  | "left_command"
+  | "right_command"
+  | "any";
 
-type KarabinerKey = {
+type KarabinerKeyFrom = {
+  key_code: string;
+  modifiers?: {
+    optional?: KarabinerModifier[];
+    required?: KarabinerModifier[];
+  };
+};
+
+type KarabinerKeyTo = {
   key_code: string;
   modifiers?: KarabinerModifier[];
 };
@@ -15,7 +30,7 @@ type KarabinerSetVariable = {
   };
 };
 
-type KarabinerTo = KarabinerKey | KarabinerSetVariable;
+type KarabinerTo = KarabinerKeyTo | KarabinerSetVariable;
 
 type KarabinerCondition = {
   name: string;
@@ -26,14 +41,10 @@ type KarabinerCondition = {
 type KarabinerMapping = {
   type: "basic";
   conditions?: KarabinerCondition[];
-  from: KarabinerKey;
+  from: KarabinerKeyFrom;
   to: KarabinerTo[];
-  to_if_held_down?: KarabinerTo[];
+  to_if_alone?: KarabinerTo[];
   to_after_key_up?: KarabinerSetVariable[];
-  parameters?: {
-    "basic.to_delayed_action_delay_milliseconds": 500;
-    "basic.to_if_held_down_threshold_milliseconds": 500;
-  };
 };
 
 type Mapping = {
@@ -44,10 +55,17 @@ type Mapping = {
 };
 
 function mapping(args: Mapping): KarabinerMapping {
-  const fromModifiers: Pick<KarabinerKey, "modifiers"> =
-    args.fromModifiers == undefined ? {} : { modifiers: args.fromModifiers };
+  const fromModifiers: Pick<KarabinerKeyFrom, "modifiers"> = {};
 
-  const toModifiers: Pick<KarabinerKey, "modifiers"> =
+  fromModifiers.modifiers = {
+    optional: ["any"],
+  };
+
+  if (args.fromModifiers !== undefined) {
+    fromModifiers.modifiers.required = args.fromModifiers;
+  }
+
+  const toModifiers: Pick<KarabinerKeyTo, "modifiers"> =
     args.toModifiers == undefined ? {} : { modifiers: args.toModifiers };
 
   return {
@@ -78,8 +96,15 @@ type Layer = {
 };
 
 function layer(args: Layer): KarabinerMapping {
-  const fromModifiers: Pick<KarabinerKey, "modifiers"> =
-    args.fromModifiers == undefined ? {} : { modifiers: args.fromModifiers };
+  const fromModifiers: Pick<KarabinerKeyFrom, "modifiers"> = {};
+
+  fromModifiers.modifiers = {
+    optional: ["any"],
+  };
+
+  if (args.fromModifiers !== undefined) {
+    fromModifiers.modifiers.required = args.fromModifiers;
+  }
 
   return {
     type: "basic",
@@ -124,10 +149,17 @@ type DuoMapping = Mapping & {
 };
 
 function duo(args: DuoMapping): KarabinerMapping {
-  const fromModifiers: Pick<KarabinerKey, "modifiers"> =
-    args.fromModifiers == undefined ? {} : { modifiers: args.fromModifiers };
+  const fromModifiers: Pick<KarabinerKeyFrom, "modifiers"> = {};
 
-  const toModifiers: Pick<KarabinerKey, "modifiers"> =
+  fromModifiers.modifiers = {
+    optional: ["any"],
+  };
+
+  if (args.fromModifiers !== undefined) {
+    fromModifiers.modifiers.required = args.fromModifiers;
+  }
+
+  const toModifiers: Pick<KarabinerKeyTo, "modifiers"> =
     args.toModifiers == undefined ? {} : { modifiers: args.toModifiers };
 
   return {
@@ -136,13 +168,13 @@ function duo(args: DuoMapping): KarabinerMapping {
       key_code: args.from,
       ...fromModifiers,
     },
-    to: [
+    to_if_alone: [
       {
         key_code: args.to,
         ...toModifiers,
       },
     ],
-    to_if_held_down: [
+    to: [
       {
         set_variable: {
           name: args.layer,
@@ -150,10 +182,6 @@ function duo(args: DuoMapping): KarabinerMapping {
         },
       },
     ],
-    parameters: {
-      "basic.to_delayed_action_delay_milliseconds": 500,
-      "basic.to_if_held_down_threshold_milliseconds": 500,
-    },
     to_after_key_up: [
       {
         set_variable: {
@@ -180,9 +208,13 @@ function layerCondition(name: LayerName): Pick<KarabinerMapping, "conditions"> {
 const ifLayer =
   (name: LayerName) =>
   (mapping: KarabinerMapping): KarabinerMapping => {
-    return { ...mapping, ...layerCondition(name) };
+    return { ...layerCondition(name), ...mapping };
   };
 
+// == Base layer =================================
+// TAB  q   w   e   r   t   y   u   i   o   p  BSP
+// ___  a   s   d   f   g   h   j   k   l  RET
+// ___  z   x   c   v   b   n   m   ,   .  ESC
 const baseLayer: KarabinerMapping[] = [
   duo({ from: "tab", to: "tab", layer: "symbol-layer" }),
   simple({ key: "q" }),
@@ -211,6 +243,7 @@ const baseLayer: KarabinerMapping[] = [
   simple({ key: "k" }),
   simple({ key: "l" }),
   duo({ from: "semicolon", to: "return", layer: "modifier-layer" }),
+  layer({ from: "left_shift", name: "upper-layer" }),
   simple({ key: "z" }),
   simple({ key: "x" }),
   simple({ key: "c" }),
@@ -223,6 +256,10 @@ const baseLayer: KarabinerMapping[] = [
   duo({ from: "slash", to: "escape", layer: "upper-layer" }),
 ];
 
+// == Upper layer ================================
+// ___  Q   W   E   R   T   Y   U   I   O   P  DEL
+// ___  A   S   D   F   G   H   J   K   L  ___
+// ___  Z   X   C   V   B   N   M   ;   :  ___
 const upperLayer: KarabinerMapping[] = [
   simple({ key: "q", toModifiers: ["right_shift"] }),
   simple({ key: "w", toModifiers: ["right_shift"] }),
@@ -234,6 +271,7 @@ const upperLayer: KarabinerMapping[] = [
   simple({ key: "i", toModifiers: ["left_shift"] }),
   simple({ key: "o", toModifiers: ["left_shift"] }),
   simple({ key: "p", toModifiers: ["left_shift"] }),
+  mapping({ from: "delete_or_backspace", to: "delete_forward" }),
   simple({ key: "a", toModifiers: ["right_shift"] }),
   simple({ key: "s", toModifiers: ["right_shift"] }),
   simple({ key: "d", toModifiers: ["right_shift"] }),
@@ -243,7 +281,6 @@ const upperLayer: KarabinerMapping[] = [
   simple({ key: "j", toModifiers: ["left_shift"] }),
   simple({ key: "k", toModifiers: ["left_shift"] }),
   simple({ key: "l", toModifiers: ["left_shift"] }),
-  simple({ key: "semicolon", toModifiers: ["left_shift"] }),
   simple({ key: "z", toModifiers: ["right_shift"] }),
   simple({ key: "x", toModifiers: ["right_shift"] }),
   simple({ key: "c", toModifiers: ["right_shift"] }),
@@ -256,4 +293,49 @@ const upperLayer: KarabinerMapping[] = [
   simple({ key: "slash", toModifiers: ["left_shift"] }),
 ].map(ifLayer("upper-layer"));
 
-console.log(JSON.stringify([...baseLayer, ...upperLayer], null, 2));
+// == Symbol layer ===============================
+// ___  "   <   >   '   %   ~   &   (   )   _  DEL
+// ___  !   -   +   =   #   `   |   {   }   ?
+// ___  ^   /   *   \  EUR  @  EMO  [   ]   $
+const symbolLayer: KarabinerMapping[] = [
+  mapping({ from: "q", to: "quote", toModifiers: ["left_shift"] }),
+  mapping({ from: "w", to: "comma", toModifiers: ["left_shift"] }),
+  mapping({ from: "e", to: "period", toModifiers: ["left_shift"] }),
+  mapping({ from: "r", to: "quote" }),
+  mapping({ from: "t", to: "5", toModifiers: ["left_shift"] }),
+  mapping({
+    from: "y",
+    to: "grave_accent_and_tilde",
+    toModifiers: ["right_shift"],
+  }),
+  mapping({ from: "u", to: "7", toModifiers: ["left_shift"] }),
+  mapping({ from: "i", to: "9", toModifiers: ["left_shift"] }),
+  mapping({ from: "o", to: "0", toModifiers: ["left_shift"] }),
+  mapping({ from: "p", to: "hyphen", toModifiers: ["left_shift"] }),
+  mapping({ from: "a", to: "1", toModifiers: ["right_shift"] }),
+  mapping({ from: "s", to: "hyphen" }),
+  mapping({ from: "d", to: "equal_sign", toModifiers: ["left_shift"] }),
+  mapping({ from: "f", to: "equal_sign" }),
+  mapping({ from: "g", to: "3", toModifiers: ["right_shift"] }),
+  mapping({ from: "h", to: "grave_accent_and_tilde" }),
+  mapping({ from: "j", to: "backslash", toModifiers: ["left_shift"] }),
+  mapping({ from: "k", to: "open_bracket", toModifiers: ["left_shift"] }),
+  mapping({ from: "l", to: "close_bracket", toModifiers: ["left_shift"] }),
+  mapping({ from: "semicolon", to: "slash", toModifiers: ["left_shift"] }),
+  mapping({ from: "z", to: "6", toModifiers: ["right_shift"] }),
+  mapping({ from: "x", to: "slash" }),
+  mapping({ from: "c", to: "equal_sign", toModifiers: ["left_shift"] }),
+  mapping({ from: "v", to: "backslash" }),
+  // mapping({ from: "b", to: "backslash" }),
+  mapping({ from: "n", to: "2", toModifiers: ["right_shift"] }),
+  mapping({
+    from: "m",
+    to: "spacebar",
+    toModifiers: ["left_control", "left_command"],
+  }),
+  mapping({ from: "comma", to: "open_bracket" }),
+  mapping({ from: "period", to: "close_bracket" }),
+  mapping({ from: "slash", to: "1", toModifiers: ["right_shift"] }),
+].map(ifLayer("upper-layer"));
+
+console.log(JSON.stringify([...upperLayer, ...baseLayer], null, 2));
