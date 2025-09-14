@@ -30,7 +30,18 @@ type KarabinerSetVariable = {
   };
 };
 
-type KarabinerTo = KarabinerKeyTo | KarabinerSetVariable;
+type KarabinerStickyModifier = {
+  [M in KarabinerModifier]: {
+    sticky_modifier: {
+      [K in M]: "on" | "off" | "toggle";
+    };
+  };
+}[KarabinerModifier];
+
+type KarabinerTo =
+  | KarabinerKeyTo
+  | KarabinerSetVariable
+  | KarabinerStickyModifier;
 
 type KarabinerCondition = {
   name: string;
@@ -44,7 +55,7 @@ type KarabinerMapping = {
   from: KarabinerKeyFrom;
   to: KarabinerTo[];
   to_if_alone?: KarabinerTo[];
-  to_after_key_up?: KarabinerSetVariable[];
+  to_after_key_up?: KarabinerTo[];
 };
 
 type Mapping = {
@@ -211,12 +222,48 @@ const ifLayer =
     return { ...layerCondition(name), ...mapping };
   };
 
+const tab: KarabinerMapping = {
+  type: "basic",
+  from: {
+    key_code: "tab",
+    modifiers: {
+      optional: ["any"],
+    },
+  },
+  to: [
+    {
+      set_variable: {
+        name: "symbol-layer-left",
+        value: TRUE,
+      },
+    },
+  ],
+  to_after_key_up: [
+    {
+      set_variable: {
+        name: "symbol-layer-left",
+        value: FALSE,
+      },
+    },
+    {
+      sticky_modifier: {
+        left_command: "off",
+      },
+    },
+  ],
+  to_if_alone: [
+    {
+      key_code: "tab",
+    },
+  ],
+};
+
 // == Base layer =================================
 // TAB  q   w   e   r   t   y   u   i   o   p  BSP
 // ___  a   s   d   f   g   h   j   k   l  RET
 // ___  z   x   c   v   b   n   m   ,   .  ESC
 const baseLayer: KarabinerMapping[] = [
-  duo({ from: "tab", to: "tab", layer: "symbol-layer" }),
+  tab,
   simple({ key: "q" }),
   simple({ key: "w" }),
   simple({ key: "e" }),
@@ -288,10 +335,12 @@ const upperLayer: KarabinerMapping[] = [
   simple({ key: "b", toModifiers: ["right_shift"] }),
   simple({ key: "n", toModifiers: ["left_shift"] }),
   simple({ key: "m", toModifiers: ["left_shift"] }),
-  simple({ key: "comma", toModifiers: ["left_shift"] }),
-  simple({ key: "period", toModifiers: ["left_shift"] }),
+  mapping({ from: "comma", to: "semicolon" }),
+  mapping({ from: "period", to: "semicolon", toModifiers: ["left_shift"] }),
   simple({ key: "slash", toModifiers: ["left_shift"] }),
 ].map(ifLayer("upper-layer"));
+
+const symbolR: 
 
 // == Symbol layer ===============================
 // ___  "   <   >   '   %   ~   &   (   )   _  DEL
