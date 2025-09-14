@@ -1,3 +1,5 @@
 # karabiner-elements
 
-[Edit in StackBlitz next generation editor ⚡️](https://stackblitz.com/~/github.com/wernerdegroot/karabiner-elements)
+## To try?
+
+Does simultaneous tab + r work? That means that the symbol layer only activates on other combination, and tab only works on release. Is that already the case?
