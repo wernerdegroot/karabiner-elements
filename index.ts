@@ -52,8 +52,12 @@ type KarabinerCondition = {
 type KarabinerMapping = {
   type: "basic";
   conditions?: KarabinerCondition[];
+  parameters?: {
+    "basic.to_if_held_down_threshold_milliseconds"?: number;
+  },
   from: KarabinerKeyFrom;
-  to: KarabinerTo[];
+  to?: KarabinerTo[];
+  to_if_held_down?: KarabinerTo[];
   to_if_alone?: KarabinerTo[];
   to_after_key_up?: KarabinerTo[];
 };
@@ -226,9 +230,9 @@ function layerCondition(name: LayerName): Pick<KarabinerMapping, "conditions"> {
 
 const ifLayer =
   (name: LayerName) =>
-  (mapping: KarabinerMapping): KarabinerMapping => {
-    return { ...layerCondition(name), ...mapping };
-  };
+    (mapping: KarabinerMapping): KarabinerMapping => {
+      return { ...layerCondition(name), ...mapping };
+    };
 
 const baseLayerTab: KarabinerMapping = {
   type: "basic",
@@ -238,7 +242,10 @@ const baseLayerTab: KarabinerMapping = {
       optional: ["any"],
     },
   },
-  to: [
+  parameters: {
+    "basic.to_if_held_down_threshold_milliseconds": 0,
+  },
+  to_if_held_down: [
     {
       set_variable: {
         name: "symbol-layer-right",
@@ -367,8 +374,7 @@ const symbolLayerRightR: KarabinerMapping = {
       },
     },
     {
-      key_code: "tab",
-      modifiers: ["left_command"],
+      key_code: "tab"
     },
   ],
 };
@@ -389,7 +395,7 @@ const symbolLayerRightF: KarabinerMapping = {
     },
     {
       key_code: "tab",
-      modifiers: ["left_shift", "left_command"],
+      modifiers: ["left_shift"],
     },
   ],
 };
@@ -444,9 +450,8 @@ const symbolLayerRight: KarabinerMapping[] = [
 ].map(ifLayer("symbol-layer-right"));
 
 console.log(
-  JSON.stringify(
-    [...upperLayer, ...symbolLayerLeft, ...symbolLayerRight, ...baseLayer],
-    null,
-    2
-  )
+  JSON.stringify({
+    "title": "Werner's keymap",
+    "manipulators": [...upperLayer, ...symbolLayerLeft, ...symbolLayerRight, ...baseLayer]
+  }, null, 2)
 );
