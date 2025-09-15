@@ -241,7 +241,7 @@ const baseLayerTab: KarabinerMapping = {
   to: [
     {
       set_variable: {
-        name: "symbol-layer-left",
+        name: "symbol-layer-right",
         value: TRUE,
       },
     },
