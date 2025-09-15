@@ -96,14 +96,18 @@ function mapping(args: Mapping): KarabinerMapping {
 
 type LayerName =
   | "upper-layer"
-  | "symbol-layer"
+  | "symbol-layer-left"
+  | "symbol-layer-right"
   | "navigation-layer"
-  | "modifier-layer";
+  | "modifier-layer"
+  | "number-layer"
+  | "function-layer";
 
 type Layer = {
   from: string;
   fromModifiers?: KarabinerModifier[];
-  name: LayerName;
+  activate: LayerName;
+  alsoDeactivate?: LayerName[];
 };
 
 function layer(args: Layer): KarabinerMapping {
@@ -117,6 +121,17 @@ function layer(args: Layer): KarabinerMapping {
     fromModifiers.modifiers.required = args.fromModifiers;
   }
 
+  const alsoDeactivate: LayerName[] = args.alsoDeactivate || [];
+  const deactivate: KarabinerSetVariable[] = [
+    args.activate,
+    ...alsoDeactivate,
+  ].map((name) => ({
+    set_variable: {
+      name,
+      value: FALSE,
+    },
+  }));
+
   return {
     type: "basic",
     from: {
@@ -126,19 +141,12 @@ function layer(args: Layer): KarabinerMapping {
     to: [
       {
         set_variable: {
-          name: args.name,
+          name: args.activate,
           value: TRUE,
         },
       },
     ],
-    to_after_key_up: [
-      {
-        set_variable: {
-          name: args.name,
-          value: FALSE,
-        },
-      },
-    ],
+    to_after_key_up: deactivate,
   };
 }
 
@@ -222,7 +230,7 @@ const ifLayer =
     return { ...layerCondition(name), ...mapping };
   };
 
-const tab: KarabinerMapping = {
+const baseLayerTab: KarabinerMapping = {
   type: "basic",
   from: {
     key_code: "tab",
@@ -241,7 +249,7 @@ const tab: KarabinerMapping = {
   to_after_key_up: [
     {
       set_variable: {
-        name: "symbol-layer-left",
+        name: "symbol-layer-right",
         value: FALSE,
       },
     },
@@ -263,7 +271,7 @@ const tab: KarabinerMapping = {
 // ___  a   s   d   f   g   h   j   k   l  RET
 // ___  z   x   c   v   b   n   m   ,   .  ESC
 const baseLayer: KarabinerMapping[] = [
-  tab,
+  baseLayerTab,
   simple({ key: "q" }),
   simple({ key: "w" }),
   simple({ key: "e" }),
@@ -277,9 +285,13 @@ const baseLayer: KarabinerMapping[] = [
   duo({
     from: "open_bracket",
     to: "delete_or_backspace",
-    layer: "symbol-layer",
+    layer: "symbol-layer-left",
   }),
-  layer({ from: "caps_lock", name: "navigation-layer" }),
+  layer({
+    from: "caps_lock",
+    activate: "number-layer",
+    alsoDeactivate: ["function-layer"],
+  }),
   simple({ key: "a" }),
   simple({ key: "s" }),
   simple({ key: "d" }),
@@ -290,7 +302,7 @@ const baseLayer: KarabinerMapping[] = [
   simple({ key: "k" }),
   simple({ key: "l" }),
   duo({ from: "semicolon", to: "return", layer: "modifier-layer" }),
-  layer({ from: "left_shift", name: "upper-layer" }),
+  layer({ from: "left_shift", activate: "upper-layer" }),
   simple({ key: "z" }),
   simple({ key: "x" }),
   simple({ key: "c" }),
@@ -340,13 +352,53 @@ const upperLayer: KarabinerMapping[] = [
   simple({ key: "slash", toModifiers: ["left_shift"] }),
 ].map(ifLayer("upper-layer"));
 
-const symbolR: 
+const symbolLayerRightR: KarabinerMapping = {
+  type: "basic",
+  from: {
+    key_code: "r",
+    modifiers: {
+      optional: ["any"],
+    },
+  },
+  to: [
+    {
+      sticky_modifier: {
+        left_command: "on",
+      },
+    },
+    {
+      key_code: "tab",
+      modifiers: ["left_command"],
+    },
+  ],
+};
+
+const symbolLayerRightF: KarabinerMapping = {
+  type: "basic",
+  from: {
+    key_code: "f",
+    modifiers: {
+      optional: ["any"],
+    },
+  },
+  to: [
+    {
+      sticky_modifier: {
+        left_command: "on",
+      },
+    },
+    {
+      key_code: "tab",
+      modifiers: ["left_shift", "left_command"],
+    },
+  ],
+};
 
 // == Symbol layer ===============================
-// ___  "   <   >   '   %   ~   &   (   )   _  DEL
+// ___  "   <   >   '   %   ~   &   (   )   _  ___
 // ___  !   -   +   =   #   `   |   {   }   ?
-// ___  ^   /   *   \  EUR  @  EMO  [   ]   $
-const symbolLayer: KarabinerMapping[] = [
+// ___  ^   /   *   \  ___  @  EMO  [   ]   $
+const symbolLayerLeft: KarabinerMapping[] = [
   mapping({ from: "q", to: "quote", toModifiers: ["left_shift"] }),
   mapping({ from: "w", to: "comma", toModifiers: ["left_shift"] }),
   mapping({ from: "e", to: "period", toModifiers: ["left_shift"] }),
@@ -357,25 +409,29 @@ const symbolLayer: KarabinerMapping[] = [
     to: "grave_accent_and_tilde",
     toModifiers: ["right_shift"],
   }),
-  mapping({ from: "u", to: "7", toModifiers: ["left_shift"] }),
-  mapping({ from: "i", to: "9", toModifiers: ["left_shift"] }),
-  mapping({ from: "o", to: "0", toModifiers: ["left_shift"] }),
-  mapping({ from: "p", to: "hyphen", toModifiers: ["left_shift"] }),
   mapping({ from: "a", to: "1", toModifiers: ["right_shift"] }),
   mapping({ from: "s", to: "hyphen" }),
   mapping({ from: "d", to: "equal_sign", toModifiers: ["left_shift"] }),
   mapping({ from: "f", to: "equal_sign" }),
   mapping({ from: "g", to: "3", toModifiers: ["right_shift"] }),
+  mapping({ from: "z", to: "6", toModifiers: ["right_shift"] }),
+  mapping({ from: "x", to: "slash" }),
+  mapping({ from: "c", to: "equal_sign", toModifiers: ["left_shift"] }),
+  mapping({ from: "v", to: "backslash" }),
+].map(ifLayer("symbol-layer-left"));
+
+const symbolLayerRight: KarabinerMapping[] = [
+  symbolLayerRightR,
+  mapping({ from: "u", to: "7", toModifiers: ["left_shift"] }),
+  mapping({ from: "i", to: "9", toModifiers: ["left_shift"] }),
+  mapping({ from: "o", to: "0", toModifiers: ["left_shift"] }),
+  mapping({ from: "p", to: "hyphen", toModifiers: ["left_shift"] }),
+  symbolLayerRightF,
   mapping({ from: "h", to: "grave_accent_and_tilde" }),
   mapping({ from: "j", to: "backslash", toModifiers: ["left_shift"] }),
   mapping({ from: "k", to: "open_bracket", toModifiers: ["left_shift"] }),
   mapping({ from: "l", to: "close_bracket", toModifiers: ["left_shift"] }),
   mapping({ from: "semicolon", to: "slash", toModifiers: ["left_shift"] }),
-  mapping({ from: "z", to: "6", toModifiers: ["right_shift"] }),
-  mapping({ from: "x", to: "slash" }),
-  mapping({ from: "c", to: "equal_sign", toModifiers: ["left_shift"] }),
-  mapping({ from: "v", to: "backslash" }),
-  // mapping({ from: "b", to: "backslash" }),
   mapping({ from: "n", to: "2", toModifiers: ["right_shift"] }),
   mapping({
     from: "m",
@@ -385,6 +441,12 @@ const symbolLayer: KarabinerMapping[] = [
   mapping({ from: "comma", to: "open_bracket" }),
   mapping({ from: "period", to: "close_bracket" }),
   mapping({ from: "slash", to: "1", toModifiers: ["right_shift"] }),
-].map(ifLayer("upper-layer"));
+].map(ifLayer("symbol-layer-right"));
 
-console.log(JSON.stringify([...upperLayer, ...baseLayer], null, 2));
+console.log(
+  JSON.stringify(
+    [...upperLayer, ...symbolLayerLeft, ...symbolLayerRight, ...baseLayer],
+    null,
+    2
+  )
+);
