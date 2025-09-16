@@ -449,6 +449,15 @@ const symbolLayerRight: KarabinerMapping[] = [
   mapping({ from: "slash", to: "1", toModifiers: ["right_shift"] }),
 ].map(ifLayer("symbol-layer-right"));
 
+// ___ ___ ___ ___ ___ ___  7   8   9  ___ 
+// ___ ___ ___ ___ ___ ___  4   5   6  ___
+// ___ ___ ___ ___ ___  0   1   2   3  ___
+const numberLayer: KarabinerMapping[] = [
+  mapping({ from: "u", to: "7" }),
+  mapping({ from: "i", to: "8" }),
+  mapping({ from: "o", to: "9" }),
+].map(ifLayer("number-layer"));
+
 console.log(
   JSON.stringify({
     "title": "Werner's keymap",
