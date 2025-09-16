@@ -154,6 +154,40 @@ function layer(args: Layer): KarabinerMapping {
   };
 }
 
+type LayerOn = {
+  from: string;
+  fromModifiers?: KarabinerModifier[];
+  activate: LayerName;
+};
+
+function layerOn(args: LayerOn): KarabinerMapping {
+  const fromModifiers: Pick<KarabinerKeyFrom, "modifiers"> = {};
+
+  fromModifiers.modifiers = {
+    optional: ["any"],
+  };
+
+  if (args.fromModifiers !== undefined) {
+    fromModifiers.modifiers.required = args.fromModifiers;
+  }
+
+  return {
+    type: "basic",
+    from: {
+      key_code: args.from,
+      ...fromModifiers,
+    },
+    to: [
+      {
+        set_variable: {
+          name: args.activate,
+          value: TRUE,
+        },
+      },
+    ]
+  };
+}
+
 type SimplifiedMapping = {
   key: string;
   toModifiers?: KarabinerModifier[];
@@ -449,18 +483,47 @@ const symbolLayerRight: KarabinerMapping[] = [
   mapping({ from: "slash", to: "1", toModifiers: ["right_shift"] }),
 ].map(ifLayer("symbol-layer-right"));
 
-// ___ ___ ___ ___ ___ ___  7   8   9  ___ 
-// ___ ___ ___ ___ ___ ___  4   5   6  ___
-// ___ ___ ___ ___ ___  0   1   2   3  ___
+// == Number layer ===============================
+// ___ ___ ___ ___ ___ ___ ___  7   8   9  ___ ___
+// ___ ___ ___ ___ ___ ___ ___  4   5   6  ___
+// ___ ___ ___ ___ ___ ___  0   1   2   3  ___
 const numberLayer: KarabinerMapping[] = [
   mapping({ from: "u", to: "7" }),
   mapping({ from: "i", to: "8" }),
   mapping({ from: "o", to: "9" }),
+  mapping({ from: "j", to: "4" }),
+  mapping({ from: "k", to: "5" }),
+  mapping({ from: "l", to: "6" }),
+  mapping({ from: "n", to: "0" }),
+  mapping({ from: "m", to: "1" }),
+  mapping({ from: "comma", to: "2" }),
+  mapping({ from: "period", to: "3" }),
+  layerOn({ from: "spacebar", activate: "function-layer" })
 ].map(ifLayer("number-layer"));
+
+// == Function layer =============================
+// ___ ___ ___ ___ ___ ___ ___ F7  F8  F9  F12 ___
+// ___ ___ ___ ___ ___ ___ ___ F4  F5  F6  F11
+// ___ ___ ___ ___ ___ ___ ___ F1  F2  F3  F10
+const functionLayer: KarabinerMapping[] = [
+  mapping({ from: "u", to: "f7" }),
+  mapping({ from: "i", to: "f8" }),
+  mapping({ from: "o", to: "f9" }),
+  mapping({ from: "p", to: "f12" }),
+  mapping({ from: "j", to: "f4" }),
+  mapping({ from: "k", to: "f5" }),
+  mapping({ from: "l", to: "f6" }),
+  mapping({ from: "semicolon", to: "f11" }),
+  mapping({ from: "n", to: "f0" }),
+  mapping({ from: "m", to: "f1" }),
+  mapping({ from: "comma", to: "f2" }),
+  mapping({ from: "period", to: "f3" }),
+  mapping({ from: "slash", to: "f10" }),
+].map(ifLayer("function-layer"));
 
 console.log(
   JSON.stringify({
     "title": "Werner's keymap",
-    "manipulators": [...upperLayer, ...symbolLayerLeft, ...symbolLayerRight, ...baseLayer]
+    "manipulators": [...upperLayer, ...symbolLayerLeft, ...symbolLayerRight, ...numberLayer, ...functionLayer, ...baseLayer]
   }, null, 2)
 );
