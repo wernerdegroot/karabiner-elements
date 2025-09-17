@@ -3,6 +3,8 @@ type KarabinerModifier =
   | "right_shift"
   | "left_control"
   | "right_control"
+  | "left_option"
+  | "right_option"
   | "left_command"
   | "right_command"
   | "any";
@@ -516,35 +518,17 @@ const symbolLayerRight: KarabinerMapping[] = [
   mapping({ from: "slash", to: "1", toModifiers: ["right_shift"] }),
 ].map(ifLayer("symbol-layer-right"));
 
-// == Number layer ===============================
-// ___ ___ ___ ___ ___ ___ ___  7   8   9  ___ ___
-// ___ ___ ___ ___ ___ ___ ___  4   5   6  ___
-// ___ ___ ___ ___ ___ ___  0   1   2   3  ___
+// == Modifier layer =============================
+// ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
+// ___  ^   ⌥   ⌘  ___ ___ ___ ___ ___ ___ ___
+// ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
+//                        ⇧                   
 const modifierLayer: KarabinerMapping[] = [
-  {
-    "from": {
-      "key_code": "f",
-      "modifiers": {
-        "optional": [
-          "any"
-        ]
-      }
-    },
-    "to": [
-      {
-        "sticky_modifier": {
-          "left_command": "toggle"
-        }
-      },
-      {
-        "set_variable": {
-          "name": "sticky-command",
-          "value": 1
-        }
-      }
-    ],
-    "type": "basic"
-  }
+  layer({ from: "a", activate: "navigation-layer" }),
+  stickyModifier({ from: "s", modifier: "left_control" }), 
+  stickyModifier({ from: "d", modifier: "left_option" }), 
+  stickyModifier({ from: "f", modifier: "left_command" }), 
+  stickyModifier({ from: "spacebar", modifier: "left_shift" }), 
 ].map(ifLayer("modifier-layer"));
 
 // == Number layer ===============================
