@@ -1,4 +1,66 @@
-import { KarabinerMapping, KarabinerKeyTo, KarabinerKeyFrom, KarabinerModifier } from 'karabiner.ts'
+type KarabinerModifier =
+  | "left_shift"
+  | "right_shift"
+  | "left_control"
+  | "right_control"
+  | "left_command"
+  | "right_command"
+  | "any";
+
+type KarabinerKeyFrom = {
+  key_code: string;
+  modifiers?: {
+    optional?: KarabinerModifier[];
+    required?: KarabinerModifier[];
+  };
+};
+
+type KarabinerKeyTo = {
+  key_code: string;
+  modifiers?: KarabinerModifier[];
+};
+
+const TRUE: 1 = 1;
+const FALSE: 0 = 0;
+
+type KarabinerSetVariable = {
+  set_variable: {
+    name: string;
+    value: typeof TRUE | typeof FALSE;
+  };
+};
+
+type KarabinerStickyModifier = {
+  [M in KarabinerModifier]: {
+    sticky_modifier: {
+      [K in M]: "on" | "off" | "toggle";
+    };
+  };
+}[KarabinerModifier];
+
+type KarabinerTo =
+  | KarabinerKeyTo
+  | KarabinerSetVariable
+  | KarabinerStickyModifier;
+
+type KarabinerCondition = {
+  name: string;
+  type: "variable_if";
+  value: typeof TRUE | typeof FALSE;
+};
+
+type KarabinerMapping = {
+  type: "basic";
+  conditions?: KarabinerCondition[];
+  parameters?: {
+    "basic.to_if_held_down_threshold_milliseconds"?: number;
+  },
+  from: KarabinerKeyFrom;
+  to?: KarabinerTo[];
+  to_if_held_down?: KarabinerTo[];
+  to_if_alone?: KarabinerTo[];
+  to_after_key_up?: KarabinerTo[];
+};
 
 type Mapping = {
   from: string;
@@ -44,6 +106,39 @@ type LayerName =
   | "modifier-layer"
   | "number-layer"
   | "function-layer";
+
+type StickyModifier = {
+  from: string;
+  fromModifiers?: KarabinerModifier[];
+  modifier: KarabinerModifier
+}
+
+function stickyModifier(args: StickyModifier): KarabinerMapping {
+  const fromModifiers: Pick<KarabinerKeyFrom, "modifiers"> = {};
+
+  fromModifiers.modifiers = {
+    optional: ["any"],
+  };
+
+  if (args.fromModifiers !== undefined) {
+    fromModifiers.modifiers.required = args.fromModifiers;
+  }
+
+  return {
+    type: "basic",
+    from: {
+      key_code: args.from,
+      ...fromModifiers,
+    },
+    to: [
+      {
+        sticky_modifier: {
+          [args.modifier]: "toggle"
+        },
+      },
+    ]
+  };
+}
 
 type Layer = {
   from: string;
@@ -420,6 +515,37 @@ const symbolLayerRight: KarabinerMapping[] = [
   mapping({ from: "period", to: "close_bracket" }),
   mapping({ from: "slash", to: "1", toModifiers: ["right_shift"] }),
 ].map(ifLayer("symbol-layer-right"));
+
+// == Number layer ===============================
+// ___ ___ ___ ___ ___ ___ ___  7   8   9  ___ ___
+// ___ ___ ___ ___ ___ ___ ___  4   5   6  ___
+// ___ ___ ___ ___ ___ ___  0   1   2   3  ___
+const modifierLayer: KarabinerMapping[] = [
+  {
+    "from": {
+      "key_code": "f",
+      "modifiers": {
+        "optional": [
+          "any"
+        ]
+      }
+    },
+    "to": [
+      {
+        "sticky_modifier": {
+          "left_command": "toggle"
+        }
+      },
+      {
+        "set_variable": {
+          "name": "sticky-command",
+          "value": 1
+        }
+      }
+    ],
+    "type": "basic"
+  }
+].map(ifLayer("modifier-layer"));
 
 // == Number layer ===============================
 // ___ ___ ___ ___ ___ ___ ___  7   8   9  ___ ___
