@@ -642,6 +642,16 @@ const functionLayer: KarabinerMapping[] = [
 console.log(
   JSON.stringify({
     "title": "Werner's keymap",
-    "manipulators": [...upperLayer, ...symbolLayerLeft, ...symbolLayerRight, ...navigationLayer, ...visualModeLayer, ...modifierLayer, ...numberLayer, ...functionLayer, ...baseLayer]
+    "manipulators": [
+      ...upperLayer,
+      ...symbolLayerLeft,
+      ...symbolLayerRight,
+      ...navigationLayer,
+      ...visualModeLayer,
+      ...modifierLayer,
+      ...numberLayer,
+      ...functionLayer,
+      ...baseLayer
+    ]
   }, null, 2)
 );
