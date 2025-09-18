@@ -513,7 +513,7 @@ const symbolLayerRight: KarabinerMapping[] = [
   }),
   mapping({ from: "comma", to: "open_bracket" }),
   mapping({ from: "period", to: "close_bracket" }),
-  mapping({ from: "slash", to: "1", toModifiers: ["right_shift"] }),
+  mapping({ from: "slash", to: "4", toModifiers: ["right_shift"] }),
 ].map(ifLayer("symbol-layer-right"));
 
 const navigationLayerSpace: KarabinerMapping = {
