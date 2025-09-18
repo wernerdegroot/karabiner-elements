@@ -105,6 +105,7 @@ type LayerName =
   | "symbol-layer-left"
   | "symbol-layer-right"
   | "navigation-layer"
+  | "visual-mode-layer"
   | "modifier-layer"
   | "number-layer"
   | "function-layer";
@@ -285,22 +286,19 @@ function duo(args: DuoMapping): KarabinerMapping {
   };
 }
 
-function layerCondition(name: LayerName): Pick<KarabinerMapping, "conditions"> {
-  return {
-    conditions: [
-      {
+const ifLayer =
+  (name: LayerName, value: typeof TRUE | typeof FALSE = TRUE) =>
+    (mapping: KarabinerMapping): KarabinerMapping => {
+
+      const conditions: KarabinerCondition[] = mapping.conditions || [];
+
+      conditions.push({
         name,
         type: "variable_if",
-        value: TRUE,
-      },
-    ],
-  };
-}
+        value,
+      });
 
-const ifLayer =
-  (name: LayerName) =>
-    (mapping: KarabinerMapping): KarabinerMapping => {
-      return { ...layerCondition(name), ...mapping };
+      return { conditions, ...mapping };
     };
 
 const baseLayerTab: KarabinerMapping = {
@@ -518,17 +516,89 @@ const symbolLayerRight: KarabinerMapping[] = [
   mapping({ from: "slash", to: "1", toModifiers: ["right_shift"] }),
 ].map(ifLayer("symbol-layer-right"));
 
+const navigationLayerSpace: KarabinerMapping = {
+  "type": "basic",
+  "from": {
+    "key_code": "spacebar",
+    "modifiers": {
+      "optional": [
+        "any"
+      ]
+    }
+  },
+  "to": [
+    {
+      "key_code": "left_shift"
+    }
+  ],
+  "to_if_alone": [
+    {
+      "set_variable": {
+        "name": "visual-mode-layer",
+        "value": TRUE
+      }
+    }
+  ]
+};
+
+const visualModeLayerSpace: KarabinerMapping = {
+  "type": "basic",
+  "from": {
+    "key_code": "spacebar",
+    "modifiers": {
+      "optional": [
+        "any"
+      ]
+    }
+  },
+  "to": [
+    {
+      "set_variable": {
+        "name": "visual-mode-layer",
+        "value": FALSE
+      }
+    }
+  ]
+}
+
+// == Navigation layer ===========================
+// ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
+// ___  ^   ⌥   ⌘  ___ ___  ←   ↓   ↑   →  ___
+// ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
+//                        ⇧                   
+const navigationLayer: KarabinerMapping[] = [
+  mapping({ from: "s", to: "left_control" }),
+  mapping({ from: "d", to: "left_option" }),
+  mapping({ from: "f", to: "left_command" }),
+  mapping({ from: "h", to: "left_arrow" }),
+  mapping({ from: "j", to: "down_arrow" }),
+  mapping({ from: "k", to: "up_arrow" }),
+  mapping({ from: "l", to: "right_arrow" }),
+  navigationLayerSpace,
+].map(ifLayer("navigation-layer")).map(ifLayer("visual-mode-layer", FALSE));
+
+const visualModeLayer: KarabinerMapping[] = [
+  mapping({ from: "s", to: "left_control", toModifiers: ["left_shift"] }),
+  mapping({ from: "d", to: "left_option", toModifiers: ["left_shift"] }),
+  mapping({ from: "f", to: "left_command", toModifiers: ["left_shift"] }),
+  mapping({ from: "h", to: "left_arrow", toModifiers: ["left_shift"] }),
+  mapping({ from: "j", to: "down_arrow", toModifiers: ["left_shift"] }),
+  mapping({ from: "k", to: "up_arrow", toModifiers: ["left_shift"] }),
+  mapping({ from: "l", to: "right_arrow", toModifiers: ["left_shift"] }),
+  visualModeLayerSpace,
+].map(ifLayer("navigation-layer")).map(ifLayer("visual-mode-layer", FALSE));
+
 // == Modifier layer =============================
 // ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
 // ___  ^   ⌥   ⌘  ___ ___ ___ ___ ___ ___ ___
 // ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
 //                        ⇧                   
 const modifierLayer: KarabinerMapping[] = [
-  layer({ from: "a", activate: "navigation-layer" }),
-  stickyModifier({ from: "s", modifier: "left_control" }), 
-  stickyModifier({ from: "d", modifier: "left_option" }), 
-  stickyModifier({ from: "f", modifier: "left_command" }), 
-  stickyModifier({ from: "spacebar", modifier: "left_shift" }), 
+  layer({ from: "a", activate: "navigation-layer", alsoDeactivate: ["visual-mode-layer"] }),
+  stickyModifier({ from: "s", modifier: "left_control" }),
+  stickyModifier({ from: "d", modifier: "left_option" }),
+  stickyModifier({ from: "f", modifier: "left_command" }),
+  stickyModifier({ from: "spacebar", modifier: "left_shift" }),
 ].map(ifLayer("modifier-layer"));
 
 // == Number layer ===============================
@@ -572,6 +642,6 @@ const functionLayer: KarabinerMapping[] = [
 console.log(
   JSON.stringify({
     "title": "Werner's keymap",
-    "manipulators": [...upperLayer, ...symbolLayerLeft, ...symbolLayerRight, ...numberLayer, ...functionLayer, ...baseLayer]
+    "manipulators": [...upperLayer, ...symbolLayerLeft, ...symbolLayerRight, ...navigationLayer, ...visualModeLayer, ...modifierLayer, ...numberLayer, ...functionLayer, ...baseLayer]
   }, null, 2)
 );
