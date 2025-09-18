@@ -586,7 +586,7 @@ const visualModeLayer: KarabinerMapping[] = [
   mapping({ from: "k", to: "up_arrow", toModifiers: ["left_shift"] }),
   mapping({ from: "l", to: "right_arrow", toModifiers: ["left_shift"] }),
   visualModeLayerSpace,
-].map(ifLayer("navigation-layer")).map(ifLayer("visual-mode-layer", FALSE));
+].map(ifLayer("navigation-layer")).map(ifLayer("visual-mode-layer"));
 
 // == Modifier layer =============================
 // ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
