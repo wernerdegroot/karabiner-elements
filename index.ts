@@ -40,6 +40,14 @@ type KarabinerStickyModifier = {
   };
 }[KarabinerModifier];
 
+function karabinerStickyModifier(modifier: KarabinerModifier, action: "on" | "off" | "toggle"): KarabinerStickyModifier {
+  return {
+    sticky_modifier: {
+      [modifier]: action
+    }
+  } as KarabinerStickyModifier;
+}
+
 type KarabinerTo =
   | KarabinerKeyTo
   | KarabinerSetVariable
@@ -134,11 +142,7 @@ function stickyModifier(args: StickyModifier): KarabinerMapping {
       ...fromModifiers,
     },
     to: [
-      {
-        sticky_modifier: {
-          [args.modifier]: "toggle"
-        },
-      },
+      karabinerStickyModifier(args.modifier, "toggle")
     ]
   };
 }
