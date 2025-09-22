@@ -1,5 +1,9 @@
 # karabiner-elements
 
+## Keymap
+
+![](keyboard-layout.png)
+
 ## To do
 
 - Caps lock
