@@ -474,9 +474,19 @@ const baseLayer: KarabinerMapping[] = [
 // ___  A   S   D   F   G   H   J   K   L  ___
 // ___  Z   X   C   V   B   N   M   ;   :  ___
 const upperLayer: KarabinerMapping[] = [
+    none({from: "tab", fromModifiers: ["shift"]}),
     mapping({from: "open_bracket", fromModifiers: ["shift"], to: "delete_forward"}),
+    none({from: "close_bracket", fromModifiers: ["shift"]}),
+    none({from: "backslash", fromModifiers: ["shift"]}),
+    none({from: "caps_lock", fromModifiers: ["shift"]}),
+    none({from: "semicolon", fromModifiers: ["shift"]}),
+    none({from: "quote", fromModifiers: ["shift"]}),
+    none({from: "return_or_enter", fromModifiers: ["shift"]}),
+    none({from: "left_shift", fromModifiers: ["shift"]}),
     mapping({from: "comma", fromModifiers: ["shift"], to: "semicolon"}),
-    mapping({from: "period", fromModifiers: ["shift"], to: "semicolon", toModifiers: ["left_shift"]})
+    mapping({from: "period", fromModifiers: ["shift"], to: "semicolon", toModifiers: ["left_shift"]}),
+    none({from: "slash", fromModifiers: ["shift"]}),
+    none({from: "right_shift", fromModifiers: ["shift"]}),
 ];
 
 // == Symbol layer ===============================
