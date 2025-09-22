@@ -10,7 +10,10 @@ Open the Developer Tools. Press Cmd + Shift + I and type "screenshot". Select to
 
 ## To do
 
+- Go to nav-mode from number layer or shift layer
 - Caps lock
+- Cmd + Shift + Tab
+- Cmd (+ Shift) + `
 
 ## To try?
 
