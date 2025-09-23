@@ -286,7 +286,8 @@ function none(args: NoneMapping): KarabinerMapping {
 }
 
 type DuoMapping = Mapping & {
-    layer: LayerName;
+    activate: LayerName;
+    alsoDeactivate?: LayerName[];
 };
 
 function duo(args: DuoMapping): KarabinerMapping {
@@ -303,6 +304,17 @@ function duo(args: DuoMapping): KarabinerMapping {
     const toModifiers: Pick<KarabinerKeyTo, "modifiers"> =
         args.toModifiers == undefined ? {} : {modifiers: args.toModifiers};
 
+    const alsoDeactivate: LayerName[] = args.alsoDeactivate || [];
+    const deactivate: KarabinerSetVariable[] = [
+        args.activate,
+        ...alsoDeactivate,
+    ].map((name) => ({
+        set_variable: {
+            name,
+            value: FALSE,
+        },
+    }));
+
     return {
         type: "basic",
         from: {
@@ -318,19 +330,12 @@ function duo(args: DuoMapping): KarabinerMapping {
         to: [
             {
                 set_variable: {
-                    name: args.layer,
+                    name: args.activate,
                     value: TRUE,
                 },
             },
         ],
-        to_after_key_up: [
-            {
-                set_variable: {
-                    name: args.layer,
-                    value: FALSE,
-                },
-            },
-        ],
+        to_after_key_up: deactivate,
     };
 }
 
@@ -391,35 +396,13 @@ const baseLayerTab: KarabinerMapping[] = [
             }
         ]
     },
-    duo({from: "tab", to: "tab", layer: "symbol-layer-right"})
+    duo({from: "tab", to: "tab", activate: "symbol-layer-right"})
 ];
-
-const baseLayerSlash: KarabinerMapping = {
-    type: "basic",
-    from: {
-        key_code: "slash",
-        modifiers: {
-            optional: [
-                "any"
-            ]
-        }
-    },
-    to_if_alone: [
-        {
-            key_code: "escape"
-        }
-    ],
-    to: [
-        {
-            key_code: "right_shift"
-        }
-    ]
-};
 
 // == Base layer =================================
 // TAB  q   w   e   r   t   y   u   i   o   p  BSP
-// ___  a   s   d   f   g   h   j   k   l  RET
-// ___  z   x   c   v   b   n   m   ,   .  ESC
+// ESC  a   s   d   f   g   h   j   k   l  RET
+// ___  z   x   c   v   b   n   m   ,   .  ___
 const baseLayer: KarabinerMapping[] = [
     ...baseLayerTab,
     simple({key: "q"}),
@@ -435,12 +418,13 @@ const baseLayer: KarabinerMapping[] = [
     duo({
         from: "open_bracket",
         to: "delete_or_backspace",
-        layer: "symbol-layer-left",
+        activate: "symbol-layer-left",
     }),
     none({from: "close_bracket"}),
     none({from: "backslash"}),
-    layer({
+    duo({
         from: "caps_lock",
+        to: "escape",
         activate: "number-layer",
         alsoDeactivate: ["function-layer"],
     }),
@@ -453,7 +437,7 @@ const baseLayer: KarabinerMapping[] = [
     simple({key: "j"}),
     simple({key: "k"}),
     simple({key: "l"}),
-    duo({from: "semicolon", to: "return_or_enter", layer: "modifier-layer"}),
+    duo({from: "semicolon", to: "return_or_enter", activate: "modifier-layer"}),
     none({from: "quote"}),
     none({from: "return_or_enter"}),
     simple({key: "z"}),
@@ -465,34 +449,32 @@ const baseLayer: KarabinerMapping[] = [
     simple({key: "m"}),
     simple({key: "comma"}),
     simple({key: "period"}),
-    baseLayerSlash,
+    mapping({from: "slash", to: "right_shift"}),
     none({from: "right_shift"}),
 ];
 
 // == Upper layer ================================
 // ___  Q   W   E   R   T   Y   U   I   O   P  DEL
-// ___  A   S   D   F   G   H   J   K   L  ___
-// ___  Z   X   C   V   B   N   M   ;   :  ___
+// ___  A   S   D   F   G   H   J   K   L   : 
+// ___  Z   X   C   V   B   N   M   <   >   ? 
 const upperLayer: KarabinerMapping[] = [
     none({from: "tab", fromModifiers: ["shift"]}),
     mapping({from: "open_bracket", fromModifiers: ["shift"], to: "delete_forward"}),
     none({from: "close_bracket", fromModifiers: ["shift"]}),
     none({from: "backslash", fromModifiers: ["shift"]}),
     none({from: "caps_lock", fromModifiers: ["shift"]}),
-    none({from: "semicolon", fromModifiers: ["shift"]}),
+    mapping({from: "semicolon", fromModifiers: ["shift"], to: "semicolon", toModifiers: ["left_shift"]}),
     none({from: "quote", fromModifiers: ["shift"]}),
     none({from: "return_or_enter", fromModifiers: ["shift"]}),
     none({from: "left_shift", fromModifiers: ["shift"]}),
-    mapping({from: "comma", fromModifiers: ["shift"], to: "semicolon"}),
-    mapping({from: "period", fromModifiers: ["shift"], to: "semicolon", toModifiers: ["left_shift"]}),
-    none({from: "slash", fromModifiers: ["shift"]}),
+    mapping({from: "slash", fromModifiers: ["shift"], to: "slash", toModifiers: ["left_shift"]}),
     none({from: "right_shift", fromModifiers: ["shift"]}),
 ];
 
 // == Symbol layer ===============================
 // ___  '   <   >   "   %   ~   &   (   )   _  ___
-// ___  !   -   +   =   #   `   |   {   }   ?
-// ___  ^   /   *   \  ___  @  EMO  [   ]   $
+// ___  !   -   +   =   #   `   |   {   }  ___
+// ___  ^  ___  *   \  ___  @  EMO  [   ]   $
 const symbolLayerLeft: KarabinerMapping[] = [
     none({from: "tab"}),
     mapping({from: "q", to: "quote"}),
@@ -508,12 +490,13 @@ const symbolLayerLeft: KarabinerMapping[] = [
     mapping({from: "g", to: "3", toModifiers: ["right_shift"]}),
     none({from: "left_shift"}),
     mapping({from: "z", to: "6", toModifiers: ["right_shift"]}),
-    mapping({from: "x", to: "slash"}),
+    none({from: "x"}),
     mapping({from: "c", to: "8", toModifiers: ["left_shift"]}),
     mapping({from: "v", to: "backslash"}),
 ].map(ifLayer("symbol-layer-left"));
 
 const symbolLayerRight: KarabinerMapping[] = [
+    mapping({from: "e", to: "tab", toModifiers: ["left_command", "left_shift"]}),
     mapping({from: "r", to: "tab", toModifiers: ["left_command"]}),
     mapping({
         from: "y",
@@ -731,9 +714,9 @@ const modifierLayer: KarabinerMapping[] = [
 ].map(ifLayer("modifier-layer"));
 
 // == Number layer ===============================
-// ___ ___ ___ ___ ___ ___ ___  7   8   9  ___ ___
-// ___ ___ ___ ___ ___ ___ ___  4   5   6  ___
-// ___ ___ ___ ___ ___ ___  0   1   2   3  ___
+// ___ ___ ___ ___ ___ ___ ___  7   8   9   p  ___
+// ___ ___ ___ ___ ___ ___ ___  4   5   6   ;
+// ___ ___ ___ ___ ___ ___ ___  1   2   3   /
 const numberLayer: KarabinerMapping[] = [
     none({from: "tab"}),
     none({from: "q"}),
@@ -745,7 +728,7 @@ const numberLayer: KarabinerMapping[] = [
     mapping({from: "u", to: "7"}),
     mapping({from: "i", to: "8"}),
     mapping({from: "o", to: "9"}),
-    none({from: "p"}),
+    simple({key: "p"}),
     none({from: "open_bracket"}),
     none({from: "close_bracket"}),
     none({from: "backslash"}),
@@ -755,11 +738,11 @@ const numberLayer: KarabinerMapping[] = [
     none({from: "d"}),
     none({from: "f"}),
     none({from: "g"}),
-    none({from: "h"}),
+    layerOn({from: "h", activate: "function-layer"}),
     mapping({from: "j", to: "4"}),
     mapping({from: "k", to: "5"}),
     mapping({from: "l", to: "6"}),
-    none({from: "semicolon"}),
+    simple({key: "semicolon"}),
     none({from: "quote"}),
     none({from: "return_or_enter"}),
     none({from: "left_shift"}),
@@ -768,13 +751,13 @@ const numberLayer: KarabinerMapping[] = [
     none({from: "c"}),
     none({from: "v"}),
     none({from: "b"}),
-    mapping({from: "n", to: "0"}),
+    none({from: "n"}),
     mapping({from: "m", to: "1"}),
     mapping({from: "comma", to: "2"}),
     mapping({from: "period", to: "3"}),
-    none({from: "slash"}),
+    simple({key: "slash"}),
     none({from: "right_shift"}),
-    layerOn({from: "spacebar", activate: "function-layer"})
+    mapping({from: "spacebar", to: "0"})
 ].map(ifLayer("number-layer")).map(ifLayer("function-layer", FALSE));
 
 // == Function layer =============================

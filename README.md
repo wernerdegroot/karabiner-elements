@@ -1,22 +1,24 @@
 # karabiner-elements
 
-## Keymap
+## Layout
 
+There are two goals:
+
+- Restrict as much as possible to the 30 alpha keys plus the spacebar.
+- Stay as close to QWERTY as possible to not mess with muscle memory and allow easy transition to tranditional keyboards.
+ 
 [keyboard-layout.pdf](keyboard-layout.pdf)
+
+![keyboard-layout.png](keyboard-layout.png)
 
 ### How to obtain image
 
-Open the Developer Tools. Press Cmd + Shift + I and type "screenshot". Select to take a screenshot of the entire website.
+Resize window to 700px. Open the Developer Tools. Press Cmd + Shift + P and type "screenshot". Select to take a screenshot of the entire website.
 
 ## To do
 
-- Move zero back to the space bar (switch with N)
-- Move ESC back to left hand (probably Caps lock and X). This will free up the original place for slash (/) which might work well.
-- Move question mark and colon back to their original place (with shift).
-- Move semicolon back to its original place on the number layer
 - Move tab to shift + space
 - Caps lock
-- Cmd + Shift + Tab
 - Cmd (+ Shift) + `
 
 ## To try?
