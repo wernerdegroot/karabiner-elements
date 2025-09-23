@@ -2,7 +2,7 @@
 
 ## Keymap
 
-![](keyboard-layout.png)
+[keyboard-layout.pdf](keyboard-layout.pdf)
 
 ### How to obtain image
 
