@@ -8,7 +8,6 @@
         html {
             --color-background-primary: white;
             --color-text-primary: #000000;
-            --font-family-sans-serif: sans-serif;
             --key-size: 25px;
             --key-padding: 5px;
             --key-border: 1px;
@@ -17,6 +16,8 @@
             --key-outer-width: calc(var(--key-size) + var(--key-extra-width));
 
             --padding: 20px;
+
+            font-family: sans-serif;
         }
 
         html, body {
@@ -41,13 +42,12 @@
         }
 
         h3 {
-            font-family: var(--font-family-sans-serif), sans-serif;
             color: var(--color-text);
             margin: var(--padding) 0 0 0;
-        }
 
-        .combo {
-            font-size: 0.5em;
+            &:first-child {
+                margin: 0;
+            }
         }
 
         .key {
@@ -67,7 +67,6 @@
 
             cursor: default;
 
-            font-family: var(--font-family-sans-serif), sans-serif;
             font-size: 0.75em;
             line-height: var(--key-size);
 
@@ -78,10 +77,6 @@
             padding: 2px 5px;
             margin: var(--key-margin);
             position: relative;
-
-            &.multiline {
-                line-height: calc(var(--key-size) / 2);
-            }
 
             &.ghosted {
                 --key-color-background: #cccccc;
@@ -265,12 +260,14 @@
     </div>
 
     <h3 class="red">Symbol</h3>
+    Tab + R acts like Command + Tab.
+    Tab + E acts like Command + Shift + Tab.
     <div class="row">
         <div class="key w150u ghosted"></div>
         <div class="key">'</div>
         <div class="key">&lt;</div>
         <div class="key">&gt;</div>
-        <div class="key multiline">"<br/><span class="combo">⌘+Tab</span></div>
+        <div class="key">"</div>
         <div class="key">%</div>
         <div class="key">~</div>
         <div class="key">&</div>
