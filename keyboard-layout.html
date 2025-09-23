@@ -46,6 +46,10 @@
             margin: var(--padding) 0 0 0;
         }
 
+        .combo {
+            font-size: 0.5em;
+        }
+
         .key {
             --factor: 1;
             --key-color-background: var(--color-background-primary);
@@ -74,6 +78,10 @@
             padding: 2px 5px;
             margin: var(--key-margin);
             position: relative;
+
+            &.multiline {
+                line-height: calc(var(--key-size) / 2);
+            }
 
             &.ghosted {
                 --key-color-background: #cccccc;
@@ -142,119 +150,176 @@
 </head>
 <body>
 <div class="keymap">
-<h3>Base</h3>
-<div class="row">
-    <div class="key w150u red">Tab</div>
-    <div class="key">q</div>
-    <div class="key">w</div>
-    <div class="key">e</div>
-    <div class="key">r</div>
-    <div class="key">t</div>
-    <div class="key">y</div>
-    <div class="key">u</div>
-    <div class="key">i</div>
-    <div class="key">o</div>
-    <div class="key">p</div>
-    <div class="key red">⌫</div>
-    <div class="key ghosted"></div>
-    <div class="key w150u ghosted"></div>
-</div>
-<div class="row">
-    <div class="key w175u blue"></div>
-    <div class="key">a</div>
-    <div class="key">s</div>
-    <div class="key">d</div>
-    <div class="key">f</div>
-    <div class="key">g</div>
-    <div class="key">h</div>
-    <div class="key">j</div>
-    <div class="key">k</div>
-    <div class="key">l</div>
-    <div class="key green">↵</div>
-    <div class="key ghosted"></div>
-    <div class="key w225u ghosted"></div>
-</div>
-<div class="row">
-    <div class="key w225u purple"></div>
-    <div class="key">z</div>
-    <div class="key">x</div>
-    <div class="key">c</div>
-    <div class="key">v</div>
-    <div class="key">b</div>
-    <div class="key">n</div>
-    <div class="key">m</div>
-    <div class="key">,</div>
-    <div class="key">.</div>
-    <div class="key purple">Esc</div>
-    <div class="key w275u ghosted"></div>
-</div>
-<div class="row">
-    <div class="key w125u ghosted"></div>
-    <div class="key w125u ghosted"></div>
-    <div class="key w125u ghosted"></div>
-    <div class="key w625u"></div>
-    <div class="key w125u ghosted"></div>
-    <div class="key w125u ghosted"></div>
-    <div class="key w125u ghosted"></div>
-    <div class="key w125u ghosted"></div>
-</div>
+    <h3>Base</h3>
+    <div class="row">
+        <div class="key w150u red">Tab</div>
+        <div class="key">q</div>
+        <div class="key">w</div>
+        <div class="key">e</div>
+        <div class="key">r</div>
+        <div class="key">t</div>
+        <div class="key">y</div>
+        <div class="key">u</div>
+        <div class="key">i</div>
+        <div class="key">o</div>
+        <div class="key">p</div>
+        <div class="key red">⌫</div>
+        <div class="key ghosted"></div>
+        <div class="key w150u ghosted"></div>
+    </div>
+    <div class="row">
+        <div class="key w175u blue"></div>
+        <div class="key">a</div>
+        <div class="key">s</div>
+        <div class="key">d</div>
+        <div class="key">f</div>
+        <div class="key">g</div>
+        <div class="key">h</div>
+        <div class="key">j</div>
+        <div class="key">k</div>
+        <div class="key">l</div>
+        <div class="key green">↵</div>
+        <div class="key ghosted"></div>
+        <div class="key w225u ghosted"></div>
+    </div>
+    <div class="row">
+        <div class="key w225u purple"></div>
+        <div class="key">z</div>
+        <div class="key">x</div>
+        <div class="key">c</div>
+        <div class="key">v</div>
+        <div class="key">b</div>
+        <div class="key">n</div>
+        <div class="key">m</div>
+        <div class="key">,</div>
+        <div class="key">.</div>
+        <div class="key purple">Esc</div>
+        <div class="key w275u ghosted"></div>
+    </div>
+    <div class="row">
+        <div class="key w125u ghosted"></div>
+        <div class="key w125u ghosted"></div>
+        <div class="key w125u ghosted"></div>
+        <div class="key w625u"></div>
+        <div class="key w125u ghosted"></div>
+        <div class="key w125u ghosted"></div>
+        <div class="key w125u ghosted"></div>
+        <div class="key w125u ghosted"></div>
+    </div>
 
-<h3 class="purple">Upper</h3>
-<div class="row">
-    <div class="key w150u ghosted"></div>
-    <div class="key">Q</div>
-    <div class="key">W</div>
-    <div class="key">E</div>
-    <div class="key">R</div>
-    <div class="key">T</div>
-    <div class="key">Y</div>
-    <div class="key">U</div>
-    <div class="key">I</div>
-    <div class="key">O</div>
-    <div class="key">P</div>
-    <div class="key">⌦</div>
-    <div class="key ghosted"></div>
-    <div class="key w150u ghosted"></div>
-</div>
-<div class="row">
-    <div class="key w175u ghosted"></div>
-    <div class="key">A</div>
-    <div class="key">S</div>
-    <div class="key">D</div>
-    <div class="key">F</div>
-    <div class="key">G</div>
-    <div class="key">H</div>
-    <div class="key">J</div>
-    <div class="key">K</div>
-    <div class="key">L</div>
-    <div class="key ghosted"></div>
-    <div class="key ghosted"></div>
-    <div class="key w225u ghosted"></div>
-</div>
-<div class="row">
-    <div class="key w225u ghosted"></div>
-    <div class="key">Z</div>
-    <div class="key">X</div>
-    <div class="key">C</div>
-    <div class="key">V</div>
-    <div class="key">B</div>
-    <div class="key">N</div>
-    <div class="key">M</div>
-    <div class="key">;</div>
-    <div class="key">:</div>
-    <div class="key ghosted"></div>
-    <div class="key w275u ghosted"></div>
-</div>
-<div class="row">
-    <div class="key w125u ghosted"></div>
-    <div class="key w125u ghosted"></div>
-    <div class="key w125u ghosted"></div>
-    <div class="key w625u ghosted"></div>
-    <div class="key w125u ghosted"></div>
-    <div class="key w125u ghosted"></div>
-    <div class="key w125u ghosted"></div>
-    <div class="key w125u ghosted"></div>
-</div>
+    <h3 class="purple">Upper</h3>
+    <div class="row">
+        <div class="key w150u ghosted"></div>
+        <div class="key">Q</div>
+        <div class="key">W</div>
+        <div class="key">E</div>
+        <div class="key">R</div>
+        <div class="key">T</div>
+        <div class="key">Y</div>
+        <div class="key">U</div>
+        <div class="key">I</div>
+        <div class="key">O</div>
+        <div class="key">P</div>
+        <div class="key">⌦</div>
+        <div class="key ghosted"></div>
+        <div class="key w150u ghosted"></div>
+    </div>
+    <div class="row">
+        <div class="key w175u ghosted"></div>
+        <div class="key">A</div>
+        <div class="key">S</div>
+        <div class="key">D</div>
+        <div class="key">F</div>
+        <div class="key">G</div>
+        <div class="key">H</div>
+        <div class="key">J</div>
+        <div class="key">K</div>
+        <div class="key">L</div>
+        <div class="key ghosted"></div>
+        <div class="key ghosted"></div>
+        <div class="key w225u ghosted"></div>
+    </div>
+    <div class="row">
+        <div class="key w225u ghosted"></div>
+        <div class="key">Z</div>
+        <div class="key">X</div>
+        <div class="key">C</div>
+        <div class="key">V</div>
+        <div class="key">B</div>
+        <div class="key">N</div>
+        <div class="key">M</div>
+        <div class="key">;</div>
+        <div class="key">:</div>
+        <div class="key ghosted"></div>
+        <div class="key w275u ghosted"></div>
+    </div>
+    <div class="row">
+        <div class="key w125u ghosted"></div>
+        <div class="key w125u ghosted"></div>
+        <div class="key w125u ghosted"></div>
+        <div class="key w625u ghosted"></div>
+        <div class="key w125u ghosted"></div>
+        <div class="key w125u ghosted"></div>
+        <div class="key w125u ghosted"></div>
+        <div class="key w125u ghosted"></div>
+    </div>
+
+    <h3 class="red">Symbol</h3>
+    <div class="row">
+        <div class="key w150u ghosted"></div>
+        <div class="key">'</div>
+        <div class="key">&lt;</div>
+        <div class="key">&gt;</div>
+        <div class="key multiline">"<br/><span class="combo">⌘+Tab</span></div>
+        <div class="key">%</div>
+        <div class="key">~</div>
+        <div class="key">&</div>
+        <div class="key">(</div>
+        <div class="key">)</div>
+        <div class="key">_</div>
+        <div class="key ghosted"></div>
+        <div class="key ghosted"></div>
+        <div class="key w150u ghosted"></div>
+    </div>
+    <div class="row">
+        <div class="key w175u ghosted"></div>
+        <div class="key">!</div>
+        <div class="key">-</div>
+        <div class="key">+</div>
+        <div class="key">=</div>
+        <div class="key">#</div>
+        <div class="key">`</div>
+        <div class="key">|</div>
+        <div class="key">{</div>
+        <div class="key">}</div>
+        <div class="key">?</div>
+        <div class="key ghosted"></div>
+        <div class="key w225u ghosted"></div>
+    </div>
+    <div class="row">
+        <div class="key w225u ghosted"></div>
+        <div class="key">^</div>
+        <div class="key">/</div>
+        <div class="key">*</div>
+        <div class="key">\</div>
+        <div class="key ghosted"></div>
+        <div class="key">@</div>
+        <div class="key">EMO</div>
+        <div class="key">[</div>
+        <div class="key">]</div>
+        <div class="key">$</div>
+        <div class="key w275u ghosted"></div>
+    </div>
+    <div class="row">
+        <div class="key w125u ghosted"></div>
+        <div class="key w125u ghosted"></div>
+        <div class="key w125u ghosted"></div>
+        <div class="key w625u ghosted"></div>
+        <div class="key w125u ghosted"></div>
+        <div class="key w125u ghosted"></div>
+        <div class="key w125u ghosted"></div>
+        <div class="key w125u ghosted"></div>
+    </div>
 </div>
 </body>
 </html>
