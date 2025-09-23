@@ -17,6 +17,7 @@ Resize window to 700px. Open the Developer Tools. Press Cmd + Shift + P and type
 
 ## To do
 
+- Remove layer switching keys from the upper layer mapping (to vk_none)
 - Move tab to shift + space
 - Caps lock
 - Cmd (+ Shift) + `
