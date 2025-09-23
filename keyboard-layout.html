@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>blah</title>
+
+    <style>
+        html {
+            --color-background-primary: white;
+            --color-text-primary: #000000;
+            --font-family-sans-serif: sans-serif;
+            --key-size: 25px;
+            --key-padding: 5px;
+            --key-border: 1px;
+            --key-margin: 5px;
+            --key-extra-width: calc(2 * var(--key-padding) + 2 * var(--key-border) + 2 * var(--key-margin));
+            --key-outer-width: calc(var(--key-size) + var(--key-extra-width));
+
+            --padding: 20px;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            padding: var(--padding) 0;
+        }
+
+        .keymap {
+            max-width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .row {
+            display: flex;
+            flex-direction: row;
+            margin: 0 calc(var(--key-margin) * -1);
+        }
+
+        h3 {
+            font-family: var(--font-family-sans-serif), sans-serif;
+            color: var(--color-text);
+            margin: var(--padding) 0 0 0;
+        }
+
+        .key {
+            --factor: 1;
+            --key-color-background: var(--color-background-primary);
+            --color-text: var(--color-text-primary);
+            --key-color-border: rgb(from var(--color-text) r g b / 0.6);
+
+            background-color: var(--key-color-background);
+            color: var(--color-text);
+
+            border-radius: 0.25rem;
+
+            border: 1px solid var(--key-color-border);
+
+            box-shadow: 0 2px 0 1px var(--key-color-border);
+
+            cursor: default;
+
+            font-family: var(--font-family-sans-serif), sans-serif;
+            font-size: 0.75em;
+            line-height: var(--key-size);
+
+            width: calc(var(--key-outer-width) * var(--factor) - var(--key-extra-width));
+            height: var(--key-size);
+            display: block;
+            text-align: center;
+            padding: 2px 5px;
+            margin: var(--key-margin);
+            position: relative;
+
+            &.ghosted {
+                --key-color-background: #cccccc;
+                --key-color-border: #999999;
+
+                box-shadow: 0 0 0 0 var(--key-color-border);
+            }
+
+            &.w125u {
+                --factor: 1.25;
+            }
+
+            &.w150u {
+                --factor: 1.5;
+            }
+
+            &.w175u {
+                --factor: 1.75;
+            }
+
+            &.w200u {
+                --factor: 2;
+            }
+
+            &.w225u {
+                --factor: 2.25;
+            }
+
+            &.w250u {
+                --factor: 2.5;
+            }
+
+            &.w275u {
+                --factor: 2.75;
+            }
+
+            &.w625u {
+                --factor: 6.25;
+            }
+        }
+
+        .red {
+            --color-text: #980000;
+        }
+
+        .blue {
+            --color-text: #004b83;
+        }
+
+        .green {
+            --color-text: #0c8900;
+        }
+
+        .purple {
+            --color-text: #6a0dad;
+        }
+
+        .orange {
+            --color-text: #984500;
+        }
+
+        .yellow {
+            --color-text: #a77f03;
+        }
+    </style>
+</head>
+<body>
+<div class="keymap">
+<h3>Base</h3>
+<div class="row">
+    <div class="key w150u red">Tab</div>
+    <div class="key">q</div>
+    <div class="key">w</div>
+    <div class="key">e</div>
+    <div class="key">r</div>
+    <div class="key">t</div>
+    <div class="key">y</div>
+    <div class="key">u</div>
+    <div class="key">i</div>
+    <div class="key">o</div>
+    <div class="key">p</div>
+    <div class="key red">⌫</div>
+    <div class="key ghosted"></div>
+    <div class="key w150u ghosted"></div>
+</div>
+<div class="row">
+    <div class="key w175u blue"></div>
+    <div class="key">a</div>
+    <div class="key">s</div>
+    <div class="key">d</div>
+    <div class="key">f</div>
+    <div class="key">g</div>
+    <div class="key">h</div>
+    <div class="key">j</div>
+    <div class="key">k</div>
+    <div class="key">l</div>
+    <div class="key green">↵</div>
+    <div class="key ghosted"></div>
+    <div class="key w225u ghosted"></div>
+</div>
+<div class="row">
+    <div class="key w225u purple"></div>
+    <div class="key">z</div>
+    <div class="key">x</div>
+    <div class="key">c</div>
+    <div class="key">v</div>
+    <div class="key">b</div>
+    <div class="key">n</div>
+    <div class="key">m</div>
+    <div class="key">,</div>
+    <div class="key">.</div>
+    <div class="key purple">Esc</div>
+    <div class="key w275u ghosted"></div>
+</div>
+<div class="row">
+    <div class="key w125u ghosted"></div>
+    <div class="key w125u ghosted"></div>
+    <div class="key w125u ghosted"></div>
+    <div class="key w625u"></div>
+    <div class="key w125u ghosted"></div>
+    <div class="key w125u ghosted"></div>
+    <div class="key w125u ghosted"></div>
+    <div class="key w125u ghosted"></div>
+</div>
+
+<h3 class="purple">Upper</h3>
+<div class="row">
+    <div class="key w150u ghosted"></div>
+    <div class="key">Q</div>
+    <div class="key">W</div>
+    <div class="key">E</div>
+    <div class="key">R</div>
+    <div class="key">T</div>
+    <div class="key">Y</div>
+    <div class="key">U</div>
+    <div class="key">I</div>
+    <div class="key">O</div>
+    <div class="key">P</div>
+    <div class="key">⌦</div>
+    <div class="key ghosted"></div>
+    <div class="key w150u ghosted"></div>
+</div>
+<div class="row">
+    <div class="key w175u ghosted"></div>
+    <div class="key">A</div>
+    <div class="key">S</div>
+    <div class="key">D</div>
+    <div class="key">F</div>
+    <div class="key">G</div>
+    <div class="key">H</div>
+    <div class="key">J</div>
+    <div class="key">K</div>
+    <div class="key">L</div>
+    <div class="key ghosted"></div>
+    <div class="key ghosted"></div>
+    <div class="key w225u ghosted"></div>
+</div>
+<div class="row">
+    <div class="key w225u ghosted"></div>
+    <div class="key">Z</div>
+    <div class="key">X</div>
+    <div class="key">C</div>
+    <div class="key">V</div>
+    <div class="key">B</div>
+    <div class="key">N</div>
+    <div class="key">M</div>
+    <div class="key">;</div>
+    <div class="key">:</div>
+    <div class="key ghosted"></div>
+    <div class="key w275u ghosted"></div>
+</div>
+<div class="row">
+    <div class="key w125u ghosted"></div>
+    <div class="key w125u ghosted"></div>
+    <div class="key w125u ghosted"></div>
+    <div class="key w625u ghosted"></div>
+    <div class="key w125u ghosted"></div>
+    <div class="key w125u ghosted"></div>
+    <div class="key w125u ghosted"></div>
+    <div class="key w125u ghosted"></div>
+</div>
+</div>
+</body>
+</html>
