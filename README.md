@@ -66,6 +66,7 @@ Resize window to 700px. Open the Developer Tools. Press Cmd + Shift + P and type
 
 ## To do
 
+- Pack sticky modifiers into symbol layer?
 - Remove layer switching keys from the upper layer mapping (to vk_none)
 - Move tab to shift + space
 - Caps lock
