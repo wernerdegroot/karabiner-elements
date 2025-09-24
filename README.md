@@ -6,7 +6,7 @@ Goals:
 
 - Activate a layer with the opposite hand from the key being pressed (similar to Miryoku).
 - Use 5 columns × 3 rows for each hand, plus a single thumb key: the spacebar.
-- Stay as close to QWERTY as possible to not mess with muscle memory and allow easy transition to/from tranditional, row-staggerd QWERTY keyboards. Even though some keys such as <kbd>;</kbd> and <kbd>/</kbd> are dropped from the Base layer, they are available in their usual position on another layer. Other keys such as <kbd>Backspace</kbd> and <kbd>Enter</kbd> may have moved but they maintain their relative position to each other and the alpha keys.
+- Stay as close to QWERTY as possible to not mess with muscle memory and allow easy transition to/from tranditional, row-staggerd QWERTY keyboards. Even though some keys such as <kbd>;</kbd> and <kbd>/</kbd> are dropped from the Base layer, they are available in their usual position on an (easy to reach) layer. Other keys such as <kbd>Backspace</kbd> and <kbd>Enter</kbd> are available in the Base layer but have moved. However, they maintain their relative position to each other and the alpha keys.
 
 Note that the layout currently doesn't meet all of these goals. We currently need more than the desired 5 columns on each hand. On the left hand, we still need <kbd>Tab</kbd>, <kbd>Caps lock</kbd> and <kbd>Shift</kbd>. On the right hand we still need <kbd>[</kbd>. This is a work in progress.
  
