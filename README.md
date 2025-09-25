@@ -32,6 +32,8 @@ Emulate <kbd>⌘</kbd> + <kbd>Tab</kbd> and <kbd>⌘</kbd> + <kbd>⇧</kbd> + <k
 
 Note that the Symbol layer provides access to <kbd>&lt;</kbd> and <kbd>&gt;</kbd> which are already available on the Upper layer. This is to make typing arrows such as `->` and `=>` easier to type (this is pretty common when programming).
 
+Similarly, <kbd>/</kbd> is availble on both the Symbol layer and the Number layer. Although I mostly just use the one from the Number layer, adding <kbd>/</kbd> to the Symbol layer makes a nice complete block of mathematical operators.
+
 ### Sticky modifier layer
 
 As the name implies, all modifiers are sticky.
@@ -66,9 +68,8 @@ Resize window to 700px. Open the Developer Tools. Press Cmd + Shift + P and type
 
 ## To do
 
-- Pack sticky modifiers into symbol layer?
-- Remove layer switching keys from the upper layer mapping (to vk_none)
-- Move tab to shift + space
+- Experiment with Cmd + Tab without "simultaneous". It seems to work fine for Cmd + Shift + Tab...
+- Move tab to shift + space?
 - Caps lock
 - Cmd (+ Shift) + `
 
