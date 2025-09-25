@@ -68,8 +68,8 @@ Resize window to 700px. Open the Developer Tools. Press Cmd + Shift + P and type
 
 ## To do
 
+- Does home and end exist on visual mode layer?
 - Rename number layer (because it also contains keys missing from base)
-- Put Caps lock on modifier layer (on G)
 - Replace shift and caps lock and tab with symbols.
 - Experiment with Cmd + Tab without "simultaneous". It seems to work fine for Cmd + Shift + Tab...
 - Move tab to shift + space?
