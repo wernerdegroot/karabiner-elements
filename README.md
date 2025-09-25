@@ -50,11 +50,11 @@ You can hold <kbd>Space</kbd> as a modifier or hit it once to toggle <kbd>Shift<
 
 The Navigation layer includes <kbd>Home</kbd>, <kbd>End</kbd>, <kbd>Page up</kbd> and <kbd>Page down</kbd> one row above their corresponding arrows.
 
-### Number layer
+### Number (+ keys missing from Base) layer
 
 Has numbers arranged as a numpad.
 
-Also provides quick access to keys removed from the Base layer (e.g. <kbd>;</kbd> and <kbd>/</kbd>) in their original positions.
+Also provides quick access to keys missing from the Base layer (e.g. <kbd>;</kbd> and <kbd>/</kbd>) in their original positions.
 
 Hitting <kbd>H</kbd> once in this layer activates the Function layer.
 
@@ -68,8 +68,6 @@ Resize window to 700px. Open the Developer Tools. Press Cmd + Shift + P and type
 
 ## To do
 
-- Does home and end exist on visual mode layer?
-- Rename number layer (because it also contains keys missing from base)
 - Replace shift and caps lock and tab with symbols.
 - Experiment with Cmd + Tab without "simultaneous". It seems to work fine for Cmd + Shift + Tab...
 - Move tab to shift + space?
