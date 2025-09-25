@@ -8,25 +8,6 @@
     {
       "type": "basic",
       "from": {
-        "key_code": "tab",
-        "modifiers": {
-          "optional": [
-            "any"
-          ],
-          "mandatory": [
-            "shift"
-          ]
-        }
-      },
-      "to": [
-        {
-          "key_code": "vk_none"
-        }
-      ]
-    },
-    {
-      "type": "basic",
-      "from": {
         "key_code": "open_bracket",
         "modifiers": {
           "optional": [
@@ -66,25 +47,6 @@
       "type": "basic",
       "from": {
         "key_code": "backslash",
-        "modifiers": {
-          "optional": [
-            "any"
-          ],
-          "mandatory": [
-            "shift"
-          ]
-        }
-      },
-      "to": [
-        {
-          "key_code": "vk_none"
-        }
-      ]
-    },
-    {
-      "type": "basic",
-      "from": {
-        "key_code": "caps_lock",
         "modifiers": {
           "optional": [
             "any"
@@ -145,25 +107,6 @@
       "type": "basic",
       "from": {
         "key_code": "return_or_enter",
-        "modifiers": {
-          "optional": [
-            "any"
-          ],
-          "mandatory": [
-            "shift"
-          ]
-        }
-      },
-      "to": [
-        {
-          "key_code": "vk_none"
-        }
-      ]
-    },
-    {
-      "type": "basic",
-      "from": {
-        "key_code": "left_shift",
         "modifiers": {
           "optional": [
             "any"
@@ -1655,7 +1598,10 @@
       },
       "to": [
         {
-          "key_code": "vk_none"
+          "set_variable": {
+            "name": "navigation-layer",
+            "value": 0
+          }
         }
       ]
     },
@@ -2531,7 +2477,10 @@
       },
       "to": [
         {
-          "key_code": "vk_none"
+          "key_code": "home",
+          "modifiers": [
+            "left_shift"
+          ]
         }
       ]
     },
@@ -2559,7 +2508,10 @@
       },
       "to": [
         {
-          "key_code": "vk_none"
+          "key_code": "page_up",
+          "modifiers": [
+            "left_shift"
+          ]
         }
       ]
     },
@@ -2587,7 +2539,10 @@
       },
       "to": [
         {
-          "key_code": "vk_none"
+          "key_code": "page_down",
+          "modifiers": [
+            "left_shift"
+          ]
         }
       ]
     },
@@ -2615,7 +2570,10 @@
       },
       "to": [
         {
-          "key_code": "vk_none"
+          "key_code": "end",
+          "modifiers": [
+            "left_shift"
+          ]
         }
       ]
     },
@@ -2783,7 +2741,10 @@
       },
       "to": [
         {
-          "key_code": "vk_none"
+          "set_variable": {
+            "name": "navigation-layer",
+            "value": 0
+          }
         }
       ]
     },
@@ -3962,7 +3923,7 @@
       },
       "to": [
         {
-          "key_code": "vk_none"
+          "key_code": "caps_lock"
         }
       ]
     },

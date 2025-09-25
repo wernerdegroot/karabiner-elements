@@ -68,10 +68,13 @@ Resize window to 700px. Open the Developer Tools. Press Cmd + Shift + P and type
 
 ## To do
 
+- Problem: can't hit sticky shift + F6 because shift + semicolon is mapped to semicolon. This will need to be an if-alone or something.
+- Lock number layer by hitting 'N' once. We can do this with a simultaneous action on A and N when in the modifier layer. I actually prefer just hitting and releasing A but we can't do that with an from_if_alone because ; is also pressed. We have to do it with some sort of timeout. Or we can do it with a simultaneous action on ; and A in the base layer, but then we need stric_reverse release order because we must trigger it when we are sure we won't be holding it. We might need the other release order as well. But for some reason it also activates regardless of release order when a timeout of 1 second ellapses. We have to investigate.
+  layerOn({from: "n", activate: }),
 - Replace shift and caps lock and tab with symbols.
 - Experiment with Cmd + Tab without "simultaneous". It seems to work fine for Cmd + Shift + Tab...
 - Move tab to shift + space?
-- Caps lock
+- Ctrl (+ Shift) + Tab. Idea: mirror of Cmd + Tab with [ and U.
 - Cmd (+ Shift) + `
 
 ## To try?
