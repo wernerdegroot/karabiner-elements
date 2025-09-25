@@ -593,7 +593,7 @@ const navigationLayerAndVisualModeLayerA: KarabinerMapping = {
 
 // == Navigation layer ===========================
 // ___ ___ ___ ___ ___ ___ HOM PGU PGD END ___ ___
-// ___  ^   ⌥   ⌘   ⇪ ___  ←   ↓   ↑   →  ___
+// ___  ^   ⌥   ⌘  ___ ___  ←   ↓   ↑   →  ___
 // ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
 //                        ⇧                   
 const navigationLayer: KarabinerMapping[] = [
@@ -616,7 +616,7 @@ const navigationLayer: KarabinerMapping[] = [
     mapping({ from: "s", to: "left_control" }),
     mapping({ from: "d", to: "left_option" }),
     mapping({ from: "f", to: "left_command" }),
-    mapping({ from: "g", to: "caps_lock" }),
+    none({ from: "g" }),
     mapping({ from: "h", to: "left_arrow" }),
     mapping({ from: "j", to: "down_arrow" }),
     mapping({ from: "k", to: "up_arrow" }),
@@ -726,7 +726,7 @@ const modifierLayerA: KarabinerMapping = {
 
 // == Modifier layer =============================
 // ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
-// ___  ^   ⌥   ⌘  ___ ___ ___ ___ ___ ___ ___
+// ___  ^   ⌥   ⌘   ⇪  ___ ___ ___ ___ ___ ___
 // ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
 //                        ⇧                   
 const modifierLayer: KarabinerMapping[] = [
@@ -749,7 +749,7 @@ const modifierLayer: KarabinerMapping[] = [
     stickyModifier({ from: "s", modifier: "left_control" }),
     stickyModifier({ from: "d", modifier: "left_option" }),
     stickyModifier({ from: "f", modifier: "left_command" }),
-    none({ from: "g" }),
+    mapping({ from: "g", to: "caps_lock" }),
     none({ from: "h" }),
     none({ from: "j" }),
     none({ from: "k" }),
