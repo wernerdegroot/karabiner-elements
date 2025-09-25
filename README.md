@@ -36,9 +36,9 @@ Similarly, <kbd>/</kbd> is availble on both the Symbol layer and the Number laye
 
 ### Sticky modifier layer
 
-As the name implies, all modifiers are sticky.
+As the name implies, all modifiers are sticky. Also has <kbd>⇪</kbd> mapped to <kbd>G</kbd>.
 
-Holding <kbd>A</kbd> while in this layer activates the Navigation layer. Once active, you can release <kbd>;</kbd>.
+Holding <kbd>A</kbd> while in this layer activates the Navigation layer. Once active, you can release <kbd>;</kbd>. It is also possible to hit <kbd>A</kbd> once to toggle the Navigation layer. Return to the base layer by hitting <kbd>A</kbd> again.
 
 ### Navigation layer
 
