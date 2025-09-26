@@ -12,45 +12,51 @@ Note that the layout currently doesn't meet all of these goals. We currently nee
  
 [keyboard-layout.pdf](keyboard-layout.pdf)
 
-![keyboard-layout.png](keyboard-layout.png)
-
 ### Base layer
 
-Standard QWERTY alpha's, <kbd>,</kbd>, <kbd>.</kbd> and <kbd>Tab</kbd> are in their usual place. <kbd>Shift</kbd> on the left hand hasn't moved, but on the right it replaces <kbd>/</kbd>. Overall, this layer stays really close to a traditional, row-staggered QWERTY keyboard.
+![](base-layer.png)
+
+Overall, this layer stays really close to a traditional, row-staggered QWERTY keyboard.
 
 ### Upper layer
 
-Even closer to standard QWERTY. All keys are in their usual place.
+![](upper-layer.png)
 
-<kbd>Shift</kbd> + <kbd>Backspace</kbd> maps to <kbd>Del</kbd>. 
+Even closer to standard QWERTY. All keys are in their usual place.
 
 ### Symbol layer
 
+![](symbol-layer.png)
+
 Inspired by [Designing a Symbol Layer](https://getreuer.info/posts/keyboards/symbol-layer/index.html).
 
-Emulate <kbd>⌘</kbd> + <kbd>Tab</kbd> and <kbd>⌘</kbd> + <kbd>⇧</kbd> + <kbd>Tab</kbd> with <kbd>Tab</kbd> + <kbd>R</kbd> and <kbd>Tab</kbd> + <kbd>E</kbd> respectively.
-
-Note that the Symbol layer provides access to <kbd>&lt;</kbd> and <kbd>&gt;</kbd> which are already available on the Upper layer. This is to make typing arrows such as `->` and `=>` easier to type (this is pretty common when programming).
+Note that the Symbol layer provides access to <kbd>&lt;</kbd> and <kbd>&gt;</kbd> which are already available on the Upper layer. This is to make typing arrows such as `->` and `=>` easier to type (which is pretty common when programming).
 
 Similarly, <kbd>/</kbd> is availble on both the Symbol layer and the Number layer. Although I mostly just use the one from the Number layer, adding <kbd>/</kbd> to the Symbol layer makes a nice complete block of mathematical operators.
 
 ### Sticky modifier layer
 
+![](modifier-layer.png)
+
 As the name implies, all modifiers are sticky. Also has <kbd>⇪</kbd> mapped to <kbd>G</kbd>.
 
-Holding <kbd>A</kbd> while in this layer activates the Navigation layer. Once active, you can release <kbd>;</kbd>. It is also possible to hit <kbd>A</kbd> once to toggle the Navigation layer. Return to the base layer by hitting <kbd>A</kbd> again.
+Holding <kbd>A</kbd> while in this layer activates the Navigation layer. Once active, you can release <kbd>;</kbd>. It is also possible to hit <kbd>A</kbd> twice (within half a second) to toggle the Navigation layer. Return to the base layer by hitting <kbd>A</kbd> again.
 
 ### Navigation layer
 
+![](navigation-layer.png)
+
 Vim-style arrow keys.
 
-With modifiers <kbd>⌘</kbd>, <kbd>⌥</kbd>, <kbd>^</kbd> and <kbd>⇧</kbd> available on the left hand (while holding <kbd>A</kbd> to keep this layer active), you can perform common navigation combo's such as <kbd>⌘</kbd> + <kbd>←</kbd>.
+With modifiers <kbd>⌘</kbd>, <kbd>⌥</kbd>, <kbd>^</kbd> and <kbd>⇧</kbd> available on the left hand, you can perform common navigation combo's such as <kbd>⌘</kbd> + <kbd>←</kbd>.
 
 You can hold <kbd>Space</kbd> as a modifier or hit it once to toggle <kbd>Shift</kbd> on and off.
 
-The Navigation layer includes <kbd>Home</kbd>, <kbd>End</kbd>, <kbd>Page up</kbd> and <kbd>Page down</kbd> one row above their corresponding arrows.
+The Navigation layer includes <kbd>Home</kbd>, <kbd>End</kbd>, <kbd>Page up</kbd> and <kbd>Page down</kbd> one row above the corresponding arrows.
 
 ### Number (+ keys missing from Base) layer
+
+![](number-layer.png)
 
 Has numbers arranged as a numpad.
 
@@ -60,22 +66,20 @@ Hitting <kbd>H</kbd> once in this layer activates the Function layer.
 
 ### Function layer
 
-Mirrors the Number layer, and adds <kbd>F10</kbd>, <kbd>F11</kbd> and <kbd>F12</kbd> on the pinky column.
+![](function-layer.png)
 
 ### Other combinations
 
 There are a couple of same-hand combinations to enable switching between apps, windows and files:
 
-- Apps: <kbd>⇥</kbd> + <kbd>R</kbd> and <kdb>⇥</kbd> + <kbd>E</kbd>
-- Windows of the same app: <kbd>⇪</kbd> + <kbd>F</kbd> and <kdb>⇪</kbd> + <kbd>D</kbd>
-- Tabs: <kbd>[</kbd> + <kbd>U</kbd> and <kdb>[</kbd> + <kbd>I</kbd>
+- Apps: <kbd>⇥</kbd> + <kbd>R</kbd> and <kbd>⇥</kbd> + <kbd>E</kbd>
+- Windows of the same app: <kbd>⇪</kbd> + <kbd>F</kbd> and <kbd>⇪</kbd> + <kbd>D</kbd>
+- Tabs: <kbd>[</kbd> + <kbd>U</kbd> and <kbd>[</kbd> + <kbd>I</kbd>
 
 ### How to obtain image(s)
 
-Resize window to 700px. Open the Developer Tools. Press Cmd + Shift + P and type "screenshot". Select to take a screenshot of the entire website.
+Resize window to 700px. Open the Developer Tools. Press Cmd + Shift + P and type "screenshot". Select to take a screenshot of the entire website. Each layer occupies 425px (or is it half?) of height.
 
 ## To do
 
-- Lock number layer by hitting 'N' once. We can do this with a simultaneous action on A and N when in the modifier layer. I actually prefer just hitting and releasing A but we can't do that with an from_if_alone because ; is also pressed. We have to do it with some sort of timeout. Or we can do it with a simultaneous action on ; and A in the base layer, but then we need stric_reverse release order because we must trigger it when we are sure we won't be holding it. We might need the other release order as well. But for some reason it also activates regardless of release order when a timeout of 1 second ellapses. We have to investigate.
-  layerOn({from: "n", activate: }),
 - Replace shift and caps lock and tab with symbols.

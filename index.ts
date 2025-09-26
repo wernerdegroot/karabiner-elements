@@ -79,9 +79,14 @@ type KarabinerMapping = {
     conditions?: KarabinerCondition[];
     parameters?: {
         "basic.to_if_held_down_threshold_milliseconds"?: number;
+        "basic.to_delayed_action_delay_milliseconds"?: number
     },
     from: KarabinerFrom;
     to?: KarabinerTo[];
+    to_delayed_action?: {
+        to_if_invoked?: KarabinerTo[],
+        to_if_canceled?: KarabinerTo[]
+    }
     to_if_held_down?: KarabinerTo[];
     to_if_alone?: KarabinerTo[];
     to_after_key_up?: KarabinerTo[];
@@ -502,6 +507,12 @@ const navigationLayerAndVisualModeLayerA: KarabinerMapping = {
                 name: "navigation-layer",
                 value: FALSE
             }
+        },
+        {
+            set_variable: {
+                name: "visual-mode-layer",
+                value: FALSE
+            }
         }
     ]
 };
@@ -597,6 +608,96 @@ const visualModeLayer: KarabinerMapping[] = [
     visualModeLayerSpace,
 ].map(ifLayer("navigation-layer")).map(ifLayer("visual-mode-layer"));
 
+const modifierLayerA: KarabinerMapping[] = [
+    {
+        type: "basic",
+        from: {
+            key_code: "a",
+            modifiers: {
+                optional: [
+                    "any"
+                ]
+            }
+        },
+        to: [
+            {
+                set_variable: {
+                    name: "navigation-layer",
+                    value: TRUE
+                }
+            }
+        ],
+        conditions: [
+            {
+                type: "variable_if",
+                name: "navigation-layer-toggle",
+                value: TRUE
+            }
+        ]
+    },
+    {
+        type: "basic",
+        from: {
+            key_code: "a",
+            modifiers: {
+                "optional": [
+                    "any"
+                ]
+            }
+        },
+        to: [
+            {
+                set_variable: {
+                    name: "navigation-layer",
+                    value: TRUE
+                }
+            },
+            {
+                set_variable: {
+                    name: "navigation-layer-toggle",
+                    value: TRUE
+                }
+            }
+        ],
+        to_delayed_action: {
+            to_if_invoked: [
+                {
+                    set_variable: {
+                        name: "navigation-layer-toggle",
+                        value: FALSE
+                    }
+                }
+            ],
+            to_if_canceled: [
+                {
+                    set_variable: {
+                        name: "navigation-layer-toggle",
+                        value: FALSE
+                    }
+                }
+            ],
+        },
+        to_after_key_up: [
+            {
+                set_variable: {
+                    name: "navigation-layer",
+                    value: FALSE
+                }
+            },
+            {
+                set_variable: {
+                    name: "visual-mode-layer",
+                    value: FALSE
+                }
+            }
+        ],
+        parameters: {
+            "basic.to_delayed_action_delay_milliseconds": 500
+        }
+    }
+];
+
+
 // == Modifier layer =============================
 // ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
 // ___  ^   ⌥   ⌘   ⇪  ___ ___ ___ ___ ___ ___
@@ -618,7 +719,7 @@ const modifierLayer: KarabinerMapping[] = [
     none({from: "close_bracket"}),
     none({from: "backslash"}),
     none({from: "caps_lock"}),
-    layer({from: "a", activate: "navigation-layer", alsoDeactivate: ["visual-mode-layer"]}),
+    ...modifierLayerA,
     stickyModifier({from: "s", modifier: "left_control"}),
     stickyModifier({from: "d", modifier: "left_option"}),
     stickyModifier({from: "f", modifier: "left_command"}),
@@ -667,8 +768,8 @@ const numberLayer: KarabinerMapping[] = [
     none({from: "caps_lock"}),
     none({from: "a"}),
     none({from: "s"}),
-    mapping({ from: "d", to: "grave_accent_and_tilde", toModifiers: ["left_command", "left_shift"] }),
-    mapping({ from: "f", to: "grave_accent_and_tilde", toModifiers: ["left_command"] }),
+    mapping({from: "d", to: "grave_accent_and_tilde", toModifiers: ["left_command", "left_shift"]}),
+    mapping({from: "f", to: "grave_accent_and_tilde", toModifiers: ["left_command"]}),
     none({from: "g"}),
     layerOn({from: "h", activate: "function-layer"}),
     mapping({from: "j", to: "4"}),

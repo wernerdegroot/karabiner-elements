@@ -1655,6 +1655,12 @@
             "name": "navigation-layer",
             "value": 0
           }
+        },
+        {
+          "set_variable": {
+            "name": "visual-mode-layer",
+            "value": 0
+          }
         }
       ]
     },
@@ -2798,6 +2804,12 @@
             "name": "navigation-layer",
             "value": 0
           }
+        },
+        {
+          "set_variable": {
+            "name": "visual-mode-layer",
+            "value": 0
+          }
         }
       ]
     },
@@ -3845,6 +3857,11 @@
     {
       "conditions": [
         {
+          "type": "variable_if",
+          "name": "navigation-layer-toggle",
+          "value": 1
+        },
+        {
           "name": "modifier-layer",
           "type": "variable_if",
           "value": 1
@@ -3866,7 +3883,57 @@
             "value": 1
           }
         }
+      ]
+    },
+    {
+      "conditions": [
+        {
+          "name": "modifier-layer",
+          "type": "variable_if",
+          "value": 1
+        }
       ],
+      "type": "basic",
+      "from": {
+        "key_code": "a",
+        "modifiers": {
+          "optional": [
+            "any"
+          ]
+        }
+      },
+      "to": [
+        {
+          "set_variable": {
+            "name": "navigation-layer",
+            "value": 1
+          }
+        },
+        {
+          "set_variable": {
+            "name": "navigation-layer-toggle",
+            "value": 1
+          }
+        }
+      ],
+      "to_delayed_action": {
+        "to_if_invoked": [
+          {
+            "set_variable": {
+              "name": "navigation-layer-toggle",
+              "value": 0
+            }
+          }
+        ],
+        "to_if_canceled": [
+          {
+            "set_variable": {
+              "name": "navigation-layer-toggle",
+              "value": 0
+            }
+          }
+        ]
+      },
       "to_after_key_up": [
         {
           "set_variable": {
@@ -3880,7 +3947,10 @@
             "value": 0
           }
         }
-      ]
+      ],
+      "parameters": {
+        "basic.to_delayed_action_delay_milliseconds": 500
+      }
     },
     {
       "conditions": [

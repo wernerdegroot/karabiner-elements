@@ -85,6 +85,10 @@
                 box-shadow: 0 0 0 0 var(--key-color-border);
             }
 
+            &.multiline {
+                line-height: calc(var(--key-size) / 2);
+            }
+
             &.w125u {
                 --factor: 1.25;
             }
@@ -431,7 +435,6 @@
     </div>
 
     <h3 class="blue">Number (+ keys missing from Base)</h3>
-    Hit H once to activate Function layer.
     <div class="row">
         <div class="key w150u ghosted"></div>
         <div class="key ghosted"></div>
@@ -455,7 +458,7 @@
         <div class="key ghosted"></div>
         <div class="key ghosted"></div>
         <div class="key ghosted"></div>
-        <div class="key yellow"></div>
+        <div class="key yellow multiline">Hit once</div>
         <div class="key">4</div>
         <div class="key">5</div>
         <div class="key">6</div>
