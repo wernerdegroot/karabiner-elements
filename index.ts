@@ -354,57 +354,12 @@ const ifLayer =
             return {conditions, ...mapping};
         };
 
-const baseLayerTab: KarabinerMapping[] = [
-    {
-        type: "basic",
-        from: {
-            simultaneous: [
-                {key_code: "tab"},
-                {key_code: "r"}
-            ],
-            modifiers: {
-                optional: ["any"],
-            },
-            simultaneous_options: {
-                key_down_order: "strict",
-                key_up_order: "strict_inverse",
-                key_up_when: "all"
-            },
-        },
-        to: [
-            {
-                key_code: "left_command"
-            },
-            {
-                key_code: "tab",
-                modifiers: ["left_command"],
-                repeat: false
-            },
-            {
-                set_variable: {
-                    name: "symbol-layer-right",
-                    value: TRUE
-                }
-            }
-        ],
-        to_after_key_up: [
-            {
-                "set_variable": {
-                    "name": "symbol-layer-right",
-                    "value": FALSE
-                }
-            }
-        ]
-    },
-    duo({from: "tab", to: "tab", activate: "symbol-layer-right"})
-];
-
 // == Base layer =================================
 // TAB  q   w   e   r   t   y   u   i   o   p  BSP
 // ESC  a   s   d   f   g   h   j   k   l  RET
 // ___  z   x   c   v   b   n   m   ,   .  ___
 const baseLayer: KarabinerMapping[] = [
-    ...baseLayerTab,
+    duo({from: "tab", to: "tab", activate: "symbol-layer-right"}),
     simple({key: "q"}),
     simple({key: "w"}),
     simple({key: "e"}),
@@ -479,6 +434,8 @@ const symbolLayerLeft: KarabinerMapping[] = [
     mapping({from: "e", to: "period", toModifiers: ["left_shift"]}),
     mapping({from: "r", to: "quote", toModifiers: ["left_shift"]}),
     mapping({from: "t", to: "5", toModifiers: ["left_shift"]}),
+    mapping({from: "u", to: "tab", toModifiers: ["left_control"]}),
+    mapping({from: "i", to: "tab", toModifiers: ["left_control", "left_shift"]}),
     none({from: "caps_lock"}),
     mapping({from: "a", to: "1", toModifiers: ["right_shift"]}),
     mapping({from: "s", to: "hyphen"}),
@@ -752,8 +709,8 @@ const numberLayer: KarabinerMapping[] = [
     none({from: "caps_lock"}),
     none({from: "a"}),
     none({from: "s"}),
-    none({from: "d"}),
-    none({from: "f"}),
+    mapping({ from: "d", to: "grave_accent_and_tilde", toModifiers: ["left_command", "left_shift"] }),
+    mapping({ from: "f", to: "grave_accent_and_tilde", toModifiers: ["left_command"] }),
     none({from: "g"}),
     layerOn({from: "h", activate: "function-layer"}),
     mapping({from: "j", to: "4"}),
@@ -768,7 +725,7 @@ const numberLayer: KarabinerMapping[] = [
     none({from: "c"}),
     none({from: "v"}),
     none({from: "b"}),
-    none({ from: "n" }),
+    none({from: "n"}),
     mapping({from: "m", to: "1"}),
     mapping({from: "comma", to: "2"}),
     mapping({from: "period", to: "3"}),

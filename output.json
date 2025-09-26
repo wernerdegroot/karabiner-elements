@@ -323,6 +323,59 @@
       ],
       "type": "basic",
       "from": {
+        "key_code": "u",
+        "modifiers": {
+          "optional": [
+            "any"
+          ]
+        }
+      },
+      "to": [
+        {
+          "key_code": "tab",
+          "modifiers": [
+            "left_control"
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        {
+          "name": "symbol-layer-left",
+          "type": "variable_if",
+          "value": 1
+        }
+      ],
+      "type": "basic",
+      "from": {
+        "key_code": "i",
+        "modifiers": {
+          "optional": [
+            "any"
+          ]
+        }
+      },
+      "to": [
+        {
+          "key_code": "tab",
+          "modifiers": [
+            "left_control",
+            "left_shift"
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        {
+          "name": "symbol-layer-left",
+          "type": "variable_if",
+          "value": 1
+        }
+      ],
+      "type": "basic",
+      "from": {
         "key_code": "caps_lock",
         "modifiers": {
           "optional": [
@@ -4889,7 +4942,11 @@
       },
       "to": [
         {
-          "key_code": "vk_none"
+          "key_code": "grave_accent_and_tilde",
+          "modifiers": [
+            "left_command",
+            "left_shift"
+          ]
         }
       ]
     },
@@ -4917,7 +4974,10 @@
       },
       "to": [
         {
-          "key_code": "vk_none"
+          "key_code": "grave_accent_and_tilde",
+          "modifiers": [
+            "left_command"
+          ]
         }
       ]
     },
@@ -6601,55 +6661,6 @@
       "to": [
         {
           "key_code": "vk_none"
-        }
-      ]
-    },
-    {
-      "type": "basic",
-      "from": {
-        "simultaneous": [
-          {
-            "key_code": "tab"
-          },
-          {
-            "key_code": "r"
-          }
-        ],
-        "modifiers": {
-          "optional": [
-            "any"
-          ]
-        },
-        "simultaneous_options": {
-          "key_down_order": "strict",
-          "key_up_order": "strict_inverse",
-          "key_up_when": "all"
-        }
-      },
-      "to": [
-        {
-          "key_code": "left_command"
-        },
-        {
-          "key_code": "tab",
-          "modifiers": [
-            "left_command"
-          ],
-          "repeat": false
-        },
-        {
-          "set_variable": {
-            "name": "symbol-layer-right",
-            "value": 1
-          }
-        }
-      ],
-      "to_after_key_up": [
-        {
-          "set_variable": {
-            "name": "symbol-layer-right",
-            "value": 0
-          }
         }
       ]
     },
