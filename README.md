@@ -46,19 +46,13 @@ Holding <kbd>A</kbd> while in this layer activates the Navigation layer. Once ac
 
 ![](navigation-layer.png)
 
-Vim-style arrow keys.
-
 With modifiers <kbd>⌘</kbd>, <kbd>⌥</kbd>, <kbd>^</kbd> and <kbd>⇧</kbd> available on the left hand, you can perform common navigation combo's such as <kbd>⌘</kbd> + <kbd>←</kbd>.
 
 You can hold <kbd>Space</kbd> as a modifier or hit it once to toggle <kbd>Shift</kbd> on and off.
 
-The Navigation layer includes <kbd>Home</kbd>, <kbd>End</kbd>, <kbd>Page up</kbd> and <kbd>Page down</kbd> one row above the corresponding arrows.
-
 ### Number (+ keys missing from Base) layer
 
 ![](number-layer.png)
-
-Has numbers arranged as a numpad.
 
 Also provides quick access to keys missing from the Base layer (e.g. <kbd>;</kbd> and <kbd>/</kbd>) in their original positions.
 
