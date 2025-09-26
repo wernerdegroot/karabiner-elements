@@ -95,16 +95,6 @@ type Mapping = {
 };
 
 function mapping(args: Mapping): KarabinerMapping {
-    const fromModifiers: Pick<KarabinerFrom, "modifiers"> = {};
-
-    fromModifiers.modifiers = {
-        optional: ["any"],
-    };
-
-    if (args.fromModifiers !== undefined) {
-        fromModifiers.modifiers.mandatory = args.fromModifiers;
-    }
-
     const toModifiers: Pick<KarabinerKeyTo, "modifiers"> =
         args.toModifiers == undefined ? {} : {modifiers: args.toModifiers};
 
@@ -112,7 +102,7 @@ function mapping(args: Mapping): KarabinerMapping {
         type: "basic",
         from: {
             key_code: args.from,
-            ...fromModifiers,
+            ...fromModifiers(args),
         },
         to: [
             {
@@ -139,21 +129,11 @@ type StickyModifier = {
 }
 
 function stickyModifier(args: StickyModifier): KarabinerMapping {
-    const fromModifiers: Pick<KarabinerFrom, "modifiers"> = {};
-
-    fromModifiers.modifiers = {
-        optional: ["any"],
-    };
-
-    if (args.fromModifiers !== undefined) {
-        fromModifiers.modifiers.mandatory = args.fromModifiers;
-    }
-
     return {
         type: "basic",
         from: {
             key_code: args.from,
-            ...fromModifiers,
+            ...fromModifiers(args),
         },
         to: [
             karabinerStickyModifier(args.modifier, "toggle")
@@ -169,16 +149,6 @@ type Layer = {
 };
 
 function layer(args: Layer): KarabinerMapping {
-    const fromModifiers: Pick<KarabinerFrom, "modifiers"> = {};
-
-    fromModifiers.modifiers = {
-        optional: ["any"],
-    };
-
-    if (args.fromModifiers !== undefined) {
-        fromModifiers.modifiers.mandatory = args.fromModifiers;
-    }
-
     const alsoDeactivate: LayerName[] = args.alsoDeactivate || [];
     const deactivate: KarabinerSetVariable[] = [
         args.activate,
@@ -194,7 +164,7 @@ function layer(args: Layer): KarabinerMapping {
         type: "basic",
         from: {
             key_code: args.from,
-            ...fromModifiers,
+            ...fromModifiers(args),
         },
         to: [
             {
@@ -215,21 +185,11 @@ type LayerOn = {
 };
 
 function layerOn(args: LayerOn): KarabinerMapping {
-    const fromModifiers: Pick<KarabinerFrom, "modifiers"> = {};
-
-    fromModifiers.modifiers = {
-        optional: ["any"],
-    };
-
-    if (args.fromModifiers !== undefined) {
-        fromModifiers.modifiers.mandatory = args.fromModifiers;
-    }
-
     return {
         type: "basic",
         from: {
             key_code: args.from,
-            ...fromModifiers,
+            ...fromModifiers(args),
         },
         to: [
             {
@@ -261,21 +221,11 @@ type NoneMapping = {
 };
 
 function none(args: NoneMapping): KarabinerMapping {
-    const fromModifiers: Pick<KarabinerFrom, "modifiers"> = {};
-
-    fromModifiers.modifiers = {
-        optional: ["any"],
-    };
-
-    if (args.fromModifiers !== undefined) {
-        fromModifiers.modifiers.mandatory = args.fromModifiers;
-    }
-
     return {
         type: "basic",
         from: {
             key_code: args.from,
-            ...fromModifiers,
+            ...fromModifiers(args),
         },
         to: [
             {
@@ -291,16 +241,6 @@ type DuoMapping = Mapping & {
 };
 
 function duo(args: DuoMapping): KarabinerMapping {
-    const fromModifiers: Pick<KarabinerFrom, "modifiers"> = {};
-
-    fromModifiers.modifiers = {
-        optional: ["any"],
-    };
-
-    if (args.fromModifiers !== undefined) {
-        fromModifiers.modifiers.mandatory = args.fromModifiers;
-    }
-
     const toModifiers: Pick<KarabinerKeyTo, "modifiers"> =
         args.toModifiers == undefined ? {} : {modifiers: args.toModifiers};
 
@@ -319,7 +259,7 @@ function duo(args: DuoMapping): KarabinerMapping {
         type: "basic",
         from: {
             key_code: args.from,
-            ...fromModifiers,
+            ...fromModifiers(args),
         },
         to_if_alone: [
             {
@@ -337,6 +277,24 @@ function duo(args: DuoMapping): KarabinerMapping {
         ],
         to_after_key_up: deactivate,
     };
+}
+
+type FromModifiers = {
+    fromModifiers?: KarabinerModifier[]
+};
+
+function fromModifiers(args: FromModifiers): Pick<KarabinerFrom, "modifiers"> {
+    const fromModifiers: Pick<KarabinerFrom, "modifiers"> = {};
+
+    fromModifiers.modifiers = {
+        optional: ["any"],
+    };
+
+    if (args.fromModifiers !== undefined) {
+        fromModifiers.modifiers.mandatory = args.fromModifiers;
+    }
+
+    return fromModifiers;
 }
 
 const ifLayer =
