@@ -7262,9 +7262,25 @@
           ]
         }
       },
+      "to_if_alone": [
+        {
+          "key_code": "return_or_enter"
+        }
+      ],
       "to": [
         {
-          "key_code": "vk_none"
+          "set_variable": {
+            "name": "modifier-layer",
+            "value": 1
+          }
+        }
+      ],
+      "to_after_key_up": [
+        {
+          "set_variable": {
+            "name": "modifier-layer",
+            "value": 0
+          }
         }
       ]
     },

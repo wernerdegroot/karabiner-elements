@@ -362,7 +362,7 @@ const baseLayer: KarabinerMapping[] = [
     simple({key: "l"}),
     duo({from: "semicolon", to: "return_or_enter", activate: "modifier-layer"}),
     none({from: "quote"}),
-    none({from: "return_or_enter"}),
+    duo({from: "return_or_enter", to: "return_or_enter", activate: "modifier-layer"}),
     simple({key: "z"}),
     simple({key: "x"}),
     simple({key: "c"}),
