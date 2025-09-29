@@ -338,6 +338,11 @@ const baseLayer: KarabinerMapping[] = [
         to: "delete_or_backspace",
         activate: "symbol-layer-left",
     }),
+    duo({
+        from: "delete_or_backspace",
+        to: "delete_or_backspace",
+        activate: "symbol-layer-left",
+    }),
     none({from: "close_bracket"}),
     none({from: "backslash"}),
     duo({
