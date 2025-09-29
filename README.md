@@ -76,4 +76,5 @@ Resize window to 700px. Open the Developer Tools. Press Cmd + Shift + P and type
 
 ## To do
 
+- Shift + Enter doesn't work (maps to : ). Intorduce variable upper-layer and only map to : if that is active (sticky shift + enter should still work) 
 - Replace shift and caps lock and tab with symbols.
