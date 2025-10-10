@@ -467,10 +467,11 @@ const baseLayer: KarabinerMapping[] = [
 ];
 
 // == Upper layer ================================
-// ___  Q   W   E   R   T   Y   U   I   O   P  DEL
+// TAB  Q   W   E   R   T   Y   U   I   O   P  DEL
 // ___  A   S   D   F   G   H   J   K   L   :
 // ___  Z   X   C   V   B   N   M   <   >   ?
 const upperLayer: KarabinerMapping[] = [
+    simple({key: "tab", toModifiers: ["right_shift"]}),
     simple({key: "q", toModifiers: ["right_shift"]}),
     simple({key: "w", toModifiers: ["right_shift"]}),
     simple({key: "e", toModifiers: ["right_shift"]}),

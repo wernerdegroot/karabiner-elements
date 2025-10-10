@@ -76,7 +76,10 @@ Resize window to 700px. Open the Developer Tools. Press Cmd + Shift + P and type
 
 ## To do
 
+- Add to docs:
+    - double tap A from sticky modifier layer locks navigation layer
+    - double tap shift for regular shift (not upper layer)
+    - Shift + Tab on upper layer
+- Introduce "Alt" layer with keys missing from base (one shot shift seems like a good fit)
 - https://chatgpt.com/share/68e6b3ab-745c-8012-9760-11e10ea0ea2b
-- Support Shift + Tab on the navigation layer
-- Shift + Enter doesn't work (maps to : ). Intorduce variable upper-layer and only map to : if that is active (sticky shift + enter should still work). Why didn't a native upper layer (without shift) work?
 - Replace shift and caps lock and tab with symbols.
