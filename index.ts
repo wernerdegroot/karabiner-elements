@@ -108,7 +108,7 @@ type Mapping = {
 
 function mapping(args: Mapping): KarabinerMapping {
     const toModifiers: Pick<KarabinerKeyTo, "modifiers"> =
-        args.toModifiers == undefined ? {} : {modifiers: args.toModifiers};
+        args.toModifiers == undefined ? {} : { modifiers: args.toModifiers };
 
     return {
         type: "basic",
@@ -215,6 +215,31 @@ function layerOn(args: LayerOn): KarabinerMapping {
     };
 }
 
+type LayerOff = {
+    from: string;
+    fromModifiers?: KarabinerModifier[];
+    deactivate: LayerName | LayerName[];
+};
+
+function layerOff(args: LayerOff): KarabinerMapping {
+
+    const toDeactivate = Array.isArray(args.deactivate) ? args.deactivate : [args.deactivate];
+
+    return {
+        type: "basic",
+        from: {
+            key_code: args.from,
+            ...fromModifiers(args),
+        },
+        to: toDeactivate.map(name => ({
+            set_variable: {
+                name,
+                value: FALSE,
+            },
+        }))
+    };
+}
+
 type SimplifiedMapping = {
     key: string;
     toModifiers?: KarabinerModifier[];
@@ -255,7 +280,7 @@ type DuoMapping = Mapping & {
 
 function duo(args: DuoMapping): KarabinerMapping {
     const toModifiers: Pick<KarabinerKeyTo, "modifiers"> =
-        args.toModifiers == undefined ? {} : {modifiers: args.toModifiers};
+        args.toModifiers == undefined ? {} : { modifiers: args.toModifiers };
 
     const alsoDeactivate: LayerName[] = args.alsoDeactivate || [];
     const deactivate: KarabinerSetVariable[] = [
@@ -322,106 +347,50 @@ const ifLayer =
                 value,
             });
 
-            return {conditions, ...mapping};
+            return { conditions, ...mapping };
         };
 
-const baseLayerLeftShift: KarabinerMapping[] = [
-    {
-        type: "basic",
-        from: {
-            key_code: "left_shift",
-            modifiers: {
-                optional: [
-                    "any"
-                ]
-            }
-        },
-        to: [
-            {
-                key_code: "left_shift"
-            }
-        ],
-        conditions: [
-            {
-                type: "variable_if",
-                name: "left-shift-alone",
+const baseLayerLeftShift: KarabinerMapping = {
+    type: "basic",
+    from: {
+        key_code: "left_shift",
+        modifiers: {
+            "optional": [
+                "any"
+            ]
+        }
+    },
+    to: [
+        {
+            key_code: "left_shift"
+        }
+    ],
+    to_if_alone: [
+        {
+            set_variable: {
+                name: "navigation-layer",
                 value: TRUE
             }
-        ]
-    },
-    {
-        type: "basic",
-        from: {
-            key_code: "left_shift",
-            modifiers: {
-                "optional": [
-                    "any"
-                ]
-            }
-        },
-        to: [
-            {
-                set_variable: {
-                    name: "upper-layer",
-                    value: TRUE
-                }
-            },
-            {
-                set_variable: {
-                    name: "left-shift-alone",
-                    value: TRUE
-                }
-            }
-        ],
-        to_delayed_action: {
-            to_if_invoked: [
-                {
-                    set_variable: {
-                        name: "left-shift-alone",
-                        value: FALSE
-                    }
-                }
-            ],
-            to_if_canceled: [
-                {
-                    set_variable: {
-                        name: "left-shift-alone",
-                        value: FALSE
-                    }
-                }
-            ],
-        },
-        to_after_key_up: [
-            {
-                set_variable: {
-                    name: "upper-layer",
-                    value: FALSE
-                }
-            }
-
-        ],
-        parameters: {
-            "basic.to_delayed_action_delay_milliseconds": 500
         }
-    }
-];
+    ]
+};
 
 // == Base layer =================================
 // TAB  q   w   e   r   t   y   u   i   o   p  BSP
 // ESC  a   s   d   f   g   h   j   k   l  RET
 // ___  z   x   c   v   b   n   m   ,   .  ___
 const baseLayer: KarabinerMapping[] = [
-    duo({from: "tab", to: "tab", activate: "symbol-layer-right"}),
-    simple({key: "q"}),
-    simple({key: "w"}),
-    simple({key: "e"}),
-    simple({key: "r"}),
-    simple({key: "t"}),
-    simple({key: "y"}),
-    simple({key: "u"}),
-    simple({key: "i"}),
-    simple({key: "o"}),
-    simple({key: "p"}),
+    duo({ from: "tab", to: "tab", activate: "symbol-layer-right" }),
+    simple({ key: "q" }),
+    simple({ key: "w" }),
+    simple({ key: "e" }),
+    simple({ key: "r" }),
+    simple({ key: "t" }),
+    simple({ key: "y" }),
+    simple({ key: "u" }),
+    simple({ key: "i" }),
+    simple({ key: "o" }),
+    simple({ key: "p" }),
     duo({
         from: "open_bracket",
         to: "delete_or_backspace",
@@ -432,189 +401,144 @@ const baseLayer: KarabinerMapping[] = [
         to: "delete_or_backspace",
         activate: "symbol-layer-left",
     }),
-    none({from: "close_bracket"}),
-    none({from: "backslash"}),
+    none({ from: "close_bracket" }),
+    none({ from: "backslash" }),
     duo({
         from: "caps_lock",
         to: "escape",
         activate: "number-layer",
         alsoDeactivate: ["function-layer"],
     }),
-    simple({key: "a"}),
-    simple({key: "s"}),
-    simple({key: "d"}),
-    simple({key: "f"}),
-    simple({key: "g"}),
-    simple({key: "h"}),
-    simple({key: "j"}),
-    simple({key: "k"}),
-    simple({key: "l"}),
-    duo({from: "semicolon", to: "return_or_enter", activate: "modifier-layer"}),
-    none({from: "quote"}),
-    duo({from: "return_or_enter", to: "return_or_enter", activate: "modifier-layer"}),
-    ...baseLayerLeftShift,
-    simple({key: "z"}),
-    simple({key: "x"}),
-    simple({key: "c"}),
-    simple({key: "v"}),
-    simple({key: "b"}),
-    simple({key: "n"}),
-    simple({key: "m"}),
-    simple({key: "comma"}),
-    simple({key: "period"}),
-    layer({from: "slash", activate: "upper-layer"}),
-    none({from: "right_shift"}),
+    simple({ key: "a" }),
+    simple({ key: "s" }),
+    simple({ key: "d" }),
+    simple({ key: "f" }),
+    simple({ key: "g" }),
+    simple({ key: "h" }),
+    simple({ key: "j" }),
+    simple({ key: "k" }),
+    simple({ key: "l" }),
+    duo({ from: "semicolon", to: "return_or_enter", activate: "modifier-layer" }),
+    none({ from: "quote" }),
+    duo({ from: "return_or_enter", to: "return_or_enter", activate: "modifier-layer" }),
+    baseLayerLeftShift,
+    simple({ key: "z" }),
+    simple({ key: "x" }),
+    simple({ key: "c" }),
+    simple({ key: "v" }),
+    simple({ key: "b" }),
+    simple({ key: "n" }),
+    simple({ key: "m" }),
+    simple({ key: "comma" }),
+    simple({ key: "period" }),
+    mapping({ from: "slash", to: "right_shift" }),
+    none({ from: "right_shift" }),
 ];
 
 // == Upper layer ================================
-// TAB  Q   W   E   R   T   Y   U   I   O   P  DEL
+// ___  Q   W   E   R   T   Y   U   I   O   P  DEL
 // ___  A   S   D   F   G   H   J   K   L   :
 // ___  Z   X   C   V   B   N   M   <   >   ?
 const upperLayer: KarabinerMapping[] = [
-    simple({key: "tab", toModifiers: ["right_shift"]}),
-    simple({key: "q", toModifiers: ["right_shift"]}),
-    simple({key: "w", toModifiers: ["right_shift"]}),
-    simple({key: "e", toModifiers: ["right_shift"]}),
-    simple({key: "r", toModifiers: ["right_shift"]}),
-    simple({key: "t", toModifiers: ["right_shift"]}),
-    simple({key: "y", toModifiers: ["left_shift"]}),
-    simple({key: "u", toModifiers: ["left_shift"]}),
-    simple({key: "i", toModifiers: ["left_shift"]}),
-    simple({key: "o", toModifiers: ["left_shift"]}),
-    simple({key: "p", toModifiers: ["left_shift"]}),
-    mapping({from: "open_bracket", to: "delete_forward"}),
-    mapping({from: "delete_or_backspace", to: "delete_forward"}),
-    simple({key: "a", toModifiers: ["right_shift"]}),
-    simple({key: "s", toModifiers: ["right_shift"]}),
-    simple({key: "d", toModifiers: ["right_shift"]}),
-    simple({key: "f", toModifiers: ["right_shift"]}),
-    simple({key: "g", toModifiers: ["right_shift"]}),
-    simple({key: "h", toModifiers: ["left_shift"]}),
-    simple({key: "j", toModifiers: ["left_shift"]}),
-    simple({key: "k", toModifiers: ["left_shift"]}),
-    simple({key: "l", toModifiers: ["left_shift"]}),
-    simple({key: "semicolon", toModifiers: ["left_shift"]}),
-    simple({key: "z", toModifiers: ["right_shift"]}),
-    simple({key: "x", toModifiers: ["right_shift"]}),
-    simple({key: "c", toModifiers: ["right_shift"]}),
-    simple({key: "v", toModifiers: ["right_shift"]}),
-    simple({key: "b", toModifiers: ["right_shift"]}),
-    simple({key: "n", toModifiers: ["left_shift"]}),
-    simple({key: "m", toModifiers: ["left_shift"]}),
-    simple({key: "comma", toModifiers: ["left_shift"]}),
-    simple({key: "period", toModifiers: ["left_shift"]}),
-    simple({key: "slash", toModifiers: ["left_shift"]}),
-].map(ifLayer("upper-layer"));
+    mapping({ from: "open_bracket", fromModifiers: ["shift"], to: "delete_forward" }),
+    none({ from: "close_bracket", fromModifiers: ["shift"] }),
+    none({ from: "backslash", fromModifiers: ["shift"] }),
+    mapping({ from: "semicolon", fromModifiers: ["shift"], to: "semicolon", toModifiers: ["left_shift"] }),
+    none({ from: "quote", fromModifiers: ["shift"] }),
+    none({ from: "return_or_enter", fromModifiers: ["shift"] }),
+    mapping({ from: "slash", fromModifiers: ["shift"], to: "slash", toModifiers: ["left_shift"] }),
+    none({ from: "right_shift", fromModifiers: ["shift"] }),
+];
 
 // == Symbol layer ===============================
 // ___  '   <   >   "   %   ~   &   (   )   _  ___
 // ___  !   -   +   =   #   `   |   {   }  ___
 // ___  ^   /   *   \  ___  @  EMO  [   ]   $
 const symbolLayerLeft: KarabinerMapping[] = [
-    none({from: "tab"}),
-    mapping({from: "q", to: "quote"}),
-    mapping({from: "w", to: "comma", toModifiers: ["left_shift"]}),
-    mapping({from: "e", to: "period", toModifiers: ["left_shift"]}),
-    mapping({from: "r", to: "quote", toModifiers: ["left_shift"]}),
-    mapping({from: "t", to: "5", toModifiers: ["left_shift"]}),
-    mapping({from: "u", to: "tab", toModifiers: ["left_control"]}),
-    mapping({from: "i", to: "tab", toModifiers: ["left_control", "left_shift"]}),
-    none({from: "caps_lock"}),
-    mapping({from: "a", to: "1", toModifiers: ["right_shift"]}),
-    mapping({from: "s", to: "hyphen"}),
-    mapping({from: "d", to: "equal_sign", toModifiers: ["left_shift"]}),
-    mapping({from: "f", to: "equal_sign"}),
-    mapping({from: "g", to: "3", toModifiers: ["right_shift"]}),
-    none({from: "left_shift"}),
-    mapping({from: "z", to: "6", toModifiers: ["right_shift"]}),
-    mapping({from: "x", to: "slash"}),
-    mapping({from: "c", to: "8", toModifiers: ["left_shift"]}),
-    mapping({from: "v", to: "backslash"}),
+    none({ from: "tab" }),
+    mapping({ from: "q", to: "quote" }),
+    mapping({ from: "w", to: "comma", toModifiers: ["left_shift"] }),
+    mapping({ from: "e", to: "period", toModifiers: ["left_shift"] }),
+    mapping({ from: "r", to: "quote", toModifiers: ["left_shift"] }),
+    mapping({ from: "t", to: "5", toModifiers: ["left_shift"] }),
+    mapping({ from: "u", to: "tab", toModifiers: ["left_control"] }),
+    mapping({ from: "i", to: "tab", toModifiers: ["left_control", "left_shift"] }),
+    none({ from: "caps_lock" }),
+    mapping({ from: "a", to: "1", toModifiers: ["right_shift"] }),
+    mapping({ from: "s", to: "hyphen" }),
+    mapping({ from: "d", to: "equal_sign", toModifiers: ["left_shift"] }),
+    mapping({ from: "f", to: "equal_sign" }),
+    mapping({ from: "g", to: "3", toModifiers: ["right_shift"] }),
+    none({ from: "left_shift" }),
+    mapping({ from: "z", to: "6", toModifiers: ["right_shift"] }),
+    mapping({ from: "x", to: "slash" }),
+    mapping({ from: "c", to: "8", toModifiers: ["left_shift"] }),
+    mapping({ from: "v", to: "backslash" }),
 ].map(ifLayer("symbol-layer-left"));
 
 const symbolLayerRight: KarabinerMapping[] = [
-    mapping({from: "e", to: "tab", toModifiers: ["left_command", "left_shift"]}),
-    mapping({from: "r", to: "tab", toModifiers: ["left_command"]}),
+    mapping({ from: "e", to: "tab", toModifiers: ["left_command", "left_shift"] }),
+    mapping({ from: "r", to: "tab", toModifiers: ["left_command"] }),
     mapping({
         from: "y",
         to: "grave_accent_and_tilde",
         toModifiers: ["right_shift"],
     }),
-    mapping({from: "u", to: "7", toModifiers: ["left_shift"]}),
-    mapping({from: "i", to: "9", toModifiers: ["left_shift"]}),
-    mapping({from: "o", to: "0", toModifiers: ["left_shift"]}),
-    mapping({from: "p", to: "hyphen", toModifiers: ["left_shift"]}),
-    none({from: "open_bracket"}),
-    none({from: "close_bracket"}),
-    none({from: "backslash"}),
-    mapping({from: "h", to: "grave_accent_and_tilde"}),
-    mapping({from: "j", to: "backslash", toModifiers: ["left_shift"]}),
-    mapping({from: "k", to: "open_bracket", toModifiers: ["left_shift"]}),
-    mapping({from: "l", to: "close_bracket", toModifiers: ["left_shift"]}),
-    mapping({from: "semicolon", to: "slash", toModifiers: ["left_shift"]}),
-    none({from: "quote"}),
-    none({from: "return_or_enter"}),
-    mapping({from: "n", to: "2", toModifiers: ["right_shift"]}),
+    mapping({ from: "u", to: "7", toModifiers: ["left_shift"] }),
+    mapping({ from: "i", to: "9", toModifiers: ["left_shift"] }),
+    mapping({ from: "o", to: "0", toModifiers: ["left_shift"] }),
+    mapping({ from: "p", to: "hyphen", toModifiers: ["left_shift"] }),
+    none({ from: "open_bracket" }),
+    none({ from: "close_bracket" }),
+    none({ from: "backslash" }),
+    mapping({ from: "h", to: "grave_accent_and_tilde" }),
+    mapping({ from: "j", to: "backslash", toModifiers: ["left_shift"] }),
+    mapping({ from: "k", to: "open_bracket", toModifiers: ["left_shift"] }),
+    mapping({ from: "l", to: "close_bracket", toModifiers: ["left_shift"] }),
+    mapping({ from: "semicolon", to: "slash", toModifiers: ["left_shift"] }),
+    none({ from: "quote" }),
+    none({ from: "return_or_enter" }),
+    mapping({ from: "n", to: "2", toModifiers: ["right_shift"] }),
     mapping({
         from: "m",
         to: "spacebar",
         toModifiers: ["left_control", "left_command"],
     }),
-    mapping({from: "comma", to: "open_bracket"}),
-    mapping({from: "period", to: "close_bracket"}),
-    mapping({from: "slash", to: "4", toModifiers: ["right_shift"]}),
-    none({from: "right_shift"}),
+    mapping({ from: "comma", to: "open_bracket" }),
+    mapping({ from: "period", to: "close_bracket" }),
+    mapping({ from: "slash", to: "4", toModifiers: ["right_shift"] }),
+    none({ from: "right_shift" }),
 ].map(ifLayer("symbol-layer-right"));
 
 const navigationLayerSpace: KarabinerMapping = {
-    "type": "basic",
-    "from": {
-        "key_code": "spacebar",
-        "modifiers": {
-            "optional": [
+    type: "basic",
+    from: {
+        key_code: "spacebar",
+        modifiers: {
+            optional: [
                 "any"
             ]
         }
     },
-    "to": [
+    to: [
         {
-            "key_code": "left_shift"
+            key_code: "left_shift"
         }
     ],
-    "to_if_alone": [
+    to_if_alone: [
         {
-            "set_variable": {
-                "name": "visual-mode-layer",
-                "value": TRUE
+            set_variable: {
+                name: "visual-mode-layer",
+                value: TRUE
             }
         }
     ]
 };
 
 const visualModeLayerSpace: KarabinerMapping = {
-    "type": "basic",
-    "from": {
-        "key_code": "spacebar",
-        "modifiers": {
-            "optional": [
-                "any"
-            ]
-        }
-    },
-    "to": [
-        {
-            "set_variable": {
-                "name": "visual-mode-layer",
-                "value": FALSE
-            }
-        }
-    ]
-}
-
-const navigationLayerAndVisualModeLayerA: KarabinerMapping = {
     type: "basic",
     from: {
-        key_code: "a",
+        key_code: "spacebar",
         modifiers: {
             optional: [
                 "any"
@@ -624,198 +548,103 @@ const navigationLayerAndVisualModeLayerA: KarabinerMapping = {
     to: [
         {
             set_variable: {
-                name: "navigation-layer",
-                value: FALSE
-            }
-        },
-        {
-            set_variable: {
                 name: "visual-mode-layer",
                 value: FALSE
             }
         }
     ]
-};
+}
 
 // == Navigation layer ===========================
-// ___ ___ ___ ___ ___ ___ HOM PGU PGD END ___ ___
-// ___  ^   ⌥   ⌘  ___ ___  ←   ↓   ↑   →  ___
+// ___ ___ ___ ___ ___ ___ HOM PGD PGU END ___ ___
+//  ×   ×   ^   ⌥   ⌘  ___  ←   ↓   ↑   →  ___
 // ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
 //                        ⇧                   
 const navigationLayer: KarabinerMapping[] = [
-    none({from: "tab"}),
-    none({from: "q"}),
-    none({from: "w"}),
-    none({from: "e"}),
-    none({from: "r"}),
-    none({from: "t"}),
-    mapping({from: "y", to: "home"}),
-    mapping({from: "u", to: "page_up"}),
-    mapping({from: "i", to: "page_down"}),
-    mapping({from: "o", to: "end"}),
-    none({from: "p"}),
-    none({from: "open_bracket"}),
-    none({from: "close_bracket"}),
-    none({from: "backslash"}),
-    none({from: "caps_lock"}),
-    navigationLayerAndVisualModeLayerA,
-    mapping({from: "s", to: "left_control"}),
-    mapping({from: "d", to: "left_option"}),
-    mapping({from: "f", to: "left_command"}),
-    none({from: "g"}),
-    mapping({from: "h", to: "left_arrow"}),
-    mapping({from: "j", to: "down_arrow"}),
-    mapping({from: "k", to: "up_arrow"}),
-    mapping({from: "l", to: "right_arrow"}),
-    none({from: "semicolon"}),
-    none({from: "quote"}),
-    none({from: "return_or_enter"}),
-    none({from: "left_shift"}),
-    none({from: "z"}),
-    none({from: "x"}),
-    none({from: "c"}),
-    none({from: "v"}),
-    none({from: "b"}),
-    none({from: "n"}),
-    none({from: "m"}),
-    none({from: "comma"}),
-    none({from: "period"}),
-    none({from: "slash"}),
-    none({from: "right_shift"}),
+    none({ from: "tab" }),
+    none({ from: "q" }),
+    none({ from: "w" }),
+    none({ from: "e" }),
+    none({ from: "r" }),
+    none({ from: "t" }),
+    mapping({ from: "y", to: "home" }),
+    mapping({ from: "u", to: "page_down" }),
+    mapping({ from: "i", to: "page_up" }),
+    mapping({ from: "o", to: "end" }),
+    none({ from: "p" }),
+    none({ from: "open_bracket" }),
+    none({ from: "close_bracket" }),
+    none({ from: "backslash" }),
+    layerOff({ from: "caps_lock", deactivate: "navigation-layer" }),
+    layerOff({ from: "a", deactivate: "navigation-layer" }),
+    mapping({ from: "s", to: "left_control" }),
+    mapping({ from: "d", to: "left_option" }),
+    mapping({ from: "f", to: "left_command" }),
+    none({ from: "g" }),
+    mapping({ from: "h", to: "left_arrow" }),
+    mapping({ from: "j", to: "down_arrow" }),
+    mapping({ from: "k", to: "up_arrow" }),
+    mapping({ from: "l", to: "right_arrow" }),
+    none({ from: "semicolon" }),
+    none({ from: "quote" }),
+    none({ from: "return_or_enter" }),
+    none({ from: "left_shift" }),
+    none({ from: "z" }),
+    none({ from: "x" }),
+    none({ from: "c" }),
+    none({ from: "v" }),
+    none({ from: "b" }),
+    none({ from: "n" }),
+    none({ from: "m" }),
+    none({ from: "comma" }),
+    none({ from: "period" }),
+    none({ from: "slash" }),
+    none({ from: "right_shift" }),
     navigationLayerSpace,
 ].map(ifLayer("navigation-layer")).map(ifLayer("visual-mode-layer", FALSE));
 
 const visualModeLayer: KarabinerMapping[] = [
-    none({from: "tab"}),
-    none({from: "q"}),
-    none({from: "w"}),
-    none({from: "e"}),
-    none({from: "r"}),
-    none({from: "t"}),
-    mapping({from: "y", to: "home", toModifiers: ["left_shift"]}),
-    mapping({from: "u", to: "page_up", toModifiers: ["left_shift"]}),
-    mapping({from: "i", to: "page_down", toModifiers: ["left_shift"]}),
-    mapping({from: "o", to: "end", toModifiers: ["left_shift"]}),
-    none({from: "p"}),
-    none({from: "open_bracket"}),
-    none({from: "close_bracket"}),
-    none({from: "backslash"}),
-    none({from: "caps_lock"}),
-    navigationLayerAndVisualModeLayerA,
-    mapping({from: "s", to: "left_control", toModifiers: ["left_shift"]}),
-    mapping({from: "d", to: "left_option", toModifiers: ["left_shift"]}),
-    mapping({from: "f", to: "left_command", toModifiers: ["left_shift"]}),
-    none({from: "g"}),
-    mapping({from: "h", to: "left_arrow", toModifiers: ["left_shift"]}),
-    mapping({from: "j", to: "down_arrow", toModifiers: ["left_shift"]}),
-    mapping({from: "k", to: "up_arrow", toModifiers: ["left_shift"]}),
-    mapping({from: "l", to: "right_arrow", toModifiers: ["left_shift"]}),
-    none({from: "semicolon"}),
-    none({from: "quote"}),
-    none({from: "return_or_enter"}),
-    none({from: "left_shift"}),
-    none({from: "z"}),
-    none({from: "x"}),
-    none({from: "c"}),
-    none({from: "v"}),
-    none({from: "b"}),
-    none({from: "n"}),
-    none({from: "m"}),
-    none({from: "comma"}),
-    none({from: "period"}),
-    none({from: "slash"}),
-    none({from: "right_shift"}),
+    none({ from: "tab" }),
+    none({ from: "q" }),
+    none({ from: "w" }),
+    none({ from: "e" }),
+    none({ from: "r" }),
+    none({ from: "t" }),
+    mapping({ from: "y", to: "home", toModifiers: ["left_shift"] }),
+    mapping({ from: "u", to: "page_up", toModifiers: ["left_shift"] }),
+    mapping({ from: "i", to: "page_down", toModifiers: ["left_shift"] }),
+    mapping({ from: "o", to: "end", toModifiers: ["left_shift"] }),
+    none({ from: "p" }),
+    none({ from: "open_bracket" }),
+    none({ from: "close_bracket" }),
+    none({ from: "backslash" }),
+    layerOff({ from: "caps_lock", deactivate: ["visual-mode-layer", "navigation-layer"] }),
+    layerOff({ from: "a", deactivate: ["visual-mode-layer", "navigation-layer"] }),
+    mapping({ from: "s", to: "left_control", toModifiers: ["left_shift"] }),
+    mapping({ from: "d", to: "left_option", toModifiers: ["left_shift"] }),
+    mapping({ from: "f", to: "left_command", toModifiers: ["left_shift"] }),
+    none({ from: "g" }),
+    mapping({ from: "h", to: "left_arrow", toModifiers: ["left_shift"] }),
+    mapping({ from: "j", to: "down_arrow", toModifiers: ["left_shift"] }),
+    mapping({ from: "k", to: "up_arrow", toModifiers: ["left_shift"] }),
+    mapping({ from: "l", to: "right_arrow", toModifiers: ["left_shift"] }),
+    none({ from: "semicolon" }),
+    none({ from: "quote" }),
+    none({ from: "return_or_enter" }),
+    none({ from: "left_shift" }),
+    none({ from: "z" }),
+    none({ from: "x" }),
+    none({ from: "c" }),
+    none({ from: "v" }),
+    none({ from: "b" }),
+    none({ from: "n" }),
+    none({ from: "m" }),
+    none({ from: "comma" }),
+    none({ from: "period" }),
+    none({ from: "slash" }),
+    none({ from: "right_shift" }),
     visualModeLayerSpace,
 ].map(ifLayer("navigation-layer")).map(ifLayer("visual-mode-layer"));
-
-const modifierLayerA: KarabinerMapping[] = [
-    {
-        type: "basic",
-        from: {
-            key_code: "a",
-            modifiers: {
-                optional: [
-                    "any"
-                ]
-            }
-        },
-        to: [
-            {
-                set_variable: {
-                    name: "navigation-layer",
-                    value: TRUE
-                }
-            }
-        ],
-        conditions: [
-            {
-                type: "variable_if",
-                name: "navigation-layer-toggle",
-                value: TRUE
-            }
-        ]
-    },
-    {
-        type: "basic",
-        from: {
-            key_code: "a",
-            modifiers: {
-                "optional": [
-                    "any"
-                ]
-            }
-        },
-        to: [
-            {
-                set_variable: {
-                    name: "navigation-layer",
-                    value: TRUE
-                }
-            },
-            {
-                set_variable: {
-                    name: "navigation-layer-toggle",
-                    value: TRUE
-                }
-            }
-        ],
-        to_delayed_action: {
-            to_if_invoked: [
-                {
-                    set_variable: {
-                        name: "navigation-layer-toggle",
-                        value: FALSE
-                    }
-                }
-            ],
-            to_if_canceled: [
-                {
-                    set_variable: {
-                        name: "navigation-layer-toggle",
-                        value: FALSE
-                    }
-                }
-            ],
-        },
-        to_after_key_up: [
-            {
-                set_variable: {
-                    name: "navigation-layer",
-                    value: FALSE
-                }
-            },
-            {
-                set_variable: {
-                    name: "visual-mode-layer",
-                    value: FALSE
-                }
-            }
-        ],
-        parameters: {
-            "basic.to_delayed_action_delay_milliseconds": 500
-        }
-    }
-];
 
 // == Modifier layer =============================
 // ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
@@ -823,46 +652,46 @@ const modifierLayerA: KarabinerMapping[] = [
 // ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
 //                        ⇧                   
 const modifierLayer: KarabinerMapping[] = [
-    none({from: "tab"}),
-    none({from: "q"}),
-    none({from: "w"}),
-    none({from: "e"}),
-    none({from: "r"}),
-    none({from: "t"}),
-    none({from: "y"}),
-    none({from: "u"}),
-    none({from: "i"}),
-    none({from: "o"}),
-    none({from: "p"}),
-    none({from: "open_bracket"}),
-    none({from: "close_bracket"}),
-    none({from: "backslash"}),
-    none({from: "caps_lock"}),
-    ...modifierLayerA,
-    stickyModifier({from: "s", modifier: "left_control"}),
-    stickyModifier({from: "d", modifier: "left_option"}),
-    stickyModifier({from: "f", modifier: "left_command"}),
-    mapping({from: "g", to: "caps_lock"}),
-    none({from: "h"}),
-    none({from: "j"}),
-    none({from: "k"}),
-    none({from: "l"}),
-    none({from: "semicolon"}),
-    none({from: "quote"}),
-    none({from: "return_or_enter"}),
-    none({from: "left_shift"}),
-    none({from: "z"}),
-    none({from: "x"}),
-    none({from: "c"}),
-    none({from: "v"}),
-    none({from: "b"}),
-    none({from: "n"}),
-    none({from: "m"}),
-    none({from: "comma"}),
-    none({from: "period"}),
-    none({from: "slash"}),
-    none({from: "right_shift"}),
-    stickyModifier({from: "spacebar", modifier: "left_shift"}),
+    none({ from: "tab" }),
+    none({ from: "q" }),
+    none({ from: "w" }),
+    none({ from: "e" }),
+    none({ from: "r" }),
+    none({ from: "t" }),
+    none({ from: "y" }),
+    none({ from: "u" }),
+    none({ from: "i" }),
+    none({ from: "o" }),
+    none({ from: "p" }),
+    none({ from: "open_bracket" }),
+    none({ from: "close_bracket" }),
+    none({ from: "backslash" }),
+    none({ from: "caps_lock" }),
+    none({ from: "a" }),
+    stickyModifier({ from: "s", modifier: "left_control" }),
+    stickyModifier({ from: "d", modifier: "left_option" }),
+    stickyModifier({ from: "f", modifier: "left_command" }),
+    mapping({ from: "g", to: "caps_lock" }),
+    none({ from: "h" }),
+    none({ from: "j" }),
+    none({ from: "k" }),
+    none({ from: "l" }),
+    none({ from: "semicolon" }),
+    none({ from: "quote" }),
+    none({ from: "return_or_enter" }),
+    none({ from: "left_shift" }),
+    none({ from: "z" }),
+    none({ from: "x" }),
+    none({ from: "c" }),
+    none({ from: "v" }),
+    none({ from: "b" }),
+    none({ from: "n" }),
+    none({ from: "m" }),
+    none({ from: "comma" }),
+    none({ from: "period" }),
+    none({ from: "slash" }),
+    none({ from: "right_shift" }),
+    stickyModifier({ from: "spacebar", modifier: "left_shift" }),
 ].map(ifLayer("modifier-layer"));
 
 // == Number layer ===============================
@@ -870,46 +699,46 @@ const modifierLayer: KarabinerMapping[] = [
 // ___ ___ ___ ___ ___ ___ ___  4   5   6   ;
 // ___ ___ ___ ___ ___ ___ ___  1   2   3   /
 const numberLayer: KarabinerMapping[] = [
-    none({from: "tab"}),
-    none({from: "q"}),
-    none({from: "w"}),
-    none({from: "e"}),
-    none({from: "r"}),
-    none({from: "t"}),
-    none({from: "y"}),
-    mapping({from: "u", to: "7"}),
-    mapping({from: "i", to: "8"}),
-    mapping({from: "o", to: "9"}),
-    simple({key: "p"}),
-    none({from: "open_bracket"}),
-    none({from: "close_bracket"}),
-    none({from: "backslash"}),
-    none({from: "caps_lock"}),
-    none({from: "a"}),
-    none({from: "s"}),
-    mapping({from: "d", to: "grave_accent_and_tilde", toModifiers: ["left_command", "left_shift"]}),
-    mapping({from: "f", to: "grave_accent_and_tilde", toModifiers: ["left_command"]}),
-    none({from: "g"}),
-    layerOn({from: "h", activate: "function-layer"}),
-    mapping({from: "j", to: "4"}),
-    mapping({from: "k", to: "5"}),
-    mapping({from: "l", to: "6"}),
-    simple({key: "semicolon"}),
-    none({from: "quote"}),
-    none({from: "return_or_enter"}),
-    none({from: "left_shift"}),
-    none({from: "z"}),
-    none({from: "x"}),
-    none({from: "c"}),
-    none({from: "v"}),
-    none({from: "b"}),
-    none({from: "n"}),
-    mapping({from: "m", to: "1"}),
-    mapping({from: "comma", to: "2"}),
-    mapping({from: "period", to: "3"}),
-    simple({key: "slash"}),
-    none({from: "right_shift"}),
-    mapping({from: "spacebar", to: "0"})
+    none({ from: "tab" }),
+    none({ from: "q" }),
+    none({ from: "w" }),
+    none({ from: "e" }),
+    none({ from: "r" }),
+    none({ from: "t" }),
+    none({ from: "y" }),
+    mapping({ from: "u", to: "7" }),
+    mapping({ from: "i", to: "8" }),
+    mapping({ from: "o", to: "9" }),
+    simple({ key: "p" }),
+    none({ from: "open_bracket" }),
+    none({ from: "close_bracket" }),
+    none({ from: "backslash" }),
+    none({ from: "caps_lock" }),
+    none({ from: "a" }),
+    none({ from: "s" }),
+    mapping({ from: "d", to: "grave_accent_and_tilde", toModifiers: ["left_command", "left_shift"] }),
+    mapping({ from: "f", to: "grave_accent_and_tilde", toModifiers: ["left_command"] }),
+    none({ from: "g" }),
+    layerOn({ from: "h", activate: "function-layer" }),
+    mapping({ from: "j", to: "4" }),
+    mapping({ from: "k", to: "5" }),
+    mapping({ from: "l", to: "6" }),
+    simple({ key: "semicolon" }),
+    none({ from: "quote" }),
+    none({ from: "return_or_enter" }),
+    none({ from: "left_shift" }),
+    none({ from: "z" }),
+    none({ from: "x" }),
+    none({ from: "c" }),
+    none({ from: "v" }),
+    none({ from: "b" }),
+    none({ from: "n" }),
+    mapping({ from: "m", to: "1" }),
+    mapping({ from: "comma", to: "2" }),
+    mapping({ from: "period", to: "3" }),
+    simple({ key: "slash" }),
+    none({ from: "right_shift" }),
+    mapping({ from: "spacebar", to: "0" })
 ].map(ifLayer("number-layer")).map(ifLayer("function-layer", FALSE));
 
 // == Function layer =============================
@@ -917,45 +746,45 @@ const numberLayer: KarabinerMapping[] = [
 // ___ ___ ___ ___ ___ ___ ___ F4  F5  F6  F11
 // ___ ___ ___ ___ ___ ___ ___ F1  F2  F3  F10
 const functionLayer: KarabinerMapping[] = [
-    none({from: "tab"}),
-    none({from: "q"}),
-    none({from: "w"}),
-    none({from: "e"}),
-    none({from: "r"}),
-    none({from: "t"}),
-    none({from: "y"}),
-    mapping({from: "u", to: "f7"}),
-    mapping({from: "i", to: "f8"}),
-    mapping({from: "o", to: "f9"}),
-    mapping({from: "p", to: "f12"}),
-    none({from: "open_bracket"}),
-    none({from: "close_bracket"}),
-    none({from: "backslash"}),
-    none({from: "caps_lock"}),
-    none({from: "a"}),
-    none({from: "s"}),
-    none({from: "d"}),
-    none({from: "f"}),
-    none({from: "g"}),
-    none({from: "h"}),
-    mapping({from: "j", to: "f4"}),
-    mapping({from: "k", to: "f5"}),
-    mapping({from: "l", to: "f6"}),
-    mapping({from: "semicolon", to: "f11"}),
-    none({from: "quote"}),
-    none({from: "return_or_enter"}),
-    none({from: "left_shift"}),
-    none({from: "z"}),
-    none({from: "x"}),
-    none({from: "c"}),
-    none({from: "v"}),
-    none({from: "b"}),
-    none({from: "n"}),
-    mapping({from: "m", to: "f1"}),
-    mapping({from: "comma", to: "f2"}),
-    mapping({from: "period", to: "f3"}),
-    mapping({from: "slash", to: "f10"}),
-    none({from: "right_shift"}),
+    none({ from: "tab" }),
+    none({ from: "q" }),
+    none({ from: "w" }),
+    none({ from: "e" }),
+    none({ from: "r" }),
+    none({ from: "t" }),
+    none({ from: "y" }),
+    mapping({ from: "u", to: "f7" }),
+    mapping({ from: "i", to: "f8" }),
+    mapping({ from: "o", to: "f9" }),
+    mapping({ from: "p", to: "f12" }),
+    none({ from: "open_bracket" }),
+    none({ from: "close_bracket" }),
+    none({ from: "backslash" }),
+    none({ from: "caps_lock" }),
+    none({ from: "a" }),
+    none({ from: "s" }),
+    none({ from: "d" }),
+    none({ from: "f" }),
+    none({ from: "g" }),
+    none({ from: "h" }),
+    mapping({ from: "j", to: "f4" }),
+    mapping({ from: "k", to: "f5" }),
+    mapping({ from: "l", to: "f6" }),
+    mapping({ from: "semicolon", to: "f11" }),
+    none({ from: "quote" }),
+    none({ from: "return_or_enter" }),
+    none({ from: "left_shift" }),
+    none({ from: "z" }),
+    none({ from: "x" }),
+    none({ from: "c" }),
+    none({ from: "v" }),
+    none({ from: "b" }),
+    none({ from: "n" }),
+    mapping({ from: "m", to: "f1" }),
+    mapping({ from: "comma", to: "f2" }),
+    mapping({ from: "period", to: "f3" }),
+    mapping({ from: "slash", to: "f10" }),
+    none({ from: "right_shift" }),
 ].map(ifLayer("number-layer")).map(ifLayer("function-layer"));
 
 console.log(
