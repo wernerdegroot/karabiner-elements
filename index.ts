@@ -63,6 +63,13 @@ type KarabinerStickyModifier = {
     };
 }[KarabinerModifier];
 
+type KarabinerNotification = {
+    set_notification_message: {
+        id: string;
+        text: string;
+    };
+};
+
 function karabinerStickyModifier(modifier: KarabinerModifier, action: "on" | "off" | "toggle"): KarabinerStickyModifier {
     return {
         sticky_modifier: {
@@ -75,7 +82,8 @@ type KarabinerTo =
     | KarabinerKeyTo
     | KarabinerMouseTo
     | KarabinerSetVariable
-    | KarabinerStickyModifier;
+    | KarabinerStickyModifier
+    | KarabinerNotification;
 
 type KarabinerCondition = {
     name: string;
@@ -221,11 +229,13 @@ type LayerOff = {
     from: string;
     fromModifiers?: KarabinerModifier[];
     deactivate: LayerName | LayerName[];
+    also?: KarabinerTo[];
 };
 
 function layerOff(args: LayerOff): KarabinerMapping {
 
     const toDeactivate = Array.isArray(args.deactivate) ? args.deactivate : [args.deactivate];
+    const also = args.also ?? [];
 
     return {
         type: "basic",
@@ -233,12 +243,15 @@ function layerOff(args: LayerOff): KarabinerMapping {
             key_code: args.from,
             ...fromModifiers(args),
         },
-        to: toDeactivate.map(name => ({
-            set_variable: {
-                name,
-                value: FALSE,
-            },
-        }))
+        to: [
+            ...toDeactivate.map(name => ({
+                set_variable: {
+                    name,
+                    value: FALSE,
+                },
+            })),
+            ...also
+        ]
     };
 }
 
@@ -368,6 +381,12 @@ const baseLayerLeftShift: KarabinerMapping = {
         }
     ],
     to_if_alone: [
+        {
+            set_notification_message: {
+                id: "navigation-layer",
+                text: "navigation-layer"
+            }
+        },
         {
             set_variable: {
                 name: "navigation-layer",
@@ -557,6 +576,13 @@ const visualModeLayerSpace: KarabinerMapping = {
     ]
 }
 
+const hideNavigationLayerNotification: KarabinerNotification = {
+    set_notification_message: {
+        id: "navigation-layer",
+        text: ""
+    }
+}
+
 // == Navigation layer ===========================
 // ___ ___ ___ ___ ___ ___ HOM PGD PGU END ___ ___
 //  ×   ×   ^   ⌥   ⌘  ___  ←   ↓   ↑   →  ___
@@ -577,8 +603,8 @@ const navigationLayer: KarabinerMapping[] = [
     none({ from: "open_bracket" }),
     none({ from: "close_bracket" }),
     none({ from: "backslash" }),
-    layerOff({ from: "caps_lock", deactivate: "navigation-layer" }),
-    layerOff({ from: "a", deactivate: "navigation-layer" }),
+    layerOff({ from: "caps_lock", deactivate: "navigation-layer", also: [hideNavigationLayerNotification] }),
+    layerOff({ from: "a", deactivate: "navigation-layer", also: [hideNavigationLayerNotification] }),
     mapping({ from: "s", to: "left_control" }),
     mapping({ from: "d", to: "left_option" }),
     mapping({ from: "f", to: "left_command" }),
@@ -590,7 +616,7 @@ const navigationLayer: KarabinerMapping[] = [
     none({ from: "semicolon" }),
     none({ from: "quote" }),
     none({ from: "return_or_enter" }),
-    none({ from: "left_shift" }),
+    layerOff({ from: "left_shift", deactivate: "navigation-layer", also: [hideNavigationLayerNotification] }),
     none({ from: "z" }),
     none({ from: "x" }),
     none({ from: "c" }),
@@ -620,8 +646,8 @@ const visualModeLayer: KarabinerMapping[] = [
     none({ from: "open_bracket" }),
     none({ from: "close_bracket" }),
     none({ from: "backslash" }),
-    layerOff({ from: "caps_lock", deactivate: ["visual-mode-layer", "navigation-layer"] }),
-    layerOff({ from: "a", deactivate: ["visual-mode-layer", "navigation-layer"] }),
+    layerOff({ from: "caps_lock", deactivate: ["visual-mode-layer", "navigation-layer"], also: [hideNavigationLayerNotification] }),
+    layerOff({ from: "a", deactivate: ["visual-mode-layer", "navigation-layer"], also: [hideNavigationLayerNotification] }),
     mapping({ from: "s", to: "left_control", toModifiers: ["left_shift"] }),
     mapping({ from: "d", to: "left_option", toModifiers: ["left_shift"] }),
     mapping({ from: "f", to: "left_command", toModifiers: ["left_shift"] }),
@@ -633,7 +659,7 @@ const visualModeLayer: KarabinerMapping[] = [
     none({ from: "semicolon" }),
     none({ from: "quote" }),
     none({ from: "return_or_enter" }),
-    none({ from: "left_shift" }),
+    layerOff({ from: "left_shift", deactivate: ["visual-mode-layer", "navigation-layer"], also: [hideNavigationLayerNotification] }),
     none({ from: "z" }),
     none({ from: "x" }),
     none({ from: "c" }),

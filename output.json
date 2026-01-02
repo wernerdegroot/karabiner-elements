@@ -1628,6 +1628,12 @@
                       "name": "navigation-layer",
                       "value": 0
                     }
+                  },
+                  {
+                    "set_notification_message": {
+                      "id": "navigation-layer",
+                      "text": ""
+                    }
                   }
                 ]
               },
@@ -1658,6 +1664,12 @@
                     "set_variable": {
                       "name": "navigation-layer",
                       "value": 0
+                    }
+                  },
+                  {
+                    "set_notification_message": {
+                      "id": "navigation-layer",
+                      "text": ""
                     }
                   }
                 ]
@@ -1994,7 +2006,16 @@
                 },
                 "to": [
                   {
-                    "key_code": "vk_none"
+                    "set_variable": {
+                      "name": "navigation-layer",
+                      "value": 0
+                    }
+                  },
+                  {
+                    "set_notification_message": {
+                      "id": "navigation-layer",
+                      "text": ""
+                    }
                   }
                 ]
               },
@@ -2780,6 +2801,12 @@
                       "name": "navigation-layer",
                       "value": 0
                     }
+                  },
+                  {
+                    "set_notification_message": {
+                      "id": "navigation-layer",
+                      "text": ""
+                    }
                   }
                 ]
               },
@@ -2816,6 +2843,12 @@
                     "set_variable": {
                       "name": "navigation-layer",
                       "value": 0
+                    }
+                  },
+                  {
+                    "set_notification_message": {
+                      "id": "navigation-layer",
+                      "text": ""
                     }
                   }
                 ]
@@ -3173,7 +3206,22 @@
                 },
                 "to": [
                   {
-                    "key_code": "vk_none"
+                    "set_variable": {
+                      "name": "visual-mode-layer",
+                      "value": 0
+                    }
+                  },
+                  {
+                    "set_variable": {
+                      "name": "navigation-layer",
+                      "value": 0
+                    }
+                  },
+                  {
+                    "set_notification_message": {
+                      "id": "navigation-layer",
+                      "text": ""
+                    }
                   }
                 ]
               },
@@ -7232,6 +7280,12 @@
                   }
                 ],
                 "to_if_alone": [
+                  {
+                    "set_notification_message": {
+                      "id": "navigation-layer",
+                      "text": "navigation-layer"
+                    }
+                  },
                   {
                     "set_variable": {
                       "name": "navigation-layer",
