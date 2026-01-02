@@ -1,3 +1,5 @@
+import fs from "fs";
+
 type KarabinerModifier =
     | "left_shift"
     | "right_shift"
@@ -787,19 +789,32 @@ const functionLayer: KarabinerMapping[] = [
     none({ from: "right_shift" }),
 ].map(ifLayer("number-layer")).map(ifLayer("function-layer"));
 
-console.log(
-    JSON.stringify({
-        "title": "Werner's keymap",
-        "manipulators": [
-            ...upperLayer,
-            ...symbolLayerLeft,
-            ...symbolLayerRight,
-            ...navigationLayer,
-            ...visualModeLayer,
-            ...modifierLayer,
-            ...numberLayer,
-            ...functionLayer,
-            ...baseLayer
-        ]
-    }, null, 2)
-);
+const karabinerJsonContents = JSON.stringify({
+    "profiles": [
+        {
+            "complex_modifications": {
+                "rules": [
+                    {
+                        "description": "Werner's keymap",
+                        "manipulators": [
+                            ...upperLayer,
+                            ...symbolLayerLeft,
+                            ...symbolLayerRight,
+                            ...navigationLayer,
+                            ...visualModeLayer,
+                            ...modifierLayer,
+                            ...numberLayer,
+                            ...functionLayer,
+                            ...baseLayer
+                        ]
+                    }
+                ]
+            },
+            "name": "Default profile",
+            "selected": true,
+            "virtual_hid_keyboard": { "keyboard_type_v2": "ansi" }
+        }
+    ]
+}, null, 2);
+
+fs.writeFileSync("output.json", karabinerJsonContents);
