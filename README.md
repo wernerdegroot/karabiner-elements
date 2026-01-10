@@ -74,8 +74,16 @@ There are a couple of same-hand combinations to enable switching between apps, w
 
 Resize window to 700px. Open the Developer Tools. Press Cmd + Shift + P and type "screenshot". Select to take a screenshot of the entire website. Each layer occupies 425px (or is it half?) of height.
 
+## Why
+
+### Why not use <kbd>Shift</kbd> instead of dedicated Upper layer?
+
+Because the combo <kbd>Shift</kbd> + <kbd>Return</kbd> won't work.
+
 ## To do
 
+- ; + j & k could be move up and down
+- Navigation layer should send and exit on backspace, enter and esc. Only "raw" exit would be a and shift
 - Add to docs:
     - double tap A from sticky modifier layer locks navigation layer
     - double tap shift for regular shift (not upper layer)

@@ -377,6 +377,12 @@ const baseLayerLeftShift: KarabinerMapping = {
     },
     to: [
         {
+            set_variable: {
+                name: "upper-layer",
+                value: TRUE
+            }
+        },
+        {
             key_code: "left_shift"
         }
     ],
@@ -391,6 +397,44 @@ const baseLayerLeftShift: KarabinerMapping = {
             set_variable: {
                 name: "navigation-layer",
                 value: TRUE
+            }
+        }
+    ],
+    to_after_key_up: [
+        {
+            set_variable: {
+                name: "upper-layer",
+                value: FALSE
+            }
+        }
+    ]
+};
+
+const baseLayerRightShift: KarabinerMapping = {
+    type: "basic",
+    from: {
+        key_code: "slash",
+        modifiers: {
+            "optional": [
+                "any"
+            ]
+        }
+    },
+    to: [{
+            set_variable: {
+                name: "upper-layer",
+                value: TRUE
+            }
+        },
+        {
+            key_code: "right_shift"
+        }
+    ],
+    to_after_key_up: [
+        {
+            set_variable: {
+                name: "upper-layer",
+                value: FALSE
             }
         }
     ]
@@ -452,7 +496,7 @@ const baseLayer: KarabinerMapping[] = [
     simple({ key: "m" }),
     simple({ key: "comma" }),
     simple({ key: "period" }),
-    mapping({ from: "slash", to: "right_shift" }),
+    baseLayerRightShift,
     none({ from: "right_shift" }),
 ];
 
@@ -464,7 +508,7 @@ const upperLayer: KarabinerMapping[] = [
     mapping({ from: "open_bracket", fromModifiers: ["shift"], to: "delete_forward" }),
     none({ from: "close_bracket", fromModifiers: ["shift"] }),
     none({ from: "backslash", fromModifiers: ["shift"] }),
-    mapping({ from: "semicolon", fromModifiers: ["shift"], to: "semicolon", toModifiers: ["left_shift"] }),
+    ifLayer("upper-layer")(mapping({ from: "semicolon", fromModifiers: ["shift"], to: "semicolon", toModifiers: ["left_shift"] })),
     none({ from: "quote", fromModifiers: ["shift"] }),
     none({ from: "return_or_enter", fromModifiers: ["shift"] }),
     mapping({ from: "slash", fromModifiers: ["shift"], to: "slash", toModifiers: ["left_shift"] }),

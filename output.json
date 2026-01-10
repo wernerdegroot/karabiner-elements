@@ -64,6 +64,13 @@
                 ]
               },
               {
+                "conditions": [
+                  {
+                    "name": "upper-layer",
+                    "type": "variable_if",
+                    "value": 1
+                  }
+                ],
                 "type": "basic",
                 "from": {
                   "key_code": "semicolon",
@@ -7276,6 +7283,12 @@
                 },
                 "to": [
                   {
+                    "set_variable": {
+                      "name": "upper-layer",
+                      "value": 1
+                    }
+                  },
+                  {
                     "key_code": "left_shift"
                   }
                 ],
@@ -7290,6 +7303,14 @@
                     "set_variable": {
                       "name": "navigation-layer",
                       "value": 1
+                    }
+                  }
+                ],
+                "to_after_key_up": [
+                  {
+                    "set_variable": {
+                      "name": "upper-layer",
+                      "value": 0
                     }
                   }
                 ]
@@ -7450,7 +7471,21 @@
                 },
                 "to": [
                   {
+                    "set_variable": {
+                      "name": "upper-layer",
+                      "value": 1
+                    }
+                  },
+                  {
                     "key_code": "right_shift"
+                  }
+                ],
+                "to_after_key_up": [
+                  {
+                    "set_variable": {
+                      "name": "upper-layer",
+                      "value": 0
+                    }
                   }
                 ]
               },

@@ -54,7 +54,8 @@
             --factor: 1;
             --key-color-background: var(--color-background-primary);
             --color-text: var(--color-text-primary);
-            --key-color-border: rgb(from var(--color-text) r g b / 0.6);
+            --color-border: var(--color-text);
+            --key-color-border: rgb(from var(--color-border) r g b / 0.6);
 
             background-color: var(--key-color-background);
             color: var(--color-text);
@@ -145,6 +146,30 @@
         .yellow {
             --color-text: #a77f03;
         }
+
+        .border-red {
+            --color-border: #980000;
+        }
+
+        .border-blue {
+            --color-border: #004b83;
+        }
+
+        .border-green {
+            --color-border: #0c8900;
+        }
+
+        .border-purple {
+            --color-border: #6a0dad;
+        }
+
+        .border-orange {
+            --color-border: #984500;
+        }
+
+        .border-yellow {
+            --color-border: #a77f03;
+        }
     </style>
 </head>
 <body>
@@ -182,7 +207,11 @@
         <div class="key w225u ghosted"></div>
     </div>
     <div class="row">
-        <div class="key w225u purple"></div>
+        <div class="key w225u yellow border-purple multiline">
+            <div class="key w225u yellow border-purple multiline" style="position: absolute; top: 0; left: 0; clip-path: polygon(0 0, 65% 0, 35% 200%, 0 200%)">
+            </div>
+            Tap once<br />for Navigation
+        </div>
         <div class="key">z</div>
         <div class="key">x</div>
         <div class="key">c</div>
