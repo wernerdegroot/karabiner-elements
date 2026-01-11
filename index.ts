@@ -114,11 +114,14 @@ type Mapping = {
     fromModifiers?: KarabinerModifier[];
     to: string;
     toModifiers?: KarabinerModifier[];
+    also?: KarabinerTo[];
 };
 
 function mapping(args: Mapping): KarabinerMapping {
     const toModifiers: Pick<KarabinerKeyTo, "modifiers"> =
         args.toModifiers == undefined ? {} : { modifiers: args.toModifiers };
+
+    const also = args.also ?? [];
 
     return {
         type: "basic",
@@ -131,6 +134,7 @@ function mapping(args: Mapping): KarabinerMapping {
                 key_code: args.to,
                 ...toModifiers,
             },
+            ...also
         ],
     };
 }
@@ -421,14 +425,14 @@ const baseLayerRightShift: KarabinerMapping = {
         }
     },
     to: [{
-            set_variable: {
-                name: "upper-layer",
-                value: TRUE
-            }
-        },
-        {
-            key_code: "right_shift"
+        set_variable: {
+            name: "upper-layer",
+            value: TRUE
         }
+    },
+    {
+        key_code: "right_shift"
+    }
     ],
     to_after_key_up: [
         {
@@ -627,6 +631,12 @@ const hideNavigationLayerNotification: KarabinerNotification = {
     }
 }
 
+function toKey(key: string): KarabinerKeyTo {
+    return {
+        key_code: key
+    };
+}
+
 // == Navigation layer ===========================
 // ___ ___ ___ ___ ___ ___ HOM PGD PGU END ___ ___
 //  ×   ×   ^   ⌥   ⌘  ___  ←   ↓   ↑   →  ___
@@ -644,10 +654,10 @@ const navigationLayer: KarabinerMapping[] = [
     mapping({ from: "i", to: "page_up" }),
     mapping({ from: "o", to: "end" }),
     none({ from: "p" }),
-    none({ from: "open_bracket" }),
+    layerOff({ from: "open_bracket", deactivate: "navigation-layer", also: [hideNavigationLayerNotification, toKey("delete_or_backspace")] }),
     none({ from: "close_bracket" }),
     none({ from: "backslash" }),
-    layerOff({ from: "caps_lock", deactivate: "navigation-layer", also: [hideNavigationLayerNotification] }),
+    layerOff({ from: "caps_lock", deactivate: "navigation-layer", also: [hideNavigationLayerNotification, toKey("escape")] }),
     layerOff({ from: "a", deactivate: "navigation-layer", also: [hideNavigationLayerNotification] }),
     mapping({ from: "s", to: "left_control" }),
     mapping({ from: "d", to: "left_option" }),
@@ -657,7 +667,7 @@ const navigationLayer: KarabinerMapping[] = [
     mapping({ from: "j", to: "down_arrow" }),
     mapping({ from: "k", to: "up_arrow" }),
     mapping({ from: "l", to: "right_arrow" }),
-    none({ from: "semicolon" }),
+    layerOff({ from: "semicolon", deactivate: "navigation-layer", also: [hideNavigationLayerNotification, toKey("return_or_enter")] }),
     none({ from: "quote" }),
     none({ from: "return_or_enter" }),
     layerOff({ from: "left_shift", deactivate: "navigation-layer", also: [hideNavigationLayerNotification] }),
@@ -687,10 +697,10 @@ const visualModeLayer: KarabinerMapping[] = [
     mapping({ from: "i", to: "page_down", toModifiers: ["left_shift"] }),
     mapping({ from: "o", to: "end", toModifiers: ["left_shift"] }),
     none({ from: "p" }),
-    none({ from: "open_bracket" }),
+    layerOff({ from: "open_bracket", deactivate: ["visual-mode-layer", "navigation-layer"], also: [hideNavigationLayerNotification, toKey("delete_or_backspace")] }),
     none({ from: "close_bracket" }),
     none({ from: "backslash" }),
-    layerOff({ from: "caps_lock", deactivate: ["visual-mode-layer", "navigation-layer"], also: [hideNavigationLayerNotification] }),
+    layerOff({ from: "caps_lock", deactivate: ["visual-mode-layer", "navigation-layer"], also: [hideNavigationLayerNotification, toKey("escape")] }),
     layerOff({ from: "a", deactivate: ["visual-mode-layer", "navigation-layer"], also: [hideNavigationLayerNotification] }),
     mapping({ from: "s", to: "left_control", toModifiers: ["left_shift"] }),
     mapping({ from: "d", to: "left_option", toModifiers: ["left_shift"] }),
@@ -700,7 +710,7 @@ const visualModeLayer: KarabinerMapping[] = [
     mapping({ from: "j", to: "down_arrow", toModifiers: ["left_shift"] }),
     mapping({ from: "k", to: "up_arrow", toModifiers: ["left_shift"] }),
     mapping({ from: "l", to: "right_arrow", toModifiers: ["left_shift"] }),
-    none({ from: "semicolon" }),
+    layerOff({ from: "semicolon", deactivate: ["visual-mode-layer", "navigation-layer"], also: [hideNavigationLayerNotification, toKey("return_or_enter")] }),
     none({ from: "quote" }),
     none({ from: "return_or_enter" }),
     layerOff({ from: "left_shift", deactivate: ["visual-mode-layer", "navigation-layer"], also: [hideNavigationLayerNotification] }),

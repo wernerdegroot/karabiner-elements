@@ -1547,7 +1547,19 @@
                 },
                 "to": [
                   {
-                    "key_code": "vk_none"
+                    "set_variable": {
+                      "name": "navigation-layer",
+                      "value": 0
+                    }
+                  },
+                  {
+                    "set_notification_message": {
+                      "id": "navigation-layer",
+                      "text": ""
+                    }
+                  },
+                  {
+                    "key_code": "delete_or_backspace"
                   }
                 ]
               },
@@ -1641,6 +1653,9 @@
                       "id": "navigation-layer",
                       "text": ""
                     }
+                  },
+                  {
+                    "key_code": "escape"
                   }
                 ]
               },
@@ -1929,7 +1944,19 @@
                 },
                 "to": [
                   {
-                    "key_code": "vk_none"
+                    "set_variable": {
+                      "name": "navigation-layer",
+                      "value": 0
+                    }
+                  },
+                  {
+                    "set_notification_message": {
+                      "id": "navigation-layer",
+                      "text": ""
+                    }
+                  },
+                  {
+                    "key_code": "return_or_enter"
                   }
                 ]
               },
@@ -2714,7 +2741,25 @@
                 },
                 "to": [
                   {
-                    "key_code": "vk_none"
+                    "set_variable": {
+                      "name": "visual-mode-layer",
+                      "value": 0
+                    }
+                  },
+                  {
+                    "set_variable": {
+                      "name": "navigation-layer",
+                      "value": 0
+                    }
+                  },
+                  {
+                    "set_notification_message": {
+                      "id": "navigation-layer",
+                      "text": ""
+                    }
+                  },
+                  {
+                    "key_code": "delete_or_backspace"
                   }
                 ]
               },
@@ -2814,6 +2859,9 @@
                       "id": "navigation-layer",
                       "text": ""
                     }
+                  },
+                  {
+                    "key_code": "escape"
                   }
                 ]
               },
@@ -3129,7 +3177,25 @@
                 },
                 "to": [
                   {
-                    "key_code": "vk_none"
+                    "set_variable": {
+                      "name": "visual-mode-layer",
+                      "value": 0
+                    }
+                  },
+                  {
+                    "set_variable": {
+                      "name": "navigation-layer",
+                      "value": 0
+                    }
+                  },
+                  {
+                    "set_notification_message": {
+                      "id": "navigation-layer",
+                      "text": ""
+                    }
+                  },
+                  {
+                    "key_code": "return_or_enter"
                   }
                 ]
               },
