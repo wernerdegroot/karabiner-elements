@@ -655,6 +655,7 @@ const navigationLayer: KarabinerMapping[] = [
     mapping({ from: "o", to: "end" }),
     none({ from: "p" }),
     layerOff({ from: "open_bracket", deactivate: "navigation-layer", also: [hideNavigationLayerNotification, toKey("delete_or_backspace")] }),
+    layerOff({ from: "delete_or_backspace", deactivate: "navigation-layer", also: [hideNavigationLayerNotification, toKey("delete_or_backspace")] }),
     none({ from: "close_bracket" }),
     none({ from: "backslash" }),
     layerOff({ from: "caps_lock", deactivate: "navigation-layer", also: [hideNavigationLayerNotification, toKey("escape")] }),
@@ -698,6 +699,7 @@ const visualModeLayer: KarabinerMapping[] = [
     mapping({ from: "o", to: "end", toModifiers: ["left_shift"] }),
     none({ from: "p" }),
     layerOff({ from: "open_bracket", deactivate: ["visual-mode-layer", "navigation-layer"], also: [hideNavigationLayerNotification, toKey("delete_or_backspace")] }),
+    layerOff({ from: "delete_or_backspace", deactivate: ["visual-mode-layer", "navigation-layer"], also: [hideNavigationLayerNotification, toKey("delete_or_backspace")] }),
     none({ from: "close_bracket" }),
     none({ from: "backslash" }),
     layerOff({ from: "caps_lock", deactivate: ["visual-mode-layer", "navigation-layer"], also: [hideNavigationLayerNotification, toKey("escape")] }),
@@ -877,7 +879,6 @@ const karabinerJsonContents = JSON.stringify({
                     {
                         "description": "Werner's keymap",
                         "manipulators": [
-                            ...upperLayer,
                             ...symbolLayerLeft,
                             ...symbolLayerRight,
                             ...navigationLayer,
@@ -885,11 +886,32 @@ const karabinerJsonContents = JSON.stringify({
                             ...modifierLayer,
                             ...numberLayer,
                             ...functionLayer,
+                            ...upperLayer,
                             ...baseLayer
                         ]
                     }
                 ]
             },
+            "devices": [
+                // Chilkey ND75:
+                {
+                    "identifiers": {
+                        "is_keyboard": true,
+                        "product_id": 11175,
+                        "vendor_id": 14005
+                    },
+                    "simple_modifications": [
+                        {
+                            "from": { "key_code": "left_option" },
+                            "to": [{ "key_code": "left_command" }]
+                        },
+                        {
+                            "from": { "key_code": "left_command" },
+                            "to": [{ "key_code": "left_option" }]
+                        }
+                    ]
+                }
+            ],
             "name": "Default profile",
             "selected": true,
             "virtual_hid_keyboard": { "keyboard_type_v2": "ansi" }
