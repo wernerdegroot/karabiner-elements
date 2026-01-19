@@ -910,6 +910,27 @@ const karabinerJsonContents = JSON.stringify({
                             "to": [{ "key_code": "left_option" }]
                         }
                     ]
+                },
+
+                // Feker Alice75:
+                {
+                    "identifiers": {
+                        "is_keyboard": true,
+                        "is_pointing_device": true,
+                        "product_id": 12310,
+                        "vendor_id": 14000
+                    },
+                    "ignore": false,
+                    "simple_modifications": [
+                        {
+                            "from": { "key_code": "left_command" },
+                            "to": [{ "key_code": "left_option" }]
+                        },
+                        {
+                            "from": { "key_code": "left_option" },
+                            "to": [{ "key_code": "left_command" }]
+                        }
+                    ]
                 }
             ],
             "name": "Default profile",
