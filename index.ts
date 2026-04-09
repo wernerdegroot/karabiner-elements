@@ -414,35 +414,37 @@ const baseLayerLeftShift: KarabinerMapping = {
     ]
 };
 
-const baseLayerRightShift: KarabinerMapping = {
-    type: "basic",
-    from: {
-        key_code: "slash",
-        modifiers: {
-            "optional": [
-                "any"
-            ]
-        }
-    },
-    to: [{
-        set_variable: {
-            name: "upper-layer",
-            value: TRUE
-        }
-    },
-    {
-        key_code: "right_shift"
-    }
-    ],
-    to_after_key_up: [
-        {
+function baseLayerRightShiftFor(keyCode: string): KarabinerMapping {
+    return {
+        type: "basic",
+        from: {
+            key_code: keyCode,
+            modifiers: {
+                "optional": [
+                    "any"
+                ]
+            }
+        },
+        to: [{
             set_variable: {
                 name: "upper-layer",
-                value: FALSE
+                value: TRUE
             }
+        },
+        {
+            key_code: "right_shift"
         }
-    ]
-};
+        ],
+        to_after_key_up: [
+            {
+                set_variable: {
+                    name: "upper-layer",
+                    value: FALSE
+                }
+            }
+        ]
+    };
+}
 
 // == Base layer =================================
 // TAB  q   w   e   r   t   y   u   i   o   p  BSP
@@ -500,8 +502,8 @@ const baseLayer: KarabinerMapping[] = [
     simple({ key: "m" }),
     simple({ key: "comma" }),
     simple({ key: "period" }),
-    baseLayerRightShift,
-    none({ from: "right_shift" }),
+    baseLayerRightShiftFor("slash"),
+    baseLayerRightShiftFor("right_shift"),
 ];
 
 // == Upper layer ================================
@@ -670,7 +672,7 @@ const navigationLayer: KarabinerMapping[] = [
     mapping({ from: "l", to: "right_arrow" }),
     layerOff({ from: "semicolon", deactivate: "navigation-layer", also: [hideNavigationLayerNotification, toKey("return_or_enter")] }),
     none({ from: "quote" }),
-    none({ from: "return_or_enter" }),
+    layerOff({ from: "return_or_enter", deactivate: "navigation-layer", also: [hideNavigationLayerNotification, toKey("return_or_enter")] }),
     layerOff({ from: "left_shift", deactivate: "navigation-layer", also: [hideNavigationLayerNotification] }),
     none({ from: "z" }),
     none({ from: "x" }),
@@ -809,7 +811,7 @@ const numberLayer: KarabinerMapping[] = [
     mapping({ from: "l", to: "6" }),
     simple({ key: "semicolon" }),
     none({ from: "quote" }),
-    none({ from: "return_or_enter" }),
+    mapping({ from: "return_or_enter", to: "semicolon" }),
     none({ from: "left_shift" }),
     none({ from: "z" }),
     none({ from: "x" }),
@@ -821,7 +823,7 @@ const numberLayer: KarabinerMapping[] = [
     mapping({ from: "comma", to: "2" }),
     mapping({ from: "period", to: "3" }),
     simple({ key: "slash" }),
-    none({ from: "right_shift" }),
+    mapping({ from: "right_shift", to: "slash" }),
     mapping({ from: "spacebar", to: "0" })
 ].map(ifLayer("number-layer")).map(ifLayer("function-layer", FALSE));
 

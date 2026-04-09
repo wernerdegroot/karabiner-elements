@@ -1887,7 +1887,19 @@
                 },
                 "to": [
                   {
-                    "key_code": "vk_none"
+                    "set_variable": {
+                      "name": "navigation-layer",
+                      "value": 0
+                    }
+                  },
+                  {
+                    "set_notification_message": {
+                      "id": "navigation-layer",
+                      "text": ""
+                    }
+                  },
+                  {
+                    "key_code": "return_or_enter"
                   }
                 ]
               },
@@ -5248,7 +5260,7 @@
                 },
                 "to": [
                   {
-                    "key_code": "vk_none"
+                    "key_code": "semicolon"
                   }
                 ]
               },
@@ -5584,7 +5596,7 @@
                 },
                 "to": [
                   {
-                    "key_code": "vk_none"
+                    "key_code": "slash"
                   }
                 ]
               },
@@ -7653,7 +7665,21 @@
                 },
                 "to": [
                   {
-                    "key_code": "vk_none"
+                    "set_variable": {
+                      "name": "upper-layer",
+                      "value": 1
+                    }
+                  },
+                  {
+                    "key_code": "right_shift"
+                  }
+                ],
+                "to_after_key_up": [
+                  {
+                    "set_variable": {
+                      "name": "upper-layer",
+                      "value": 0
+                    }
                   }
                 ]
               }
@@ -7686,6 +7712,37 @@
               "to": [
                 {
                   "key_code": "left_option"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "identifiers": {
+            "is_keyboard": true,
+            "is_pointing_device": true,
+            "product_id": 12310,
+            "vendor_id": 14000
+          },
+          "ignore": false,
+          "simple_modifications": [
+            {
+              "from": {
+                "key_code": "left_command"
+              },
+              "to": [
+                {
+                  "key_code": "left_option"
+                }
+              ]
+            },
+            {
+              "from": {
+                "key_code": "left_option"
+              },
+              "to": [
+                {
+                  "key_code": "left_command"
                 }
               ]
             }
