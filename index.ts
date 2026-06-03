@@ -516,9 +516,10 @@ const upperLayer: KarabinerMapping[] = [
     none({ from: "backslash", fromModifiers: ["shift"] }),
     ifLayer("upper-layer")(mapping({ from: "semicolon", fromModifiers: ["shift"], to: "semicolon", toModifiers: ["left_shift"] })),
     none({ from: "quote", fromModifiers: ["shift"] }),
-    none({ from: "return_or_enter", fromModifiers: ["shift"] }),
+    ifLayer("upper-layer")(mapping({ from: "return_or_enter", fromModifiers: ["shift"], to: "semicolon", toModifiers: ["left_shift"] })),
+    // mapping({ from: "return_or_enter", fromModifiers: ["shift"], to: "semicolon", toModifiers: ["left_shift"] }),
     mapping({ from: "slash", fromModifiers: ["shift"], to: "slash", toModifiers: ["left_shift"] }),
-    none({ from: "right_shift", fromModifiers: ["shift"] }),
+    mapping({ from: "right_shift", fromModifiers: ["shift"], to: "slash", toModifiers: ["left_shift"] }),
 ];
 
 // == Symbol layer ===============================
@@ -568,7 +569,7 @@ const symbolLayerRight: KarabinerMapping[] = [
     mapping({ from: "l", to: "close_bracket", toModifiers: ["left_shift"] }),
     mapping({ from: "semicolon", to: "slash", toModifiers: ["left_shift"] }),
     none({ from: "quote" }),
-    none({ from: "return_or_enter" }),
+    mapping({ from: "return_or_enter", to: "slash", toModifiers: ["left_shift"] }),
     mapping({ from: "n", to: "2", toModifiers: ["right_shift"] }),
     mapping({
         from: "m",
@@ -578,7 +579,7 @@ const symbolLayerRight: KarabinerMapping[] = [
     mapping({ from: "comma", to: "open_bracket" }),
     mapping({ from: "period", to: "close_bracket" }),
     mapping({ from: "slash", to: "4", toModifiers: ["right_shift"] }),
-    none({ from: "right_shift" }),
+    mapping({ from: "right_shift", to: "4", toModifiers: ["right_shift"] }),
 ].map(ifLayer("symbol-layer-right"));
 
 const navigationLayerSpace: KarabinerMapping = {
@@ -933,6 +934,17 @@ const karabinerJsonContents = JSON.stringify({
                             "to": [{ "key_code": "left_command" }]
                         }
                     ]
+                },
+
+                // MMD KM40:
+                {
+                    "identifiers": {
+                        "is_keyboard": true,
+                        "is_pointing_device": true,
+                        "product_id": 12697,
+                        "vendor_id": 10473
+                    },
+                    "ignore": false
                 }
             ],
             "name": "Default profile",

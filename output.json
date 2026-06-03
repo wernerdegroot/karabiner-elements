@@ -898,7 +898,10 @@
                 },
                 "to": [
                   {
-                    "key_code": "vk_none"
+                    "key_code": "slash",
+                    "modifiers": [
+                      "left_shift"
+                    ]
                   }
                 ]
               },
@@ -1046,7 +1049,10 @@
                 },
                 "to": [
                   {
-                    "key_code": "vk_none"
+                    "key_code": "4",
+                    "modifiers": [
+                      "right_shift"
+                    ]
                   }
                 ]
               },
@@ -6826,6 +6832,13 @@
                 ]
               },
               {
+                "conditions": [
+                  {
+                    "name": "upper-layer",
+                    "type": "variable_if",
+                    "value": 1
+                  }
+                ],
                 "type": "basic",
                 "from": {
                   "key_code": "return_or_enter",
@@ -6840,7 +6853,10 @@
                 },
                 "to": [
                   {
-                    "key_code": "vk_none"
+                    "key_code": "semicolon",
+                    "modifiers": [
+                      "left_shift"
+                    ]
                   }
                 ]
               },
@@ -6881,7 +6897,10 @@
                 },
                 "to": [
                   {
-                    "key_code": "vk_none"
+                    "key_code": "slash",
+                    "modifiers": [
+                      "left_shift"
+                    ]
                   }
                 ]
               },
@@ -7747,6 +7766,15 @@
               ]
             }
           ]
+        },
+        {
+          "identifiers": {
+            "is_keyboard": true,
+            "is_pointing_device": true,
+            "product_id": 12697,
+            "vendor_id": 10473
+          },
+          "ignore": false
         }
       ],
       "name": "Default profile",
