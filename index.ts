@@ -1,28 +1,18 @@
 import fs from "fs";
 
-type KarabinerModifier =
-    | "left_shift"
-    | "right_shift"
-    | "shift"
-    | "left_control"
-    | "right_control"
-    | "left_option"
-    | "right_option"
-    | "left_command"
-    | "right_command"
-    | "any";
+type KarabinerModifier = "left_shift" | "right_shift" | "shift" | "left_control" | "right_control" | "left_option" | "right_option" | "left_command" | "right_command" | "any";
 
-type KarabinerKeyFrom = { key_code: string; };
+type KarabinerKeyFrom = { key_code: string };
 
 type KarabinerMouseFrom = { pointing_button: string };
 
 type KarabinerSimultaneousFrom = {
     simultaneous: KarabinerKeyFrom[];
     simultaneous_options?: {
-        key_down_order?: "strict",
-        key_up_order?: "strict_inverse",
-        key_up_when?: "all"
-    },
+        key_down_order?: "strict";
+        key_up_order?: "strict_inverse";
+        key_up_when?: "all";
+    };
 };
 
 type KarabinerFrom = (KarabinerKeyFrom | KarabinerMouseFrom | KarabinerSimultaneousFrom) & {
@@ -78,12 +68,7 @@ function karabinerStickyModifier(modifier: KarabinerModifier, action: "on" | "of
     } as KarabinerStickyModifier;
 }
 
-type KarabinerTo =
-    | KarabinerKeyTo
-    | KarabinerMouseTo
-    | KarabinerSetVariable
-    | KarabinerStickyModifier
-    | KarabinerNotification;
+type KarabinerTo = KarabinerKeyTo | KarabinerMouseTo | KarabinerSetVariable | KarabinerStickyModifier | KarabinerNotification;
 
 type KarabinerCondition = {
     name: string;
@@ -96,14 +81,14 @@ type KarabinerMapping = {
     conditions?: KarabinerCondition[];
     parameters?: {
         "basic.to_if_held_down_threshold_milliseconds"?: number;
-        "basic.to_delayed_action_delay_milliseconds"?: number
-    },
+        "basic.to_delayed_action_delay_milliseconds"?: number;
+    };
     from: KarabinerFrom;
     to?: KarabinerTo[];
     to_delayed_action?: {
-        to_if_invoked?: KarabinerTo[],
-        to_if_canceled?: KarabinerTo[]
-    }
+        to_if_invoked?: KarabinerTo[];
+        to_if_canceled?: KarabinerTo[];
+    };
     to_if_held_down?: KarabinerTo[];
     to_if_alone?: KarabinerTo[];
     to_after_key_up?: KarabinerTo[];
@@ -118,8 +103,7 @@ type Mapping = {
 };
 
 function mapping(args: Mapping): KarabinerMapping {
-    const toModifiers: Pick<KarabinerKeyTo, "modifiers"> =
-        args.toModifiers == undefined ? {} : { modifiers: args.toModifiers };
+    const toModifiers: Pick<KarabinerKeyTo, "modifiers"> = args.toModifiers == undefined ? {} : { modifiers: args.toModifiers };
 
     const also = args.also ?? [];
 
@@ -127,44 +111,34 @@ function mapping(args: Mapping): KarabinerMapping {
         type: "basic",
         from: {
             key_code: args.from,
-            ...fromModifiers(args),
+            ...fromModifiers(args)
         },
         to: [
             {
                 key_code: args.to,
-                ...toModifiers,
+                ...toModifiers
             },
             ...also
-        ],
+        ]
     };
 }
 
-type LayerName =
-    | "upper-layer"
-    | "symbol-layer-left"
-    | "symbol-layer-right"
-    | "navigation-layer"
-    | "visual-mode-layer"
-    | "modifier-layer"
-    | "number-layer"
-    | "function-layer";
+type LayerName = "upper-layer" | "symbol-layer-left" | "symbol-layer-right" | "navigation-layer" | "visual-mode-layer" | "modifier-layer" | "number-layer" | "function-layer";
 
 type StickyModifier = {
     from: string;
     fromModifiers?: KarabinerModifier[];
-    modifier: KarabinerModifier
-}
+    modifier: KarabinerModifier;
+};
 
 function stickyModifier(args: StickyModifier): KarabinerMapping {
     return {
         type: "basic",
         from: {
             key_code: args.from,
-            ...fromModifiers(args),
+            ...fromModifiers(args)
         },
-        to: [
-            karabinerStickyModifier(args.modifier, "toggle")
-        ]
+        to: [karabinerStickyModifier(args.modifier, "toggle")]
     };
 }
 
@@ -177,31 +151,28 @@ type Layer = {
 
 function layer(args: Layer): KarabinerMapping {
     const alsoDeactivate: LayerName[] = args.alsoDeactivate || [];
-    const deactivate: KarabinerSetVariable[] = [
-        args.activate,
-        ...alsoDeactivate,
-    ].map((name) => ({
+    const deactivate: KarabinerSetVariable[] = [args.activate, ...alsoDeactivate].map((name) => ({
         set_variable: {
             name,
-            value: FALSE,
-        },
+            value: FALSE
+        }
     }));
 
     return {
         type: "basic",
         from: {
             key_code: args.from,
-            ...fromModifiers(args),
+            ...fromModifiers(args)
         },
         to: [
             {
                 set_variable: {
                     name: args.activate,
-                    value: TRUE,
-                },
-            },
+                    value: TRUE
+                }
+            }
         ],
-        to_after_key_up: deactivate,
+        to_after_key_up: deactivate
     };
 }
 
@@ -216,15 +187,15 @@ function layerOn(args: LayerOn): KarabinerMapping {
         type: "basic",
         from: {
             key_code: args.from,
-            ...fromModifiers(args),
+            ...fromModifiers(args)
         },
         to: [
             {
                 set_variable: {
                     name: args.activate,
-                    value: TRUE,
-                },
-            },
+                    value: TRUE
+                }
+            }
         ]
     };
 }
@@ -237,7 +208,6 @@ type LayerOff = {
 };
 
 function layerOff(args: LayerOff): KarabinerMapping {
-
     const toDeactivate = Array.isArray(args.deactivate) ? args.deactivate : [args.deactivate];
     const also = args.also ?? [];
 
@@ -245,14 +215,14 @@ function layerOff(args: LayerOff): KarabinerMapping {
         type: "basic",
         from: {
             key_code: args.from,
-            ...fromModifiers(args),
+            ...fromModifiers(args)
         },
         to: [
-            ...toDeactivate.map(name => ({
+            ...toDeactivate.map((name) => ({
                 set_variable: {
                     name,
-                    value: FALSE,
-                },
+                    value: FALSE
+                }
             })),
             ...also
         ]
@@ -268,13 +238,13 @@ function simple(args: SimplifiedMapping): KarabinerMapping {
     return mapping({
         from: args.key,
         to: args.key,
-        toModifiers: args.toModifiers,
+        toModifiers: args.toModifiers
     });
 }
 
 type NoneMapping = {
-    from: string,
-    fromModifiers?: KarabinerModifier[]
+    from: string;
+    fromModifiers?: KarabinerModifier[];
 };
 
 function none(args: NoneMapping): KarabinerMapping {
@@ -282,7 +252,7 @@ function none(args: NoneMapping): KarabinerMapping {
         type: "basic",
         from: {
             key_code: args.from,
-            ...fromModifiers(args),
+            ...fromModifiers(args)
         },
         to: [
             {
@@ -298,53 +268,49 @@ type DuoMapping = Mapping & {
 };
 
 function duo(args: DuoMapping): KarabinerMapping {
-    const toModifiers: Pick<KarabinerKeyTo, "modifiers"> =
-        args.toModifiers == undefined ? {} : { modifiers: args.toModifiers };
+    const toModifiers: Pick<KarabinerKeyTo, "modifiers"> = args.toModifiers == undefined ? {} : { modifiers: args.toModifiers };
 
     const alsoDeactivate: LayerName[] = args.alsoDeactivate || [];
-    const deactivate: KarabinerSetVariable[] = [
-        args.activate,
-        ...alsoDeactivate,
-    ].map((name) => ({
+    const deactivate: KarabinerSetVariable[] = [args.activate, ...alsoDeactivate].map((name) => ({
         set_variable: {
             name,
-            value: FALSE,
-        },
+            value: FALSE
+        }
     }));
 
     return {
         type: "basic",
         from: {
             key_code: args.from,
-            ...fromModifiers(args),
+            ...fromModifiers(args)
         },
         to_if_alone: [
             {
                 key_code: args.to,
-                ...toModifiers,
-            },
+                ...toModifiers
+            }
         ],
         to: [
             {
                 set_variable: {
                     name: args.activate,
-                    value: TRUE,
-                },
-            },
+                    value: TRUE
+                }
+            }
         ],
-        to_after_key_up: deactivate,
+        to_after_key_up: deactivate
     };
 }
 
 type FromModifiers = {
-    fromModifiers?: KarabinerModifier[]
+    fromModifiers?: KarabinerModifier[];
 };
 
 function fromModifiers(args: FromModifiers): Pick<KarabinerFrom, "modifiers"> {
     const fromModifiers: Pick<KarabinerFrom, "modifiers"> = {};
 
     fromModifiers.modifiers = {
-        optional: ["any"],
+        optional: ["any"]
     };
 
     if (args.fromModifiers !== undefined) {
@@ -356,27 +322,24 @@ function fromModifiers(args: FromModifiers): Pick<KarabinerFrom, "modifiers"> {
 
 const ifLayer =
     (name: LayerName, value: typeof TRUE | typeof FALSE = TRUE) =>
-        (mapping: KarabinerMapping): KarabinerMapping => {
+    (mapping: KarabinerMapping): KarabinerMapping => {
+        const conditions: KarabinerCondition[] = mapping.conditions || [];
 
-            const conditions: KarabinerCondition[] = mapping.conditions || [];
+        conditions.push({
+            name,
+            type: "variable_if",
+            value
+        });
 
-            conditions.push({
-                name,
-                type: "variable_if",
-                value,
-            });
-
-            return { conditions, ...mapping };
-        };
+        return { conditions, ...mapping };
+    };
 
 const baseLayerLeftShift: KarabinerMapping = {
     type: "basic",
     from: {
         key_code: "left_shift",
         modifiers: {
-            "optional": [
-                "any"
-            ]
+            optional: ["any"]
         }
     },
     to: [
@@ -420,20 +383,19 @@ function baseLayerRightShiftFor(keyCode: string): KarabinerMapping {
         from: {
             key_code: keyCode,
             modifiers: {
-                "optional": [
-                    "any"
-                ]
+                optional: ["any"]
             }
         },
-        to: [{
-            set_variable: {
-                name: "upper-layer",
-                value: TRUE
+        to: [
+            {
+                set_variable: {
+                    name: "upper-layer",
+                    value: TRUE
+                }
+            },
+            {
+                key_code: "right_shift"
             }
-        },
-        {
-            key_code: "right_shift"
-        }
         ],
         to_after_key_up: [
             {
@@ -465,12 +427,12 @@ const baseLayer: KarabinerMapping[] = [
     duo({
         from: "open_bracket",
         to: "delete_or_backspace",
-        activate: "symbol-layer-left",
+        activate: "symbol-layer-left"
     }),
     duo({
         from: "delete_or_backspace",
         to: "delete_or_backspace",
-        activate: "symbol-layer-left",
+        activate: "symbol-layer-left"
     }),
     none({ from: "close_bracket" }),
     none({ from: "backslash" }),
@@ -478,7 +440,7 @@ const baseLayer: KarabinerMapping[] = [
         from: "caps_lock",
         to: "escape",
         activate: "number-layer",
-        alsoDeactivate: ["function-layer"],
+        alsoDeactivate: ["function-layer"]
     }),
     simple({ key: "a" }),
     simple({ key: "s" }),
@@ -503,7 +465,7 @@ const baseLayer: KarabinerMapping[] = [
     simple({ key: "comma" }),
     simple({ key: "period" }),
     baseLayerRightShiftFor("slash"),
-    baseLayerRightShiftFor("right_shift"),
+    baseLayerRightShiftFor("right_shift")
 ];
 
 // == Upper layer ================================
@@ -514,12 +476,31 @@ const upperLayer: KarabinerMapping[] = [
     mapping({ from: "open_bracket", fromModifiers: ["shift"], to: "delete_forward" }),
     none({ from: "close_bracket", fromModifiers: ["shift"] }),
     none({ from: "backslash", fromModifiers: ["shift"] }),
-    ifLayer("upper-layer")(mapping({ from: "semicolon", fromModifiers: ["shift"], to: "semicolon", toModifiers: ["left_shift"] })),
+    ifLayer("upper-layer")(
+        mapping({
+            from: "semicolon",
+            fromModifiers: ["shift"],
+            to: "semicolon",
+            toModifiers: ["left_shift"]
+        })
+    ),
     none({ from: "quote", fromModifiers: ["shift"] }),
-    ifLayer("upper-layer")(mapping({ from: "return_or_enter", fromModifiers: ["shift"], to: "semicolon", toModifiers: ["left_shift"] })),
+    ifLayer("upper-layer")(
+        mapping({
+            from: "return_or_enter",
+            fromModifiers: ["shift"],
+            to: "semicolon",
+            toModifiers: ["left_shift"]
+        })
+    ),
     // mapping({ from: "return_or_enter", fromModifiers: ["shift"], to: "semicolon", toModifiers: ["left_shift"] }),
     mapping({ from: "slash", fromModifiers: ["shift"], to: "slash", toModifiers: ["left_shift"] }),
-    mapping({ from: "right_shift", fromModifiers: ["shift"], to: "slash", toModifiers: ["left_shift"] }),
+    mapping({
+        from: "right_shift",
+        fromModifiers: ["shift"],
+        to: "slash",
+        toModifiers: ["left_shift"]
+    })
 ];
 
 // == Symbol layer ===============================
@@ -545,7 +526,7 @@ const symbolLayerLeft: KarabinerMapping[] = [
     mapping({ from: "z", to: "6", toModifiers: ["right_shift"] }),
     mapping({ from: "x", to: "slash" }),
     mapping({ from: "c", to: "8", toModifiers: ["left_shift"] }),
-    mapping({ from: "v", to: "backslash" }),
+    mapping({ from: "v", to: "backslash" })
 ].map(ifLayer("symbol-layer-left"));
 
 const symbolLayerRight: KarabinerMapping[] = [
@@ -554,7 +535,7 @@ const symbolLayerRight: KarabinerMapping[] = [
     mapping({
         from: "y",
         to: "grave_accent_and_tilde",
-        toModifiers: ["right_shift"],
+        toModifiers: ["right_shift"]
     }),
     mapping({ from: "u", to: "7", toModifiers: ["left_shift"] }),
     mapping({ from: "i", to: "9", toModifiers: ["left_shift"] }),
@@ -574,12 +555,12 @@ const symbolLayerRight: KarabinerMapping[] = [
     mapping({
         from: "m",
         to: "spacebar",
-        toModifiers: ["left_control", "left_command"],
+        toModifiers: ["left_control", "left_command"]
     }),
     mapping({ from: "comma", to: "open_bracket" }),
     mapping({ from: "period", to: "close_bracket" }),
     mapping({ from: "slash", to: "4", toModifiers: ["right_shift"] }),
-    mapping({ from: "right_shift", to: "4", toModifiers: ["right_shift"] }),
+    mapping({ from: "right_shift", to: "4", toModifiers: ["right_shift"] })
 ].map(ifLayer("symbol-layer-right"));
 
 const navigationLayerSpace: KarabinerMapping = {
@@ -587,9 +568,7 @@ const navigationLayerSpace: KarabinerMapping = {
     from: {
         key_code: "spacebar",
         modifiers: {
-            optional: [
-                "any"
-            ]
+            optional: ["any"]
         }
     },
     to: [
@@ -612,9 +591,7 @@ const visualModeLayerSpace: KarabinerMapping = {
     from: {
         key_code: "spacebar",
         modifiers: {
-            optional: [
-                "any"
-            ]
+            optional: ["any"]
         }
     },
     to: [
@@ -625,14 +602,14 @@ const visualModeLayerSpace: KarabinerMapping = {
             }
         }
     ]
-}
+};
 
 const hideNavigationLayerNotification: KarabinerNotification = {
     set_notification_message: {
         id: "navigation-layer",
         text: ""
     }
-}
+};
 
 function toKey(key: string): KarabinerKeyTo {
     return {
@@ -644,7 +621,7 @@ function toKey(key: string): KarabinerKeyTo {
 // ___ ___ ___ ___ ___ ___ HOM PGD PGU END ___ ___
 //  ×   ×   ^   ⌥   ⌘  ___  ←   ↓   ↑   →  ___
 // ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
-//                        ⇧                   
+//                        ⇧
 const navigationLayer: KarabinerMapping[] = [
     none({ from: "tab" }),
     none({ from: "q" }),
@@ -657,12 +634,28 @@ const navigationLayer: KarabinerMapping[] = [
     mapping({ from: "i", to: "page_up" }),
     mapping({ from: "o", to: "end" }),
     none({ from: "p" }),
-    layerOff({ from: "open_bracket", deactivate: "navigation-layer", also: [hideNavigationLayerNotification, toKey("delete_or_backspace")] }),
-    layerOff({ from: "delete_or_backspace", deactivate: "navigation-layer", also: [hideNavigationLayerNotification, toKey("delete_or_backspace")] }),
+    layerOff({
+        from: "open_bracket",
+        deactivate: "navigation-layer",
+        also: [hideNavigationLayerNotification, toKey("delete_or_backspace")]
+    }),
+    layerOff({
+        from: "delete_or_backspace",
+        deactivate: "navigation-layer",
+        also: [hideNavigationLayerNotification, toKey("delete_or_backspace")]
+    }),
     none({ from: "close_bracket" }),
     none({ from: "backslash" }),
-    layerOff({ from: "caps_lock", deactivate: "navigation-layer", also: [hideNavigationLayerNotification, toKey("escape")] }),
-    layerOff({ from: "a", deactivate: "navigation-layer", also: [hideNavigationLayerNotification] }),
+    layerOff({
+        from: "caps_lock",
+        deactivate: "navigation-layer",
+        also: [hideNavigationLayerNotification, toKey("escape")]
+    }),
+    layerOff({
+        from: "a",
+        deactivate: "navigation-layer",
+        also: [hideNavigationLayerNotification]
+    }),
     mapping({ from: "s", to: "left_control" }),
     mapping({ from: "d", to: "left_option" }),
     mapping({ from: "f", to: "left_command" }),
@@ -671,10 +664,22 @@ const navigationLayer: KarabinerMapping[] = [
     mapping({ from: "j", to: "down_arrow" }),
     mapping({ from: "k", to: "up_arrow" }),
     mapping({ from: "l", to: "right_arrow" }),
-    layerOff({ from: "semicolon", deactivate: "navigation-layer", also: [hideNavigationLayerNotification, toKey("return_or_enter")] }),
+    layerOff({
+        from: "semicolon",
+        deactivate: "navigation-layer",
+        also: [hideNavigationLayerNotification, toKey("return_or_enter")]
+    }),
     none({ from: "quote" }),
-    layerOff({ from: "return_or_enter", deactivate: "navigation-layer", also: [hideNavigationLayerNotification, toKey("return_or_enter")] }),
-    layerOff({ from: "left_shift", deactivate: "navigation-layer", also: [hideNavigationLayerNotification] }),
+    layerOff({
+        from: "return_or_enter",
+        deactivate: "navigation-layer",
+        also: [hideNavigationLayerNotification, toKey("return_or_enter")]
+    }),
+    layerOff({
+        from: "left_shift",
+        deactivate: "navigation-layer",
+        also: [hideNavigationLayerNotification]
+    }),
     none({ from: "z" }),
     none({ from: "x" }),
     none({ from: "c" }),
@@ -686,8 +691,10 @@ const navigationLayer: KarabinerMapping[] = [
     none({ from: "period" }),
     none({ from: "slash" }),
     none({ from: "right_shift" }),
-    navigationLayerSpace,
-].map(ifLayer("navigation-layer")).map(ifLayer("visual-mode-layer", FALSE));
+    navigationLayerSpace
+]
+    .map(ifLayer("navigation-layer"))
+    .map(ifLayer("visual-mode-layer", FALSE));
 
 const visualModeLayer: KarabinerMapping[] = [
     none({ from: "tab" }),
@@ -701,12 +708,28 @@ const visualModeLayer: KarabinerMapping[] = [
     mapping({ from: "i", to: "page_down", toModifiers: ["left_shift"] }),
     mapping({ from: "o", to: "end", toModifiers: ["left_shift"] }),
     none({ from: "p" }),
-    layerOff({ from: "open_bracket", deactivate: ["visual-mode-layer", "navigation-layer"], also: [hideNavigationLayerNotification, toKey("delete_or_backspace")] }),
-    layerOff({ from: "delete_or_backspace", deactivate: ["visual-mode-layer", "navigation-layer"], also: [hideNavigationLayerNotification, toKey("delete_or_backspace")] }),
+    layerOff({
+        from: "open_bracket",
+        deactivate: ["visual-mode-layer", "navigation-layer"],
+        also: [hideNavigationLayerNotification, toKey("delete_or_backspace")]
+    }),
+    layerOff({
+        from: "delete_or_backspace",
+        deactivate: ["visual-mode-layer", "navigation-layer"],
+        also: [hideNavigationLayerNotification, toKey("delete_or_backspace")]
+    }),
     none({ from: "close_bracket" }),
     none({ from: "backslash" }),
-    layerOff({ from: "caps_lock", deactivate: ["visual-mode-layer", "navigation-layer"], also: [hideNavigationLayerNotification, toKey("escape")] }),
-    layerOff({ from: "a", deactivate: ["visual-mode-layer", "navigation-layer"], also: [hideNavigationLayerNotification] }),
+    layerOff({
+        from: "caps_lock",
+        deactivate: ["visual-mode-layer", "navigation-layer"],
+        also: [hideNavigationLayerNotification, toKey("escape")]
+    }),
+    layerOff({
+        from: "a",
+        deactivate: ["visual-mode-layer", "navigation-layer"],
+        also: [hideNavigationLayerNotification]
+    }),
     mapping({ from: "s", to: "left_control", toModifiers: ["left_shift"] }),
     mapping({ from: "d", to: "left_option", toModifiers: ["left_shift"] }),
     mapping({ from: "f", to: "left_command", toModifiers: ["left_shift"] }),
@@ -715,10 +738,18 @@ const visualModeLayer: KarabinerMapping[] = [
     mapping({ from: "j", to: "down_arrow", toModifiers: ["left_shift"] }),
     mapping({ from: "k", to: "up_arrow", toModifiers: ["left_shift"] }),
     mapping({ from: "l", to: "right_arrow", toModifiers: ["left_shift"] }),
-    layerOff({ from: "semicolon", deactivate: ["visual-mode-layer", "navigation-layer"], also: [hideNavigationLayerNotification, toKey("return_or_enter")] }),
+    layerOff({
+        from: "semicolon",
+        deactivate: ["visual-mode-layer", "navigation-layer"],
+        also: [hideNavigationLayerNotification, toKey("return_or_enter")]
+    }),
     none({ from: "quote" }),
     none({ from: "return_or_enter" }),
-    layerOff({ from: "left_shift", deactivate: ["visual-mode-layer", "navigation-layer"], also: [hideNavigationLayerNotification] }),
+    layerOff({
+        from: "left_shift",
+        deactivate: ["visual-mode-layer", "navigation-layer"],
+        also: [hideNavigationLayerNotification]
+    }),
     none({ from: "z" }),
     none({ from: "x" }),
     none({ from: "c" }),
@@ -730,14 +761,16 @@ const visualModeLayer: KarabinerMapping[] = [
     none({ from: "period" }),
     none({ from: "slash" }),
     none({ from: "right_shift" }),
-    visualModeLayerSpace,
-].map(ifLayer("navigation-layer")).map(ifLayer("visual-mode-layer"));
+    visualModeLayerSpace
+]
+    .map(ifLayer("navigation-layer"))
+    .map(ifLayer("visual-mode-layer"));
 
 // == Modifier layer =============================
 // ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
 // ___  ^   ⌥   ⌘   ⇪  ___ ___ ___ ___ ___ ___
 // ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
-//                        ⇧                   
+//                        ⇧
 const modifierLayer: KarabinerMapping[] = [
     none({ from: "tab" }),
     none({ from: "q" }),
@@ -778,7 +811,7 @@ const modifierLayer: KarabinerMapping[] = [
     none({ from: "period" }),
     none({ from: "slash" }),
     none({ from: "right_shift" }),
-    stickyModifier({ from: "spacebar", modifier: "left_shift" }),
+    stickyModifier({ from: "spacebar", modifier: "left_shift" })
 ].map(ifLayer("modifier-layer"));
 
 // == Number layer ===============================
@@ -803,7 +836,11 @@ const numberLayer: KarabinerMapping[] = [
     none({ from: "caps_lock" }),
     none({ from: "a" }),
     none({ from: "s" }),
-    mapping({ from: "d", to: "grave_accent_and_tilde", toModifiers: ["left_command", "left_shift"] }),
+    mapping({
+        from: "d",
+        to: "grave_accent_and_tilde",
+        toModifiers: ["left_command", "left_shift"]
+    }),
     mapping({ from: "f", to: "grave_accent_and_tilde", toModifiers: ["left_command"] }),
     none({ from: "g" }),
     layerOn({ from: "h", activate: "function-layer" }),
@@ -826,7 +863,9 @@ const numberLayer: KarabinerMapping[] = [
     simple({ key: "slash" }),
     mapping({ from: "right_shift", to: "slash" }),
     mapping({ from: "spacebar", to: "0" })
-].map(ifLayer("number-layer")).map(ifLayer("function-layer", FALSE));
+]
+    .map(ifLayer("number-layer"))
+    .map(ifLayer("function-layer", FALSE));
 
 // == Function layer =============================
 // ___ ___ ___ ___ ___ ___ ___ F7  F8  F9  F12 ___
@@ -871,87 +910,93 @@ const functionLayer: KarabinerMapping[] = [
     mapping({ from: "comma", to: "f2" }),
     mapping({ from: "period", to: "f3" }),
     mapping({ from: "slash", to: "f10" }),
-    none({ from: "right_shift" }),
-].map(ifLayer("number-layer")).map(ifLayer("function-layer"));
+    none({ from: "right_shift" })
+]
+    .map(ifLayer("number-layer"))
+    .map(ifLayer("function-layer"));
 
-const karabinerJsonContents = JSON.stringify({
-    "profiles": [
-        {
-            "complex_modifications": {
-                "rules": [
+const karabinerJsonContents = JSON.stringify(
+    {
+        profiles: [
+            {
+                complex_modifications: {
+                    rules: [
+                        {
+                            description: "Werner's keymap",
+                            manipulators: [
+                                ...symbolLayerLeft,
+                                ...symbolLayerRight,
+                                ...navigationLayer,
+                                ...visualModeLayer,
+                                ...modifierLayer,
+                                ...numberLayer,
+                                ...functionLayer,
+                                ...upperLayer,
+                                ...baseLayer
+                            ]
+                        }
+                    ]
+                },
+                devices: [
+                    // Chilkey ND75:
                     {
-                        "description": "Werner's keymap",
-                        "manipulators": [
-                            ...symbolLayerLeft,
-                            ...symbolLayerRight,
-                            ...navigationLayer,
-                            ...visualModeLayer,
-                            ...modifierLayer,
-                            ...numberLayer,
-                            ...functionLayer,
-                            ...upperLayer,
-                            ...baseLayer
+                        identifiers: {
+                            is_keyboard: true,
+                            product_id: 11175,
+                            vendor_id: 14005
+                        },
+                        simple_modifications: [
+                            {
+                                from: { key_code: "left_option" },
+                                to: [{ key_code: "left_command" }]
+                            },
+                            {
+                                from: { key_code: "left_command" },
+                                to: [{ key_code: "left_option" }]
+                            }
                         ]
+                    },
+
+                    // Feker Alice75:
+                    {
+                        identifiers: {
+                            is_keyboard: true,
+                            is_pointing_device: true,
+                            product_id: 12310,
+                            vendor_id: 14000
+                        },
+                        ignore: false,
+                        simple_modifications: [
+                            {
+                                from: { key_code: "left_command" },
+                                to: [{ key_code: "left_option" }]
+                            },
+                            {
+                                from: { key_code: "left_option" },
+                                to: [{ key_code: "left_command" }]
+                            }
+                        ]
+                    },
+
+                    // MMD KM40:
+                    {
+                        identifiers: {
+                            is_keyboard: true,
+                            is_pointing_device: true,
+                            product_id: 12697,
+                            vendor_id: 10473
+                        },
+                        ignore: false
                     }
-                ]
-            },
-            "devices": [
-                // Chilkey ND75:
-                {
-                    "identifiers": {
-                        "is_keyboard": true,
-                        "product_id": 11175,
-                        "vendor_id": 14005
-                    },
-                    "simple_modifications": [
-                        {
-                            "from": { "key_code": "left_option" },
-                            "to": [{ "key_code": "left_command" }]
-                        },
-                        {
-                            "from": { "key_code": "left_command" },
-                            "to": [{ "key_code": "left_option" }]
-                        }
-                    ]
-                },
-
-                // Feker Alice75:
-                {
-                    "identifiers": {
-                        "is_keyboard": true,
-                        "is_pointing_device": true,
-                        "product_id": 12310,
-                        "vendor_id": 14000
-                    },
-                    "ignore": false,
-                    "simple_modifications": [
-                        {
-                            "from": { "key_code": "left_command" },
-                            "to": [{ "key_code": "left_option" }]
-                        },
-                        {
-                            "from": { "key_code": "left_option" },
-                            "to": [{ "key_code": "left_command" }]
-                        }
-                    ]
-                },
-
-                // MMD KM40:
-                {
-                    "identifiers": {
-                        "is_keyboard": true,
-                        "is_pointing_device": true,
-                        "product_id": 12697,
-                        "vendor_id": 10473
-                    },
-                    "ignore": false
-                }
-            ],
-            "name": "Default profile",
-            "selected": true,
-            "virtual_hid_keyboard": { "keyboard_type_v2": "ansi" }
-        }
-    ]
-}, null, 2);
+                ],
+                name: "Default profile",
+                selected: true,
+                virtual_hid_keyboard: { keyboard_type_v2: "ansi" }
+            }
+        ]
+    },
+    null,
+    2
+);
 
 fs.writeFileSync("output.json", karabinerJsonContents);

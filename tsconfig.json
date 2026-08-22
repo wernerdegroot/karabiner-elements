@@ -1,10 +1,10 @@
 {
-  "extends": "@tsconfig/node18/tsconfig.json",
+    "extends": "@tsconfig/node18/tsconfig.json",
     "ts-node": {
         "swc": true
     },
     "compilerOptions": {
-      "module": "nodenext",
-      "moduleResolution": "nodenext"
+        "module": "nodenext",
+        "moduleResolution": "nodenext"
     }
 }

@@ -1,16 +1,21 @@
 {
-  "name": "node-starter",
-  "version": "0.0.0",
-  "scripts": {
-    "start": "ts-node index.ts",
-    "start:watch": "ts-node-dev .",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "dependencies": {
-    "@swc/core": "1.13.5",
-    "@tsconfig/node18": "18.2.4",
-    "@types/node": "22.0.0",
-    "ts-node": "10.9.2",
-    "typescript": "5.9.2"
-  }
+    "name": "node-starter",
+    "version": "0.0.0",
+    "scripts": {
+        "start": "ts-node index.ts",
+        "start:watch": "ts-node-dev .",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "dependencies": {
+        "@swc/core": "1.13.5",
+        "@tsconfig/node18": "18.2.4",
+        "@types/node": "22.0.0",
+        "ts-node": "10.9.2",
+        "typescript": "5.9.2"
+    },
+    "devDependencies": {
+        "prettier": "3.3.3"
+    }
 }
