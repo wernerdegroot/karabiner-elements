@@ -51,6 +51,10 @@ type KarabinerNotification = {
     };
 };
 
+type KarabinerShellCommand = {
+    shell_command: string;
+};
+
 function karabinerStickyModifier(modifier: KarabinerModifier, action: "on" | "off" | "toggle"): KarabinerStickyModifier {
     return {
         sticky_modifier: {
@@ -59,7 +63,7 @@ function karabinerStickyModifier(modifier: KarabinerModifier, action: "on" | "of
     } as KarabinerStickyModifier;
 }
 
-type KarabinerTo = KarabinerKeyTo | KarabinerMouseTo | KarabinerSetVariable | KarabinerStickyModifier | KarabinerNotification;
+type KarabinerTo = KarabinerKeyTo | KarabinerMouseTo | KarabinerSetVariable | KarabinerStickyModifier | KarabinerNotification | KarabinerShellCommand;
 
 type KarabinerCondition = {
     name: string;
@@ -114,7 +118,16 @@ function mapping(args: Mapping): KarabinerMapping {
     };
 }
 
-type LayerName = "upper-layer" | "symbol-layer-left" | "symbol-layer-right" | "navigation-layer" | "visual-mode-layer" | "modifier-layer" | "number-layer" | "function-layer";
+type LayerName =
+    | "upper-layer"
+    | "symbol-layer-left"
+    | "symbol-layer-right"
+    | "navigation-layer"
+    | "visual-mode-layer"
+    | "modifier-layer"
+    | "number-layer"
+    | "function-layer"
+    | "comma-layer";
 
 type StickyModifier = {
     from: string;
@@ -400,6 +413,120 @@ function baseLayerRightShiftFor(keyCode: string): KarabinerMapping {
     };
 }
 
+// == Comma layer (devil-mode leader) ============
+// TAB ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ BSP
+// ESC ___ ___ ___ ___ ___ ___ ___ ___ ___ RET
+// ___ ___ ___ ___ ___ ___ ___ ___  ,  ___ ___
+//                       SPC
+//
+// A step towards Emacs' devil mode. On the base layer, comma acts as a
+// leader:
+//   - Followed by space/tab/enter/backspace -> comma, then that key
+//   - Followed by any other supported key   -> ignored (with a beep)
+//   - On its own (timeout) or pressed twice -> a single comma
+const COMMA_LAYER_TIMEOUT_MS = 2000;
+
+const beep: KarabinerShellCommand = {
+    shell_command: "afplay /System/Library/Sounds/Basso.aiff"
+};
+
+const baseLayerComma: KarabinerMapping = {
+    type: "basic",
+    from: {
+        key_code: "comma",
+        modifiers: {
+            optional: ["any"]
+        }
+    },
+    parameters: {
+        "basic.to_delayed_action_delay_milliseconds": COMMA_LAYER_TIMEOUT_MS
+    },
+    to: [
+        {
+            set_variable: {
+                name: "comma-layer",
+                value: TRUE
+            }
+        }
+    ],
+    to_delayed_action: {
+        to_if_invoked: [
+            {
+                key_code: "comma"
+            },
+            {
+                set_variable: {
+                    name: "comma-layer",
+                    value: FALSE
+                }
+            }
+        ]
+    }
+};
+
+function commaThen(from: string, to: string): KarabinerMapping {
+    return layerOff({
+        from,
+        deactivate: "comma-layer",
+        also: [toKey("comma"), toKey(to)]
+    });
+}
+
+function commaIgnore(from: string): KarabinerMapping {
+    return layerOff({
+        from,
+        deactivate: "comma-layer",
+        also: [beep]
+    });
+}
+
+const commaLayer: KarabinerMapping[] = [
+    // Keys are listed left to right, top to bottom, mirroring the base layer.
+    // Whitespace / editing keys pass through as: comma then that key.
+    // Comma outputs a single comma. Everything else is ignored (with a beep).
+    commaThen("tab", "tab"),
+    commaIgnore("q"),
+    commaIgnore("w"),
+    commaIgnore("e"),
+    commaIgnore("r"),
+    commaIgnore("t"),
+    commaIgnore("y"),
+    commaIgnore("u"),
+    commaIgnore("i"),
+    commaIgnore("o"),
+    commaIgnore("p"),
+    commaThen("open_bracket", "delete_or_backspace"),
+    commaThen("delete_or_backspace", "delete_or_backspace"),
+    commaIgnore("close_bracket"),
+    commaIgnore("backslash"),
+    commaThen("caps_lock", "escape"),
+    commaIgnore("a"),
+    commaIgnore("s"),
+    commaIgnore("d"),
+    commaIgnore("f"),
+    commaIgnore("g"),
+    commaIgnore("h"),
+    commaIgnore("j"),
+    commaIgnore("k"),
+    commaIgnore("l"),
+    commaThen("semicolon", "return_or_enter"),
+    commaIgnore("quote"),
+    commaThen("return_or_enter", "return_or_enter"),
+    commaIgnore("left_shift"),
+    commaIgnore("z"),
+    commaIgnore("x"),
+    commaIgnore("c"),
+    commaIgnore("v"),
+    commaIgnore("b"),
+    commaIgnore("n"),
+    commaIgnore("m"),
+    layerOff({ from: "comma", deactivate: "comma-layer", also: [toKey("comma")] }),
+    commaIgnore("period"),
+    commaIgnore("slash"),
+    commaIgnore("right_shift"),
+    commaThen("spacebar", "spacebar")
+].map(ifLayer("comma-layer"));
+
 // == Base layer =================================
 // TAB  q   w   e   r   t   y   u   i   o   p  BSP
 // ESC  a   s   d   f   g   h   j   k   l  RET
@@ -454,7 +581,7 @@ const baseLayer: KarabinerMapping[] = [
     simple({ key: "b" }),
     simple({ key: "n" }),
     simple({ key: "m" }),
-    simple({ key: "comma" }),
+    baseLayerComma,
     simple({ key: "period" }),
     baseLayerRightShiftFor("slash"),
     baseLayerRightShiftFor("right_shift")
@@ -492,7 +619,8 @@ const upperLayer: KarabinerMapping[] = [
         fromModifiers: ["shift"],
         to: "slash",
         toModifiers: ["left_shift"]
-    })
+    }),
+    mapping({ from: "comma", fromModifiers: ["shift"], to: "comma", toModifiers: ["left_shift"] })
 ];
 
 // == Symbol layer ===============================
@@ -924,6 +1052,7 @@ const karabinerJsonContents = JSON.stringify(
                                 ...numberLayer,
                                 ...functionLayer,
                                 ...upperLayer,
+                                ...commaLayer,
                                 ...baseLayer
                             ]
                         }
