@@ -6,16 +6,7 @@ type KarabinerKeyFrom = { key_code: string };
 
 type KarabinerMouseFrom = { pointing_button: string };
 
-type KarabinerSimultaneousFrom = {
-    simultaneous: KarabinerKeyFrom[];
-    simultaneous_options?: {
-        key_down_order?: "strict";
-        key_up_order?: "strict_inverse";
-        key_up_when?: "all";
-    };
-};
-
-type KarabinerFrom = (KarabinerKeyFrom | KarabinerMouseFrom | KarabinerSimultaneousFrom) & {
+type KarabinerFrom = (KarabinerKeyFrom | KarabinerMouseFrom) & {
     modifiers?: {
         mandatory?: KarabinerModifier[];
         optional?: KarabinerModifier[];
@@ -307,31 +298,32 @@ type FromModifiers = {
 };
 
 function fromModifiers(args: FromModifiers): Pick<KarabinerFrom, "modifiers"> {
-    const fromModifiers: Pick<KarabinerFrom, "modifiers"> = {};
-
-    fromModifiers.modifiers = {
+    const modifiers: KarabinerFrom["modifiers"] = {
         optional: ["any"]
     };
 
     if (args.fromModifiers !== undefined) {
-        fromModifiers.modifiers.mandatory = args.fromModifiers;
+        modifiers.mandatory = args.fromModifiers;
     }
 
-    return fromModifiers;
+    return { modifiers };
 }
 
 const ifLayer =
     (name: LayerName, value: typeof TRUE | typeof FALSE = TRUE) =>
     (mapping: KarabinerMapping): KarabinerMapping => {
-        const conditions: KarabinerCondition[] = mapping.conditions || [];
+        const { conditions = [], ...rest } = mapping;
 
-        conditions.push({
+        const condition: KarabinerCondition = {
             name,
             type: "variable_if",
             value
-        });
+        };
 
-        return { conditions, ...mapping };
+        return {
+            conditions: [...conditions, condition],
+            ...rest
+        };
     };
 
 const baseLayerLeftShift: KarabinerMapping = {

@@ -5,6 +5,7 @@
     },
     "compilerOptions": {
         "module": "nodenext",
-        "moduleResolution": "nodenext"
+        "moduleResolution": "nodenext",
+        "types": ["node"]
     }
 }
