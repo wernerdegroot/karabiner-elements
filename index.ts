@@ -127,7 +127,8 @@ type LayerName =
     | "modifier-layer"
     | "number-layer"
     | "function-layer"
-    | "comma-layer";
+    | "comma-layer"
+    | "comma-mod-layer";
 
 type StickyModifier = {
     from: string;
@@ -414,16 +415,22 @@ function baseLayerRightShiftFor(keyCode: string): KarabinerMapping {
 }
 
 // == Comma layer (devil-mode leader) ============
-// TAB ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ BSP
-// ESC ___ ___ ___ ___ ___ ___ ___ ___ ___ RET
-// ___ ___ ___ ___ ___ ___ ___ ___  ,  ___ ___
+// TAB ⌘+Q ⌘+W ___ ___ ___ ___ ___ ___ ___ ___ BSP
+// ESC  ⇧   ^   ⌥   ⌘   ⇪  ___ ___ ___ ___ RET
+// ___ ⌘+Z ⌘+X ⌘+C ⌘+V ___ ___ ___  ,  ___ ___
 //                       SPC
 //
 // A step towards Emacs' devil mode. On the base layer, comma acts as a
 // leader:
 //   - Followed by space/tab/enter/backspace -> comma, then that key
+//   - Followed by a/s/d/f -> arms a sticky ⇧/^/⌥/⌘ and waits for more
+//     sticky modifiers; the next non-modifier key is then sent as normal
+//     with those modifiers applied (e.g. ", f d q" -> ⌘⌥Q)
+//   - Followed by q/w/z/x/c/v -> the matching ⌘ shortcut (⌘Q/⌘W/⌘Z/...)
+//   - Followed by g -> caps lock
 //   - Followed by any other supported key   -> ignored (with a beep)
 //   - On its own (timeout) or pressed twice -> a single comma
+
 const COMMA_LAYER_TIMEOUT_MS = 2000;
 
 const beep: KarabinerShellCommand = {
@@ -480,13 +487,52 @@ function commaIgnore(from: string): KarabinerMapping {
     });
 }
 
+// From the leader, map straight to a shortcut (no comma), e.g. , z -> ⌘Z.
+// Exits the leader.
+function commaTo(from: string, to: string, toModifiers?: KarabinerModifier[]): KarabinerMapping {
+    return layerOff({
+        from,
+        deactivate: "comma-layer",
+        also: [toModifiers === undefined ? toKey(to) : { key_code: to, modifiers: toModifiers }]
+    });
+}
+
+// From the leader, a/s/d/f arm a sticky modifier and switch to the
+// modifier-collecting layer so further modifiers can be chorded.
+function commaStartModifier(from: string, modifier: KarabinerModifier): KarabinerMapping {
+    return {
+        type: "basic",
+        from: {
+            key_code: from,
+            modifiers: {
+                optional: ["any"]
+            }
+        },
+        to: [
+            {
+                set_variable: {
+                    name: "comma-layer",
+                    value: FALSE
+                }
+            },
+            {
+                set_variable: {
+                    name: "comma-mod-layer",
+                    value: TRUE
+                }
+            },
+            karabinerStickyModifier(modifier, "toggle")
+        ]
+    };
+}
+
 const commaLayer: KarabinerMapping[] = [
     // Keys are listed left to right, top to bottom, mirroring the base layer.
     // Whitespace / editing keys pass through as: comma then that key.
     // Comma outputs a single comma. Everything else is ignored (with a beep).
     commaThen("tab", "tab"),
-    commaIgnore("q"),
-    commaIgnore("w"),
+    commaTo("q", "q", ["left_command"]),
+    commaTo("w", "w", ["left_command"]),
     commaIgnore("e"),
     commaIgnore("r"),
     commaIgnore("t"),
@@ -500,11 +546,11 @@ const commaLayer: KarabinerMapping[] = [
     commaIgnore("close_bracket"),
     commaIgnore("backslash"),
     commaThen("caps_lock", "escape"),
-    commaIgnore("a"),
-    commaIgnore("s"),
-    commaIgnore("d"),
-    commaIgnore("f"),
-    commaIgnore("g"),
+    commaStartModifier("a", "left_shift"),
+    commaStartModifier("s", "left_control"),
+    commaStartModifier("d", "left_option"),
+    commaStartModifier("f", "left_command"),
+    commaTo("g", "caps_lock"),
     commaIgnore("h"),
     commaIgnore("j"),
     commaIgnore("k"),
@@ -513,10 +559,10 @@ const commaLayer: KarabinerMapping[] = [
     commaIgnore("quote"),
     commaThen("return_or_enter", "return_or_enter"),
     commaIgnore("left_shift"),
-    commaIgnore("z"),
-    commaIgnore("x"),
-    commaIgnore("c"),
-    commaIgnore("v"),
+    commaTo("z", "z", ["left_command"]),
+    commaTo("x", "x", ["left_command"]),
+    commaTo("c", "c", ["left_command"]),
+    commaTo("v", "v", ["left_command"]),
     commaIgnore("b"),
     commaIgnore("n"),
     commaIgnore("m"),
@@ -586,6 +632,63 @@ const baseLayer: KarabinerMapping[] = [
     baseLayerRightShiftFor("slash"),
     baseLayerRightShiftFor("right_shift")
 ];
+
+// == Comma modifier layer (collecting sticky modifiers) ===
+// Reached from the comma leader via a/s/d/f. Here a/s/d/f keep toggling
+// sticky modifiers (staying in this layer so they can be chorded), while
+// every other key clears the layer and behaves exactly like the base
+// layer, letting Karabiner apply the accumulated sticky modifiers. Reusing
+// the base layer means duos still work, so e.g. ", f <hold>[ q" activates
+// the symbol layer and yields ⌘ + the symbol on q.
+function collectStickyModifier(from: string, modifier: KarabinerModifier): KarabinerMapping {
+    return {
+        type: "basic",
+        from: {
+            key_code: from,
+            modifiers: {
+                optional: ["any"]
+            }
+        },
+        to: [
+            {
+                set_variable: {
+                    name: "comma-mod-layer",
+                    value: TRUE
+                }
+            },
+            karabinerStickyModifier(modifier, "toggle")
+        ]
+    };
+}
+
+function exitCommaModifierLayer(mapping: KarabinerMapping): KarabinerMapping {
+    return {
+        ...mapping,
+        to: [
+            {
+                set_variable: {
+                    name: "comma-mod-layer",
+                    value: FALSE
+                }
+            },
+            ...(mapping.to ?? [])
+        ]
+    };
+}
+
+const commaModifierLayer: KarabinerMapping[] = [
+    // Keep collecting sticky modifiers.
+    collectStickyModifier("a", "left_shift"),
+    collectStickyModifier("s", "left_control"),
+    collectStickyModifier("d", "left_option"),
+    collectStickyModifier("f", "left_command"),
+    // Comma escapes back to the base layer, keeping any armed sticky modifiers.
+    layerOff({ from: "comma", deactivate: "comma-mod-layer" }),
+    // Spacebar isn't part of the base layer, so send it explicitly.
+    exitCommaModifierLayer(simple({ key: "spacebar" })),
+    // Every other key exits the layer and behaves like the base layer.
+    ...baseLayer.filter((mapping) => !["a", "s", "d", "f", "spacebar", "comma"].includes((mapping.from as KarabinerKeyFrom).key_code)).map(exitCommaModifierLayer)
+].map(ifLayer("comma-mod-layer"));
 
 // == Upper layer ================================
 // ___  Q   W   E   R   T   Y   U   I   O   P  DEL
@@ -1053,6 +1156,7 @@ const karabinerJsonContents = JSON.stringify(
                                 ...functionLayer,
                                 ...upperLayer,
                                 ...commaLayer,
+                                ...commaModifierLayer,
                                 ...baseLayer
                             ]
                         }
