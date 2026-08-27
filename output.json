@@ -6905,6 +6905,13 @@
                 ]
               },
               {
+                "conditions": [
+                  {
+                    "name": "upper-layer",
+                    "type": "variable_if",
+                    "value": 1
+                  }
+                ],
                 "type": "basic",
                 "from": {
                   "key_code": "comma",
@@ -6945,12 +6952,6 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
                     "key_code": "comma"
                   },
                   {
@@ -6976,12 +6977,6 @@
                   }
                 },
                 "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
                   {
                     "key_code": "q",
                     "modifiers": [
@@ -7009,12 +7004,6 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
                     "key_code": "w",
                     "modifiers": [
                       "left_command"
@@ -7041,12 +7030,6 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
                   }
                 ]
@@ -7069,12 +7052,6 @@
                   }
                 },
                 "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
                   {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
                   }
@@ -7099,12 +7076,6 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
                   }
                 ]
@@ -7127,12 +7098,6 @@
                   }
                 },
                 "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
                   {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
                   }
@@ -7157,12 +7122,6 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
                   }
                 ]
@@ -7185,12 +7144,6 @@
                   }
                 },
                 "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
                   {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
                   }
@@ -7215,12 +7168,6 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
                   }
                 ]
@@ -7244,12 +7191,6 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
                   }
                 ]
@@ -7272,12 +7213,6 @@
                   }
                 },
                 "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
                   {
                     "key_code": "comma"
                   },
@@ -7305,12 +7240,6 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
                     "key_code": "comma"
                   },
                   {
@@ -7337,12 +7266,6 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
                   }
                 ]
@@ -7366,12 +7289,6 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
                   }
                 ]
@@ -7394,12 +7311,6 @@
                   }
                 },
                 "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
                   {
                     "key_code": "comma"
                   },
@@ -7427,18 +7338,6 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 1
-                    }
-                  },
-                  {
                     "sticky_modifier": {
                       "left_shift": "toggle"
                     }
@@ -7463,18 +7362,6 @@
                   }
                 },
                 "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 1
-                    }
-                  },
                   {
                     "sticky_modifier": {
                       "left_control": "toggle"
@@ -7501,18 +7388,6 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 1
-                    }
-                  },
-                  {
                     "sticky_modifier": {
                       "left_option": "toggle"
                     }
@@ -7537,18 +7412,6 @@
                   }
                 },
                 "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 1
-                    }
-                  },
                   {
                     "sticky_modifier": {
                       "left_command": "toggle"
@@ -7575,12 +7438,6 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
                     "key_code": "caps_lock"
                   }
                 ]
@@ -7603,12 +7460,6 @@
                   }
                 },
                 "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
                   {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
                   }
@@ -7633,12 +7484,6 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
                   }
                 ]
@@ -7661,12 +7506,6 @@
                   }
                 },
                 "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
                   {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
                   }
@@ -7691,12 +7530,6 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
                   }
                 ]
@@ -7719,12 +7552,6 @@
                   }
                 },
                 "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
                   {
                     "key_code": "comma"
                   },
@@ -7752,12 +7579,6 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
                   }
                 ]
@@ -7780,12 +7601,6 @@
                   }
                 },
                 "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
                   {
                     "key_code": "comma"
                   },
@@ -7813,12 +7628,6 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
                   }
                 ]
@@ -7841,12 +7650,6 @@
                   }
                 },
                 "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
                   {
                     "key_code": "z",
                     "modifiers": [
@@ -7874,12 +7677,6 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
                     "key_code": "x",
                     "modifiers": [
                       "left_command"
@@ -7905,12 +7702,6 @@
                   }
                 },
                 "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
                   {
                     "key_code": "c",
                     "modifiers": [
@@ -7938,12 +7729,6 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
                     "key_code": "v",
                     "modifiers": [
                       "left_command"
@@ -7970,12 +7755,6 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
                   }
                 ]
@@ -7998,12 +7777,6 @@
                   }
                 },
                 "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
                   {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
                   }
@@ -8028,42 +7801,7 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "comma",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "comma"
                   }
                 ]
               },
@@ -8085,12 +7823,6 @@
                   }
                 },
                 "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
                   {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
                   }
@@ -8115,12 +7847,6 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
                   }
                 ]
@@ -8144,12 +7870,6 @@
                 },
                 "to": [
                   {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
-                  {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
                   }
                 ]
@@ -8172,1369 +7892,11 @@
                   }
                 },
                 "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-layer",
-                      "value": 0
-                    }
-                  },
                   {
                     "key_code": "comma"
                   },
                   {
                     "key_code": "spacebar"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "a",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 1
-                    }
-                  },
-                  {
-                    "sticky_modifier": {
-                      "left_shift": "toggle"
-                    }
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "s",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 1
-                    }
-                  },
-                  {
-                    "sticky_modifier": {
-                      "left_control": "toggle"
-                    }
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "d",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 1
-                    }
-                  },
-                  {
-                    "sticky_modifier": {
-                      "left_option": "toggle"
-                    }
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "f",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 1
-                    }
-                  },
-                  {
-                    "sticky_modifier": {
-                      "left_command": "toggle"
-                    }
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "comma",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "spacebar",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "spacebar"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "tab",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to_if_alone": [
-                  {
-                    "key_code": "tab"
-                  }
-                ],
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "set_variable": {
-                      "name": "symbol-layer-right",
-                      "value": 1
-                    }
-                  }
-                ],
-                "to_after_key_up": [
-                  {
-                    "set_variable": {
-                      "name": "symbol-layer-right",
-                      "value": 0
-                    }
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "q",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "q"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "w",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "w"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "e",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "e"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "r",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "r"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "t",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "t"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "y",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "y"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "u",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "u"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "i",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "i"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "o",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "o"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "p",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "p"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "open_bracket",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to_if_alone": [
-                  {
-                    "key_code": "delete_or_backspace"
-                  }
-                ],
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "set_variable": {
-                      "name": "symbol-layer-left",
-                      "value": 1
-                    }
-                  }
-                ],
-                "to_after_key_up": [
-                  {
-                    "set_variable": {
-                      "name": "symbol-layer-left",
-                      "value": 0
-                    }
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "delete_or_backspace",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to_if_alone": [
-                  {
-                    "key_code": "delete_or_backspace"
-                  }
-                ],
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "set_variable": {
-                      "name": "symbol-layer-left",
-                      "value": 1
-                    }
-                  }
-                ],
-                "to_after_key_up": [
-                  {
-                    "set_variable": {
-                      "name": "symbol-layer-left",
-                      "value": 0
-                    }
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "close_bracket",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "vk_none"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "backslash",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "vk_none"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "caps_lock",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to_if_alone": [
-                  {
-                    "key_code": "escape"
-                  }
-                ],
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "set_variable": {
-                      "name": "number-layer",
-                      "value": 1
-                    }
-                  }
-                ],
-                "to_after_key_up": [
-                  {
-                    "set_variable": {
-                      "name": "number-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "set_variable": {
-                      "name": "function-layer",
-                      "value": 0
-                    }
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "g",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "g"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "h",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "h"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "j",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "j"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "k",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "k"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "l",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "l"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "semicolon",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to_if_alone": [
-                  {
-                    "key_code": "return_or_enter"
-                  }
-                ],
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "set_variable": {
-                      "name": "modifier-layer",
-                      "value": 1
-                    }
-                  }
-                ],
-                "to_after_key_up": [
-                  {
-                    "set_variable": {
-                      "name": "modifier-layer",
-                      "value": 0
-                    }
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "quote",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "vk_none"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "return_or_enter",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to_if_alone": [
-                  {
-                    "key_code": "return_or_enter"
-                  }
-                ],
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "set_variable": {
-                      "name": "modifier-layer",
-                      "value": 1
-                    }
-                  }
-                ],
-                "to_after_key_up": [
-                  {
-                    "set_variable": {
-                      "name": "modifier-layer",
-                      "value": 0
-                    }
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "left_shift",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "set_variable": {
-                      "name": "upper-layer",
-                      "value": 1
-                    }
-                  },
-                  {
-                    "key_code": "left_shift"
-                  }
-                ],
-                "to_if_alone": [
-                  {
-                    "set_notification_message": {
-                      "id": "navigation-layer",
-                      "text": "navigation-layer"
-                    }
-                  },
-                  {
-                    "set_variable": {
-                      "name": "navigation-layer",
-                      "value": 1
-                    }
-                  }
-                ],
-                "to_after_key_up": [
-                  {
-                    "set_variable": {
-                      "name": "upper-layer",
-                      "value": 0
-                    }
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "z",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "z"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "x",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "x"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "c",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "c"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "v",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "v"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "b",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "b"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "n",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "n"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "m",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "m"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "period",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "key_code": "period"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "slash",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "set_variable": {
-                      "name": "upper-layer",
-                      "value": 1
-                    }
-                  },
-                  {
-                    "key_code": "right_shift"
-                  }
-                ],
-                "to_after_key_up": [
-                  {
-                    "set_variable": {
-                      "name": "upper-layer",
-                      "value": 0
-                    }
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "comma-mod-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "right_shift",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "comma-mod-layer",
-                      "value": 0
-                    }
-                  },
-                  {
-                    "set_variable": {
-                      "name": "upper-layer",
-                      "value": 1
-                    }
-                  },
-                  {
-                    "key_code": "right_shift"
-                  }
-                ],
-                "to_after_key_up": [
-                  {
-                    "set_variable": {
-                      "name": "upper-layer",
-                      "value": 0
-                    }
                   }
                 ]
               },
@@ -10254,9 +8616,11 @@
                     ]
                   }
                 },
-                "parameters": {
-                  "basic.to_delayed_action_delay_milliseconds": 2000
-                },
+                "to_if_alone": [
+                  {
+                    "key_code": "comma"
+                  }
+                ],
                 "to": [
                   {
                     "set_variable": {
@@ -10265,19 +8629,14 @@
                     }
                   }
                 ],
-                "to_delayed_action": {
-                  "to_if_invoked": [
-                    {
-                      "key_code": "comma"
-                    },
-                    {
-                      "set_variable": {
-                        "name": "comma-layer",
-                        "value": 0
-                      }
+                "to_after_key_up": [
+                  {
+                    "set_variable": {
+                      "name": "comma-layer",
+                      "value": 0
                     }
-                  ]
-                }
+                  }
+                ]
               },
               {
                 "type": "basic",

@@ -577,12 +577,10 @@
                 <div class="key w125u ghosted"></div>
             </div>
 
-            <h3>Comma (leader)</h3>
-            On the Base layer, comma acts as a leader (a step towards Emacs' devil mode). Pass-through keys emit a comma then that key; <kbd>a</kbd>/<kbd>s</kbd>/<kbd>d</kbd>/<kbd
-                >f</kbd
-            >
-            arm a sticky modifier; <kbd>q</kbd>/<kbd>w</kbd>/<kbd>z</kbd>/<kbd>x</kbd>/<kbd>c</kbd>/<kbd>v</kbd> send a ⌘ shortcut; <kbd>g</kbd> is caps lock; comma on its own (or
-            twice) is a single comma; any other key beeps.
+            <h3>Comma (hold)</h3>
+            On the Base layer, comma is a duo (a step towards Emacs' devil mode): tap it for a literal comma, or hold it to activate this layer (like caps lock → Esc/Number). While
+            held: pass-through keys emit a comma then that key; <kbd>a</kbd>/<kbd>s</kbd>/<kbd>d</kbd>/<kbd>f</kbd> toggle a sticky modifier;
+            <kbd>q</kbd>/<kbd>w</kbd>/<kbd>z</kbd>/<kbd>x</kbd>/<kbd>c</kbd>/<kbd>v</kbd> send a ⌘ shortcut; <kbd>g</kbd> is caps lock; any other key beeps.
             <div class="row">
                 <div class="key w150u red">, Tab</div>
                 <div class="key">⌘Q</div>
@@ -638,8 +636,8 @@
                 <div class="key w125u ghosted"></div>
                 <div class="key w125u ghosted"></div>
             </div>
-            After arming a modifier you enter a collecting state: keep pressing <kbd>a</kbd>/<kbd>s</kbd>/<kbd>d</kbd>/<kbd>f</kbd> to stack ⇧/^/⌥/⌘, comma escapes back to Base,
-            and any other key is sent with the accumulated modifiers (e.g. <kbd>,</kbd> <kbd>f</kbd> <kbd>d</kbd> <kbd>q</kbd> → <kbd>⌘</kbd> + <kbd>⌥</kbd> + <kbd>Q</kbd>).
+            Keep comma held and tap <kbd>a</kbd>/<kbd>s</kbd>/<kbd>d</kbd>/<kbd>f</kbd> to stack sticky ⇧/^/⌥/⌘, then release comma and press the target key (e.g. hold
+            <kbd>,</kbd>, <kbd>f</kbd>, <kbd>d</kbd>, release, <kbd>q</kbd> → <kbd>⌘</kbd> + <kbd>⌥</kbd> + <kbd>Q</kbd>).
 
             <h3>Other combinations</h3>
             There are a couple of same-hand key combinations to enable switching between apps, windows and files:
