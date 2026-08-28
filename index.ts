@@ -1,357 +1,15 @@
 import fs from "fs";
+import * as KT from "./karabiner-types";
+import { mapping, simple, none, duo, layerOn, layerOff, stickyModifier, ifLayer, toKey, from, beep } from "./helpers";
 
-type KarabinerModifier = "left_shift" | "right_shift" | "shift" | "left_control" | "right_control" | "left_option" | "right_option" | "left_command" | "right_command" | "any";
-
-type KarabinerKeyFrom = { key_code: string };
-
-type KarabinerMouseFrom = { pointing_button: string };
-
-type KarabinerFrom = (KarabinerKeyFrom | KarabinerMouseFrom) & {
-    modifiers?: {
-        mandatory?: KarabinerModifier[];
-        optional?: KarabinerModifier[];
-    };
-};
-
-type KarabinerKeyTo = {
-    key_code: string;
-    modifiers?: KarabinerModifier[];
-    repeat?: boolean;
-    lazy?: boolean;
-    hold_down_milliseconds?: number;
-};
-
-type KarabinerMouseTo = {
-    pointing_button: string;
-    modifiers?: KarabinerModifier[];
-};
-
-const TRUE: 1 = 1;
-const FALSE: 0 = 0;
-
-type KarabinerSetVariable = {
-    set_variable: {
-        name: string;
-        value: typeof TRUE | typeof FALSE;
-    };
-};
-
-type KarabinerStickyModifier = {
-    [M in KarabinerModifier]: {
-        sticky_modifier: {
-            [K in M]: "on" | "off" | "toggle";
-        };
-    };
-}[KarabinerModifier];
-
-type KarabinerNotification = {
-    set_notification_message: {
-        id: string;
-        text: string;
-    };
-};
-
-type KarabinerShellCommand = {
-    shell_command: string;
-};
-
-function karabinerStickyModifier(modifier: KarabinerModifier, action: "on" | "off" | "toggle"): KarabinerStickyModifier {
-    return {
-        sticky_modifier: {
-            [modifier]: action
-        }
-    } as KarabinerStickyModifier;
-}
-
-type KarabinerTo = KarabinerKeyTo | KarabinerMouseTo | KarabinerSetVariable | KarabinerStickyModifier | KarabinerNotification | KarabinerShellCommand;
-
-type KarabinerCondition = {
-    name: string;
-    type: "variable_if";
-    value: typeof TRUE | typeof FALSE;
-};
-
-type KarabinerMapping = {
-    type: "basic";
-    conditions?: KarabinerCondition[];
-    parameters?: {
-        "basic.to_if_held_down_threshold_milliseconds"?: number;
-        "basic.to_delayed_action_delay_milliseconds"?: number;
-    };
-    from: KarabinerFrom;
-    to?: KarabinerTo[];
-    to_delayed_action?: {
-        to_if_invoked?: KarabinerTo[];
-        to_if_canceled?: KarabinerTo[];
-    };
-    to_if_held_down?: KarabinerTo[];
-    to_if_alone?: KarabinerTo[];
-    to_after_key_up?: KarabinerTo[];
-};
-
-type Mapping = {
-    from: string;
-    fromModifiers?: KarabinerModifier[];
-    to: string;
-    toModifiers?: KarabinerModifier[];
-    also?: KarabinerTo[];
-};
-
-function mapping(args: Mapping): KarabinerMapping {
-    const toModifiers: Pick<KarabinerKeyTo, "modifiers"> = args.toModifiers == undefined ? {} : { modifiers: args.toModifiers };
-
-    const also = args.also ?? [];
-
-    return {
-        type: "basic",
-        from: {
-            key_code: args.from,
-            ...fromModifiers(args)
-        },
-        to: [
-            {
-                key_code: args.to,
-                ...toModifiers
-            },
-            ...also
-        ]
-    };
-}
-
-type LayerName =
-    | "upper-layer"
-    | "symbol-layer-left"
-    | "symbol-layer-right"
-    | "navigation-layer"
-    | "visual-mode-layer"
-    | "modifier-layer"
-    | "number-layer"
-    | "function-layer"
-    | "comma-layer";
-
-type StickyModifier = {
-    from: string;
-    fromModifiers?: KarabinerModifier[];
-    modifier: KarabinerModifier;
-};
-
-function stickyModifier(args: StickyModifier): KarabinerMapping {
-    return {
-        type: "basic",
-        from: {
-            key_code: args.from,
-            ...fromModifiers(args)
-        },
-        to: [karabinerStickyModifier(args.modifier, "toggle")]
-    };
-}
-
-type Layer = {
-    from: string;
-    fromModifiers?: KarabinerModifier[];
-    activate: LayerName;
-    alsoDeactivate?: LayerName[];
-};
-
-function layer(args: Layer): KarabinerMapping {
-    const alsoDeactivate: LayerName[] = args.alsoDeactivate || [];
-    const deactivate: KarabinerSetVariable[] = [args.activate, ...alsoDeactivate].map((name) => ({
-        set_variable: {
-            name,
-            value: FALSE
-        }
-    }));
-
-    return {
-        type: "basic",
-        from: {
-            key_code: args.from,
-            ...fromModifiers(args)
-        },
-        to: [
-            {
-                set_variable: {
-                    name: args.activate,
-                    value: TRUE
-                }
-            }
-        ],
-        to_after_key_up: deactivate
-    };
-}
-
-type LayerOn = {
-    from: string;
-    fromModifiers?: KarabinerModifier[];
-    activate: LayerName;
-};
-
-function layerOn(args: LayerOn): KarabinerMapping {
-    return {
-        type: "basic",
-        from: {
-            key_code: args.from,
-            ...fromModifiers(args)
-        },
-        to: [
-            {
-                set_variable: {
-                    name: args.activate,
-                    value: TRUE
-                }
-            }
-        ]
-    };
-}
-
-type LayerOff = {
-    from: string;
-    fromModifiers?: KarabinerModifier[];
-    deactivate: LayerName | LayerName[];
-    also?: KarabinerTo[];
-};
-
-function layerOff(args: LayerOff): KarabinerMapping {
-    const toDeactivate = Array.isArray(args.deactivate) ? args.deactivate : [args.deactivate];
-    const also = args.also ?? [];
-
-    return {
-        type: "basic",
-        from: {
-            key_code: args.from,
-            ...fromModifiers(args)
-        },
-        to: [
-            ...toDeactivate.map((name) => ({
-                set_variable: {
-                    name,
-                    value: FALSE
-                }
-            })),
-            ...also
-        ]
-    };
-}
-
-type SimplifiedMapping = {
-    key: string;
-    toModifiers?: KarabinerModifier[];
-};
-
-function simple(args: SimplifiedMapping): KarabinerMapping {
-    return mapping({
-        from: args.key,
-        to: args.key,
-        toModifiers: args.toModifiers
-    });
-}
-
-type NoneMapping = {
-    from: string;
-    fromModifiers?: KarabinerModifier[];
-};
-
-function none(args: NoneMapping): KarabinerMapping {
-    return {
-        type: "basic",
-        from: {
-            key_code: args.from,
-            ...fromModifiers(args)
-        },
-        to: [
-            {
-                key_code: "vk_none"
-            }
-        ]
-    };
-}
-
-type DuoMapping = Mapping & {
-    activate: LayerName;
-    alsoDeactivate?: LayerName[];
-};
-
-function duo(args: DuoMapping): KarabinerMapping {
-    const toModifiers: Pick<KarabinerKeyTo, "modifiers"> = args.toModifiers == undefined ? {} : { modifiers: args.toModifiers };
-
-    const alsoDeactivate: LayerName[] = args.alsoDeactivate || [];
-    const deactivate: KarabinerSetVariable[] = [args.activate, ...alsoDeactivate].map((name) => ({
-        set_variable: {
-            name,
-            value: FALSE
-        }
-    }));
-
-    return {
-        type: "basic",
-        from: {
-            key_code: args.from,
-            ...fromModifiers(args)
-        },
-        to_if_alone: [
-            {
-                key_code: args.to,
-                ...toModifiers
-            }
-        ],
-        to: [
-            {
-                set_variable: {
-                    name: args.activate,
-                    value: TRUE
-                }
-            }
-        ],
-        to_after_key_up: deactivate
-    };
-}
-
-type FromModifiers = {
-    fromModifiers?: KarabinerModifier[];
-};
-
-function fromModifiers(args: FromModifiers): Pick<KarabinerFrom, "modifiers"> {
-    const modifiers: KarabinerFrom["modifiers"] = {
-        optional: ["any"]
-    };
-
-    if (args.fromModifiers !== undefined) {
-        modifiers.mandatory = args.fromModifiers;
-    }
-
-    return { modifiers };
-}
-
-const ifLayer =
-    (name: LayerName, value: typeof TRUE | typeof FALSE = TRUE) =>
-    (mapping: KarabinerMapping): KarabinerMapping => {
-        const { conditions = [], ...rest } = mapping;
-
-        const condition: KarabinerCondition = {
-            name,
-            type: "variable_if",
-            value
-        };
-
-        return {
-            conditions: [...conditions, condition],
-            ...rest
-        };
-    };
-
-const baseLayerLeftShift: KarabinerMapping = {
+const baseLayerLeftShift: KT.KarabinerMapping = {
     type: "basic",
-    from: {
-        key_code: "left_shift",
-        modifiers: {
-            optional: ["any"]
-        }
-    },
+    ...from({ from: "left_shift" }),
     to: [
         {
             set_variable: {
                 name: "upper-layer",
-                value: TRUE
+                value: KT.TRUE
             }
         },
         {
@@ -368,7 +26,7 @@ const baseLayerLeftShift: KarabinerMapping = {
         {
             set_variable: {
                 name: "navigation-layer",
-                value: TRUE
+                value: KT.TRUE
             }
         }
     ],
@@ -376,26 +34,21 @@ const baseLayerLeftShift: KarabinerMapping = {
         {
             set_variable: {
                 name: "upper-layer",
-                value: FALSE
+                value: KT.FALSE
             }
         }
     ]
 };
 
-function baseLayerRightShiftFor(keyCode: string): KarabinerMapping {
+function baseLayerRightShiftFor(keyCode: string): KT.KarabinerMapping {
     return {
         type: "basic",
-        from: {
-            key_code: keyCode,
-            modifiers: {
-                optional: ["any"]
-            }
-        },
+        ...from({ from: keyCode }),
         to: [
             {
                 set_variable: {
                     name: "upper-layer",
-                    value: TRUE
+                    value: KT.TRUE
                 }
             },
             {
@@ -406,7 +59,7 @@ function baseLayerRightShiftFor(keyCode: string): KarabinerMapping {
             {
                 set_variable: {
                     name: "upper-layer",
-                    value: FALSE
+                    value: KT.FALSE
                 }
             }
         ]
@@ -430,56 +83,28 @@ function baseLayerRightShiftFor(keyCode: string): KarabinerMapping {
 //   - g -> caps lock
 //   - any other supported key -> ignored (with a beep)
 
-const beep: KarabinerShellCommand = {
-    shell_command: "afplay /System/Library/Sounds/Basso.aiff"
-};
-
-const baseLayerComma: KarabinerMapping = duo({ from: "comma", to: "comma", activate: "comma-layer" });
-
 // While comma is held: comma, then that key (e.g. comma + space -> ", ").
-function commaThen(from: string, to: string): KarabinerMapping {
+// This is to prevent regular roll-overs involving the comma key from
+// triggering keys on the modifier layer.
+function commaThen(from: string, to: string): KT.KarabinerMapping {
     return mapping({ from, to: "comma", also: [toKey(to)] });
 }
 
-function commaIgnore(from: string): KarabinerMapping {
+function commaIgnore(key: string): KT.KarabinerMapping {
     return {
         type: "basic",
-        from: {
-            key_code: from,
-            modifiers: {
-                optional: ["any"]
-            }
-        },
+        ...from({ from: key }),
         to: [beep]
     };
 }
 
-// Map straight to a shortcut, e.g. comma + z -> ⌘Z.
-function commaTo(from: string, to: string, toModifiers?: KarabinerModifier[]): KarabinerMapping {
-    return mapping({ from, to, toModifiers });
-}
-
-// Toggle a sticky modifier; keep comma held to stack more.
-function commaSticky(from: string, modifier: KarabinerModifier): KarabinerMapping {
-    return {
-        type: "basic",
-        from: {
-            key_code: from,
-            modifiers: {
-                optional: ["any"]
-            }
-        },
-        to: [karabinerStickyModifier(modifier, "toggle")]
-    };
-}
-
-const commaLayer: KarabinerMapping[] = [
+const commaLayer: KT.KarabinerMapping[] = [
     // Keys are listed left to right, top to bottom, mirroring the base layer.
     // Whitespace / editing keys pass through as: comma then that key.
     // Comma outputs a single comma. Everything else is ignored (with a beep).
     commaThen("tab", "tab"),
-    commaTo("q", "q", ["left_command"]),
-    commaTo("w", "w", ["left_command"]),
+    mapping({ from: "q", to: "q", toModifiers: ["left_command"] }),
+    mapping({ from: "w", to: "w", toModifiers: ["left_command"] }),
     commaIgnore("e"),
     commaIgnore("r"),
     commaIgnore("t"),
@@ -493,11 +118,11 @@ const commaLayer: KarabinerMapping[] = [
     commaIgnore("close_bracket"),
     commaIgnore("backslash"),
     commaThen("caps_lock", "escape"),
-    commaSticky("a", "left_shift"),
-    commaSticky("s", "left_control"),
-    commaSticky("d", "left_option"),
-    commaSticky("f", "left_command"),
-    commaTo("g", "caps_lock"),
+    stickyModifier({ from: "a", modifier: "left_shift" }),
+    stickyModifier({ from: "s", modifier: "left_control" }),
+    stickyModifier({ from: "d", modifier: "left_option" }),
+    stickyModifier({ from: "f", modifier: "left_command" }),
+    mapping({ from: "g", to: "caps_lock" }),
     commaIgnore("h"),
     commaIgnore("j"),
     commaIgnore("k"),
@@ -506,10 +131,10 @@ const commaLayer: KarabinerMapping[] = [
     commaIgnore("quote"),
     commaThen("return_or_enter", "return_or_enter"),
     commaIgnore("left_shift"),
-    commaTo("z", "z", ["left_command"]),
-    commaTo("x", "x", ["left_command"]),
-    commaTo("c", "c", ["left_command"]),
-    commaTo("v", "v", ["left_command"]),
+    mapping({ from: "z", to: "z", toModifiers: ["left_command"] }),
+    mapping({ from: "x", to: "x", toModifiers: ["left_command"] }),
+    mapping({ from: "c", to: "c", toModifiers: ["left_command"] }),
+    mapping({ from: "v", to: "v", toModifiers: ["left_command"] }),
     commaIgnore("b"),
     commaIgnore("n"),
     commaIgnore("m"),
@@ -523,7 +148,7 @@ const commaLayer: KarabinerMapping[] = [
 // TAB  q   w   e   r   t   y   u   i   o   p  BSP
 // ESC  a   s   d   f   g   h   j   k   l  RET
 // ___  z   x   c   v   b   n   m   ,   .  ___
-const baseLayer: KarabinerMapping[] = [
+const baseLayer: KT.KarabinerMapping[] = [
     duo({ from: "tab", to: "tab", activate: "symbol-layer-right" }),
     simple({ key: "q" }),
     simple({ key: "w" }),
@@ -573,7 +198,7 @@ const baseLayer: KarabinerMapping[] = [
     simple({ key: "b" }),
     simple({ key: "n" }),
     simple({ key: "m" }),
-    baseLayerComma,
+    duo({ from: "comma", to: "comma", activate: "comma-layer" }),
     simple({ key: "period" }),
     baseLayerRightShiftFor("slash"),
     baseLayerRightShiftFor("right_shift")
@@ -583,7 +208,7 @@ const baseLayer: KarabinerMapping[] = [
 // ___  Q   W   E   R   T   Y   U   I   O   P  DEL
 // ___  A   S   D   F   G   H   J   K   L   :
 // ___  Z   X   C   V   B   N   M   <   >   ?
-const upperLayer: KarabinerMapping[] = [
+const upperLayer: KT.KarabinerMapping[] = [
     mapping({ from: "open_bracket", fromModifiers: ["shift"], to: "delete_forward" }),
     none({ from: "close_bracket", fromModifiers: ["shift"] }),
     none({ from: "backslash", fromModifiers: ["shift"] }),
@@ -620,7 +245,7 @@ const upperLayer: KarabinerMapping[] = [
 // ___  '   <   >   "   %   ~   &   (   )   _  ___
 // ___  !   -   +   =   #   `   |   {   }  ___
 // ___  ^   /   *   \  ___  @  EMO  [   ]   $
-const symbolLayerLeft: KarabinerMapping[] = [
+const symbolLayerLeft: KT.KarabinerMapping[] = [
     none({ from: "tab" }),
     mapping({ from: "q", to: "quote" }),
     mapping({ from: "w", to: "comma", toModifiers: ["left_shift"] }),
@@ -642,7 +267,7 @@ const symbolLayerLeft: KarabinerMapping[] = [
     mapping({ from: "v", to: "backslash" })
 ].map(ifLayer("symbol-layer-left"));
 
-const symbolLayerRight: KarabinerMapping[] = [
+const symbolLayerRight: KT.KarabinerMapping[] = [
     mapping({ from: "e", to: "tab", toModifiers: ["left_command", "left_shift"] }),
     mapping({ from: "r", to: "tab", toModifiers: ["left_command"] }),
     mapping({
@@ -676,7 +301,7 @@ const symbolLayerRight: KarabinerMapping[] = [
     mapping({ from: "right_shift", to: "4", toModifiers: ["right_shift"] })
 ].map(ifLayer("symbol-layer-right"));
 
-const navigationLayerSpace: KarabinerMapping = {
+const navigationLayerSpace: KT.KarabinerMapping = {
     type: "basic",
     from: {
         key_code: "spacebar",
@@ -693,13 +318,13 @@ const navigationLayerSpace: KarabinerMapping = {
         {
             set_variable: {
                 name: "visual-mode-layer",
-                value: TRUE
+                value: KT.TRUE
             }
         }
     ]
 };
 
-const visualModeLayerSpace: KarabinerMapping = {
+const visualModeLayerSpace: KT.KarabinerMapping = {
     type: "basic",
     from: {
         key_code: "spacebar",
@@ -711,31 +336,25 @@ const visualModeLayerSpace: KarabinerMapping = {
         {
             set_variable: {
                 name: "visual-mode-layer",
-                value: FALSE
+                value: KT.FALSE
             }
         }
     ]
 };
 
-const hideNavigationLayerNotification: KarabinerNotification = {
+const hideNavigationLayerNotification: KT.KarabinerNotification = {
     set_notification_message: {
         id: "navigation-layer",
         text: ""
     }
 };
 
-function toKey(key: string): KarabinerKeyTo {
-    return {
-        key_code: key
-    };
-}
-
 // == Navigation layer ===========================
 // ___ ___ ___ ___ ___ ___ HOM PGD PGU END ___ ___
 //  ×   ×   ^   ⌥   ⌘  ___  ←   ↓   ↑   →  ___
 // ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
 //                        ⇧
-const navigationLayer: KarabinerMapping[] = [
+const navigationLayer: KT.KarabinerMapping[] = [
     none({ from: "tab" }),
     none({ from: "q" }),
     none({ from: "w" }),
@@ -807,9 +426,9 @@ const navigationLayer: KarabinerMapping[] = [
     navigationLayerSpace
 ]
     .map(ifLayer("navigation-layer"))
-    .map(ifLayer("visual-mode-layer", FALSE));
+    .map(ifLayer("visual-mode-layer", KT.FALSE));
 
-const visualModeLayer: KarabinerMapping[] = [
+const visualModeLayer: KT.KarabinerMapping[] = [
     none({ from: "tab" }),
     none({ from: "q" }),
     none({ from: "w" }),
@@ -884,7 +503,7 @@ const visualModeLayer: KarabinerMapping[] = [
 // ___  ^   ⌥   ⌘   ⇪  ___ ___ ___ ___ ___ ___
 // ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
 //                        ⇧
-const modifierLayer: KarabinerMapping[] = [
+const modifierLayer: KT.KarabinerMapping[] = [
     none({ from: "tab" }),
     none({ from: "q" }),
     none({ from: "w" }),
@@ -931,7 +550,7 @@ const modifierLayer: KarabinerMapping[] = [
 // ___ ___ ___ ___ ___ ___ ___  7   8   9   p  ___
 // ___ ___ ___ ___ ___ ___ ___  4   5   6   ;
 // ___ ___ ___ ___ ___ ___ ___  1   2   3   /
-const numberLayer: KarabinerMapping[] = [
+const numberLayer: KT.KarabinerMapping[] = [
     none({ from: "tab" }),
     none({ from: "q" }),
     none({ from: "w" }),
@@ -978,13 +597,13 @@ const numberLayer: KarabinerMapping[] = [
     mapping({ from: "spacebar", to: "0" })
 ]
     .map(ifLayer("number-layer"))
-    .map(ifLayer("function-layer", FALSE));
+    .map(ifLayer("function-layer", KT.FALSE));
 
 // == Function layer =============================
 // ___ ___ ___ ___ ___ ___ ___ F7  F8  F9  F12 ___
 // ___ ___ ___ ___ ___ ___ ___ F4  F5  F6  F11
 // ___ ___ ___ ___ ___ ___ ___ F1  F2  F3  F10
-const functionLayer: KarabinerMapping[] = [
+const functionLayer: KT.KarabinerMapping[] = [
     none({ from: "tab" }),
     none({ from: "q" }),
     none({ from: "w" }),
