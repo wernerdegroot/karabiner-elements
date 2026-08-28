@@ -23,26 +23,22 @@ export function from(args: From): Pick<KT.KarabinerMapping, "from"> {
 }
 
 export type Mapping = From & {
-    to: string;
+    to: string | string[];
     toModifiers?: KT.KarabinerModifier[];
-    also?: KT.KarabinerTo[];
 };
 
 export function mapping(args: Mapping): KT.KarabinerMapping {
     const toModifiers: Pick<KT.KarabinerKeyTo, "modifiers"> = args.toModifiers == undefined ? {} : { modifiers: args.toModifiers };
 
-    const also = args.also ?? [];
+    const to = Array.isArray(args.to) ? args.to : [args.to];
 
     return {
         type: "basic",
         ...from(args),
-        to: [
-            {
-                key_code: args.to,
-                ...toModifiers
-            },
-            ...also
-        ]
+        to: to.map((key) => ({
+            key_code: key,
+            ...toModifiers
+        }))
     };
 }
 
@@ -190,6 +186,7 @@ export type DuoMapping = Mapping & {
 export function duo(args: DuoMapping): KT.KarabinerMapping {
     const toModifiers: Pick<KT.KarabinerKeyTo, "modifiers"> = args.toModifiers == undefined ? {} : { modifiers: args.toModifiers };
 
+    const to = Array.isArray(args.to) ? args.to : [args.to];
     const alsoDeactivate: LayerName[] = args.alsoDeactivate || [];
     const deactivate: KT.KarabinerSetVariable[] = [args.activate, ...alsoDeactivate].map((name) => ({
         set_variable: {
@@ -201,12 +198,10 @@ export function duo(args: DuoMapping): KT.KarabinerMapping {
     return {
         type: "basic",
         ...from(args),
-        to_if_alone: [
-            {
-                key_code: args.to,
-                ...toModifiers
-            }
-        ],
+        to_if_alone: to.map((key) => ({
+            key_code: key,
+            ...toModifiers
+        })),
         to: [
             {
                 set_variable: {

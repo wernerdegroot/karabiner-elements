@@ -66,84 +66,6 @@ function baseLayerRightShiftFor(keyCode: string): KT.KarabinerMapping {
     };
 }
 
-// == Comma layer (devil-mode leader) ============
-// TAB ⌘+Q ⌘+W ___ ___ ___ ___ ___ ___ ___ ___ BSP
-// ESC  ⇧   ^   ⌥   ⌘   ⇪  ___ ___ ___ ___ RET
-// ___ ⌘+Z ⌘+X ⌘+C ⌘+V ___ ___ ___  ,  ___ ___
-//                       SPC
-//
-// A step towards Emacs' devil mode. Comma is a duo: tapped it types a
-// comma, held it activates this layer (like caps lock -> escape / number).
-// While comma is held:
-//   - space/tab/enter/backspace/esc -> comma, then that key
-//   - a/s/d/f -> toggle a sticky ⇧/^/⌥/⌘; keep comma held to stack them,
-//     then release and press the target key (e.g. hold comma, f, d,
-//     release, q -> ⌘⌥Q)
-//   - q/w/z/x/c/v -> the matching ⌘ shortcut (⌘Q/⌘W/⌘Z/...)
-//   - g -> caps lock
-//   - any other supported key -> ignored (with a beep)
-
-// While comma is held: comma, then that key (e.g. comma + space -> ", ").
-// This is to prevent regular roll-overs involving the comma key from
-// triggering keys on the modifier layer.
-function commaThen(from: string, to: string): KT.KarabinerMapping {
-    return mapping({ from, to: "comma", also: [toKey(to)] });
-}
-
-function commaIgnore(key: string): KT.KarabinerMapping {
-    return {
-        type: "basic",
-        ...from({ from: key }),
-        to: [beep]
-    };
-}
-
-const commaLayer: KT.KarabinerMapping[] = [
-    // Keys are listed left to right, top to bottom, mirroring the base layer.
-    // Whitespace / editing keys pass through as: comma then that key.
-    // Comma outputs a single comma. Everything else is ignored (with a beep).
-    commaThen("tab", "tab"),
-    mapping({ from: "q", to: "q", toModifiers: ["left_command"] }),
-    mapping({ from: "w", to: "w", toModifiers: ["left_command"] }),
-    commaIgnore("e"),
-    commaIgnore("r"),
-    commaIgnore("t"),
-    commaIgnore("y"),
-    commaIgnore("u"),
-    commaIgnore("i"),
-    commaIgnore("o"),
-    commaIgnore("p"),
-    commaThen("open_bracket", "delete_or_backspace"),
-    commaThen("delete_or_backspace", "delete_or_backspace"),
-    commaIgnore("close_bracket"),
-    commaIgnore("backslash"),
-    commaThen("caps_lock", "escape"),
-    stickyModifier({ from: "a", modifier: "left_shift" }),
-    stickyModifier({ from: "s", modifier: "left_control" }),
-    stickyModifier({ from: "d", modifier: "left_option" }),
-    stickyModifier({ from: "f", modifier: "left_command" }),
-    mapping({ from: "g", to: "caps_lock" }),
-    commaIgnore("h"),
-    commaIgnore("j"),
-    commaIgnore("k"),
-    commaIgnore("l"),
-    commaThen("semicolon", "return_or_enter"),
-    commaIgnore("quote"),
-    commaThen("return_or_enter", "return_or_enter"),
-    commaIgnore("left_shift"),
-    mapping({ from: "z", to: "z", toModifiers: ["left_command"] }),
-    mapping({ from: "x", to: "x", toModifiers: ["left_command"] }),
-    mapping({ from: "c", to: "c", toModifiers: ["left_command"] }),
-    mapping({ from: "v", to: "v", toModifiers: ["left_command"] }),
-    commaIgnore("b"),
-    commaIgnore("n"),
-    commaIgnore("m"),
-    commaIgnore("period"),
-    commaIgnore("slash"),
-    commaIgnore("right_shift"),
-    commaThen("spacebar", "spacebar")
-].map(ifLayer("comma-layer"));
-
 // == Base layer =================================
 // TAB  q   w   e   r   t   y   u   i   o   p  BSP
 // ESC  a   s   d   f   g   h   j   k   l  RET
@@ -300,6 +222,66 @@ const symbolLayerRight: KT.KarabinerMapping[] = [
     mapping({ from: "slash", to: "4", toModifiers: ["right_shift"] }),
     mapping({ from: "right_shift", to: "4", toModifiers: ["right_shift"] })
 ].map(ifLayer("symbol-layer-right"));
+
+// == Comma layer ================================
+// TAB ⌘+Q ⌘+W ___ ___ ___ ___ ___ ___ ___ ___ BSP
+// ESC  ⇧   ^   ⌥   ⌘   ⇪  ___ ___ ___ ___ RET
+// ___ ⌘+Z ⌘+X ⌘+C ⌘+V ___ ___ ___  ,  ___ ___
+//                       SPC
+//
+// TAB/ESC/SPC/RET/BSP: prevent rollover mistakes while typing.
+
+function commaIgnore(key: string): KT.KarabinerMapping {
+    return {
+        type: "basic",
+        ...from({ from: key }),
+        to: [beep]
+    };
+}
+
+const commaLayer: KT.KarabinerMapping[] = [
+    mapping({ from: "tab", to: ["comma", "tab"] }),
+    mapping({ from: "q", to: "q", toModifiers: ["left_command"] }),
+    mapping({ from: "w", to: "w", toModifiers: ["left_command"] }),
+    commaIgnore("e"),
+    commaIgnore("r"),
+    commaIgnore("t"),
+    commaIgnore("y"),
+    commaIgnore("u"),
+    commaIgnore("i"),
+    commaIgnore("o"),
+    commaIgnore("p"),
+    mapping({ from: "open_bracket", to: ["comma", "delete_or_backspace"] }),
+    commaIgnore("close_bracket"),
+    commaIgnore("backslash"),
+    mapping({ from: "close_bracket", to: ["comma", "delete_or_backspace"] }),
+    mapping({ from: "delete_or_backspace", to: ["comma", "delete_or_backspace"] }),
+    mapping({ from: "caps_lock", to: ["comma", "escape"] }),
+    stickyModifier({ from: "a", modifier: "left_shift" }),
+    stickyModifier({ from: "s", modifier: "left_control" }),
+    stickyModifier({ from: "d", modifier: "left_option" }),
+    stickyModifier({ from: "f", modifier: "left_command" }),
+    mapping({ from: "g", to: "caps_lock" }),
+    commaIgnore("h"),
+    commaIgnore("j"),
+    commaIgnore("k"),
+    commaIgnore("l"),
+    mapping({ from: "semicolon", to: ["comma", "return_or_enter"] }),
+    commaIgnore("quote"),
+    mapping({ from: "return_or_enter", to: ["comma", "return_or_enter"] }),
+    commaIgnore("left_shift"),
+    mapping({ from: "z", to: "z", toModifiers: ["left_command"] }),
+    mapping({ from: "x", to: "x", toModifiers: ["left_command"] }),
+    mapping({ from: "c", to: "c", toModifiers: ["left_command"] }),
+    mapping({ from: "v", to: "v", toModifiers: ["left_command"] }),
+    commaIgnore("b"),
+    commaIgnore("n"),
+    commaIgnore("m"),
+    commaIgnore("period"),
+    commaIgnore("slash"),
+    commaIgnore("right_shift"),
+    mapping({ from: "spacebar", to: ["comma", "spacebar"] })
+].map(ifLayer("comma-layer"));
 
 const navigationLayerSpace: KT.KarabinerMapping = {
     type: "basic",
