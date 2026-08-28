@@ -109,9 +109,9 @@ const baseLayer: KT.KarabinerMapping[] = [
     simple({ key: "j" }),
     simple({ key: "k" }),
     simple({ key: "l" }),
-    duo({ from: "semicolon", to: "return_or_enter", activate: "modifier-layer" }),
+    mapping({ from: "semicolon", to: "return_or_enter" }),
     none({ from: "quote" }),
-    duo({ from: "return_or_enter", to: "return_or_enter", activate: "modifier-layer" }),
+    mapping({ from: "return_or_enter", to: "return_or_enter" }),
     baseLayerLeftShift,
     simple({ key: "z" }),
     simple({ key: "x" }),
@@ -120,7 +120,7 @@ const baseLayer: KT.KarabinerMapping[] = [
     simple({ key: "b" }),
     simple({ key: "n" }),
     simple({ key: "m" }),
-    duo({ from: "comma", to: "comma", activate: "comma-layer" }),
+    duo({ from: "comma", to: "comma", activate: "modifier-layer" }),
     simple({ key: "period" }),
     baseLayerRightShiftFor("slash"),
     baseLayerRightShiftFor("right_shift")
@@ -159,7 +159,7 @@ const upperLayer: KT.KarabinerMapping[] = [
         to: "slash",
         toModifiers: ["left_shift"]
     }),
-    // Gate on upper-layer so sticky shift + comma re-enters the comma layer instead of typing "<".
+    // Gate on upper-layer so sticky shift + comma re-enters the modifier layer instead of typing "<".
     ifLayer("upper-layer")(mapping({ from: "comma", fromModifiers: ["shift"], to: "comma", toModifiers: ["left_shift"] }))
 ];
 
@@ -223,7 +223,7 @@ const symbolLayerRight: KT.KarabinerMapping[] = [
     mapping({ from: "right_shift", to: "4", toModifiers: ["right_shift"] })
 ].map(ifLayer("symbol-layer-right"));
 
-// == Comma layer ================================
+// == Modifier layer ==============================
 // TAB ⌘+Q ⌘+W ___ ___ ___ ___ ___ ___ ___ ___ BSP
 // ESC  ⇧   ^   ⌥   ⌘   ⇪  ___ ___ ___ ___ RET
 // ___ ⌘+Z ⌘+X ⌘+C ⌘+V ___ ___ ___  ,  ___ ___
@@ -239,7 +239,7 @@ function commaIgnore(key: string): KT.KarabinerMapping {
     };
 }
 
-const commaLayer: KT.KarabinerMapping[] = [
+const modifierLayer: KT.KarabinerMapping[] = [
     mapping({ from: "tab", to: ["comma", "tab"] }),
     mapping({ from: "q", to: "q", toModifiers: ["left_command"] }),
     mapping({ from: "w", to: "w", toModifiers: ["left_command"] }),
@@ -281,7 +281,7 @@ const commaLayer: KT.KarabinerMapping[] = [
     commaIgnore("slash"),
     commaIgnore("right_shift"),
     mapping({ from: "spacebar", to: ["comma", "spacebar"] })
-].map(ifLayer("comma-layer"));
+].map(ifLayer("modifier-layer"));
 
 const navigationLayerSpace: KT.KarabinerMapping = {
     type: "basic",
@@ -480,54 +480,6 @@ const visualModeLayer: KT.KarabinerMapping[] = [
     .map(ifLayer("navigation-layer"))
     .map(ifLayer("visual-mode-layer"));
 
-// == Modifier layer =============================
-// ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
-// ___  ^   ⌥   ⌘   ⇪  ___ ___ ___ ___ ___ ___
-// ___ ___ ___ ___ ___ ___ ___ ___ ___ ___ ___
-//                        ⇧
-const modifierLayer: KT.KarabinerMapping[] = [
-    none({ from: "tab" }),
-    none({ from: "q" }),
-    none({ from: "w" }),
-    none({ from: "e" }),
-    none({ from: "r" }),
-    none({ from: "t" }),
-    none({ from: "y" }),
-    none({ from: "u" }),
-    none({ from: "i" }),
-    none({ from: "o" }),
-    none({ from: "p" }),
-    none({ from: "open_bracket" }),
-    none({ from: "close_bracket" }),
-    none({ from: "backslash" }),
-    none({ from: "caps_lock" }),
-    none({ from: "a" }),
-    stickyModifier({ from: "s", modifier: "left_control" }),
-    stickyModifier({ from: "d", modifier: "left_option" }),
-    stickyModifier({ from: "f", modifier: "left_command" }),
-    mapping({ from: "g", to: "caps_lock" }),
-    none({ from: "h" }),
-    none({ from: "j" }),
-    none({ from: "k" }),
-    none({ from: "l" }),
-    none({ from: "semicolon" }),
-    none({ from: "quote" }),
-    none({ from: "return_or_enter" }),
-    none({ from: "left_shift" }),
-    none({ from: "z" }),
-    none({ from: "x" }),
-    none({ from: "c" }),
-    none({ from: "v" }),
-    none({ from: "b" }),
-    none({ from: "n" }),
-    none({ from: "m" }),
-    none({ from: "comma" }),
-    none({ from: "period" }),
-    none({ from: "slash" }),
-    none({ from: "right_shift" }),
-    stickyModifier({ from: "spacebar", modifier: "left_shift" })
-].map(ifLayer("modifier-layer"));
-
 // == Number layer ===============================
 // ___ ___ ___ ___ ___ ___ ___  7   8   9   p  ___
 // ___ ___ ___ ___ ___ ___ ___  4   5   6   ;
@@ -642,11 +594,10 @@ const karabinerJsonContents = JSON.stringify(
                                 ...symbolLayerRight,
                                 ...navigationLayer,
                                 ...visualModeLayer,
-                                ...modifierLayer,
                                 ...numberLayer,
                                 ...functionLayer,
                                 ...upperLayer,
-                                ...commaLayer,
+                                ...modifierLayer,
                                 ...baseLayer
                             ]
                         }

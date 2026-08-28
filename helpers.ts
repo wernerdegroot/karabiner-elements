@@ -48,10 +48,9 @@ export type LayerName =
     | "symbol-layer-right"
     | "navigation-layer"
     | "visual-mode-layer"
-    | "modifier-layer"
     | "number-layer"
     | "function-layer"
-    | "comma-layer";
+    | "modifier-layer";
 
 export type Layer = From & {
     activate: LayerName;
