@@ -4,13 +4,13 @@ export type KarabinerKeyFrom = { key_code: string };
 
 export type KarabinerMouseFrom = { pointing_button: string };
 
-export type KarabinerModifiers = {
+export type KarabinerFromModifiers = {
         mandatory?: KarabinerModifier[];
         optional?: KarabinerModifier[];
 };
 
 export type KarabinerFrom = (KarabinerKeyFrom | KarabinerMouseFrom) & {
-    modifiers?: KarabinerModifiers;
+    modifiers?: KarabinerFromModifiers;
 };
 
 export type KarabinerKeyTo = {

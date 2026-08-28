@@ -6,7 +6,7 @@ export type From = {
 };
 
 export function from(args: From): Pick<KT.KarabinerMapping, "from"> {
-    const modifiers: KT.KarabinerModifiers = {
+    const modifiers: KT.KarabinerFromModifiers = {
         optional: ["any"]
     };
 
