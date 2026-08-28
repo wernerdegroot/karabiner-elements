@@ -6125,7 +6125,10 @@
                 },
                 "to": [
                   {
-                    "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
+                    "key_code": "r",
+                    "modifiers": [
+                      "left_command"
+                    ]
                   }
                 ]
               },
@@ -6148,7 +6151,10 @@
                 },
                 "to": [
                   {
-                    "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
+                    "key_code": "t",
+                    "modifiers": [
+                      "left_command"
+                    ]
                   }
                 ]
               },
@@ -6336,32 +6342,6 @@
                 "to": [
                   {
                     "shell_command": "afplay /System/Library/Sounds/Basso.aiff"
-                  }
-                ]
-              },
-              {
-                "conditions": [
-                  {
-                    "name": "modifier-layer",
-                    "type": "variable_if",
-                    "value": 1
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "close_bracket",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to": [
-                  {
-                    "key_code": "comma"
-                  },
-                  {
-                    "key_code": "delete_or_backspace"
                   }
                 ]
               },
@@ -7225,38 +7205,6 @@
               {
                 "type": "basic",
                 "from": {
-                  "key_code": "delete_or_backspace",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "to_if_alone": [
-                  {
-                    "key_code": "delete_or_backspace"
-                  }
-                ],
-                "to": [
-                  {
-                    "set_variable": {
-                      "name": "symbol-layer-left",
-                      "value": 1
-                    }
-                  }
-                ],
-                "to_after_key_up": [
-                  {
-                    "set_variable": {
-                      "name": "symbol-layer-left",
-                      "value": 0
-                    }
-                  }
-                ]
-              },
-              {
-                "type": "basic",
-                "from": {
                   "key_code": "close_bracket",
                   "modifiers": {
                     "optional": [
@@ -7283,6 +7231,38 @@
                 "to": [
                   {
                     "key_code": "vk_none"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "delete_or_backspace",
+                  "modifiers": {
+                    "optional": [
+                      "any"
+                    ]
+                  }
+                },
+                "to_if_alone": [
+                  {
+                    "key_code": "delete_or_backspace"
+                  }
+                ],
+                "to": [
+                  {
+                    "set_variable": {
+                      "name": "symbol-layer-left",
+                      "value": 1
+                    }
+                  }
+                ],
+                "to_after_key_up": [
+                  {
+                    "set_variable": {
+                      "name": "symbol-layer-left",
+                      "value": 0
+                    }
                   }
                 ]
               },

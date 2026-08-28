@@ -61,6 +61,14 @@ export type Layer = From & {
 };
 
 export function layer(args: Layer): KT.KarabinerMapping {
+
+    const activate: KT.KarabinerSetVariable[] = [args.activate].map((name) => ({
+        set_variable: {
+            name,
+            value: KT.TRUE
+        }
+    }));
+
     const alsoDeactivate: LayerName[] = args.alsoDeactivate || [];
     const deactivate: KT.KarabinerSetVariable[] = [args.activate, ...alsoDeactivate].map((name) => ({
         set_variable: {
@@ -72,14 +80,7 @@ export function layer(args: Layer): KT.KarabinerMapping {
     return {
         type: "basic",
         ...from(args),
-        to: [
-            {
-                set_variable: {
-                    name: args.activate,
-                    value: KT.TRUE
-                }
-            }
-        ],
+        to: activate,
         to_after_key_up: deactivate
     };
 }
@@ -186,6 +187,14 @@ export function duo(args: DuoMapping): KT.KarabinerMapping {
     const toModifiers: Pick<KT.KarabinerKeyTo, "modifiers"> = args.toModifiers == undefined ? {} : { modifiers: args.toModifiers };
 
     const to = Array.isArray(args.to) ? args.to : [args.to];
+
+    const activate: KT.KarabinerSetVariable[] = [args.activate].map((name) => ({
+        set_variable: {
+            name,
+            value: KT.TRUE
+        }
+    }));
+
     const alsoDeactivate: LayerName[] = args.alsoDeactivate || [];
     const deactivate: KT.KarabinerSetVariable[] = [args.activate, ...alsoDeactivate].map((name) => ({
         set_variable: {
@@ -201,14 +210,7 @@ export function duo(args: DuoMapping): KT.KarabinerMapping {
             key_code: key,
             ...toModifiers
         })),
-        to: [
-            {
-                set_variable: {
-                    name: args.activate,
-                    value: KT.TRUE
-                }
-            }
-        ],
+        to: activate,
         to_after_key_up: deactivate
     };
 }

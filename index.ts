@@ -87,13 +87,13 @@ const baseLayer: KT.KarabinerMapping[] = [
         to: "delete_or_backspace",
         activate: "symbol-layer-left"
     }),
+    none({ from: "close_bracket" }),
+    none({ from: "backslash" }),
     duo({
         from: "delete_or_backspace",
         to: "delete_or_backspace",
         activate: "symbol-layer-left"
     }),
-    none({ from: "close_bracket" }),
-    none({ from: "backslash" }),
     duo({
         from: "caps_lock",
         to: "escape",
@@ -223,13 +223,13 @@ const symbolLayerRight: KT.KarabinerMapping[] = [
     mapping({ from: "right_shift", to: "4", toModifiers: ["right_shift"] })
 ].map(ifLayer("symbol-layer-right"));
 
-// == Modifier layer ==============================
-// TAB ⌘+Q ⌘+W ___ ___ ___ ___ ___ ___ ___ ___ BSP
+// == Modifier layer =============================
+// TAB ⌘+Q ⌘+W ___ ⌘+R ⌘+T ___ ___ ___ ___ ___ BSP
 // ESC  ⇧   ^   ⌥   ⌘   ⇪  ___ ___ ___ ___ RET
-// ___ ⌘+Z ⌘+X ⌘+C ⌘+V ___ ___ ___  ,  ___ ___
+// ___ ⌘+Z ⌘+X ⌘+C ⌘+V ___ ___ ___ ___ ___ ___
 //                       SPC
 //
-// TAB/ESC/SPC/RET/BSP: prevent rollover mistakes while typing.
+// TAB/ESC/SPC/RET/BSP prevent rollover mistakes while typing
 
 function commaIgnore(key: string): KT.KarabinerMapping {
     return {
@@ -244,8 +244,8 @@ const modifierLayer: KT.KarabinerMapping[] = [
     mapping({ from: "q", to: "q", toModifiers: ["left_command"] }),
     mapping({ from: "w", to: "w", toModifiers: ["left_command"] }),
     commaIgnore("e"),
-    commaIgnore("r"),
-    commaIgnore("t"),
+    mapping({ from: "r", to: "r", toModifiers: ["left_command"] }),
+    mapping({ from: "t", to: "t", toModifiers: ["left_command"] }),
     commaIgnore("y"),
     commaIgnore("u"),
     commaIgnore("i"),
@@ -254,7 +254,6 @@ const modifierLayer: KT.KarabinerMapping[] = [
     mapping({ from: "open_bracket", to: ["comma", "delete_or_backspace"] }),
     commaIgnore("close_bracket"),
     commaIgnore("backslash"),
-    mapping({ from: "close_bracket", to: ["comma", "delete_or_backspace"] }),
     mapping({ from: "delete_or_backspace", to: ["comma", "delete_or_backspace"] }),
     mapping({ from: "caps_lock", to: ["comma", "escape"] }),
     stickyModifier({ from: "a", modifier: "left_shift" }),
@@ -484,6 +483,7 @@ const visualModeLayer: KT.KarabinerMapping[] = [
 // ___ ___ ___ ___ ___ ___ ___  7   8   9   p  ___
 // ___ ___ ___ ___ ___ ___ ___  4   5   6   ;
 // ___ ___ ___ ___ ___ ___ ___  1   2   3   /
+//                        0
 const numberLayer: KT.KarabinerMapping[] = [
     none({ from: "tab" }),
     none({ from: "q" }),
